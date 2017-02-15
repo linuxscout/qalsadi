@@ -1,0 +1,9 @@
+*.pyc
+/build/*
+/archive/*
+/dist/*
+/doc/html/*
+/support/*
+/tests/~/*
+/tests/output/*
+
