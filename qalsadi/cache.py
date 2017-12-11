@@ -47,7 +47,7 @@ class WithAIndex(HashIndex):
         return md5(key.encode('utf8')).hexdigest()
 
 
-class cache(object):
+class Cache(object):
     """
         cache for word morphological analysis
     """

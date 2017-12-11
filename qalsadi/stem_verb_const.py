@@ -13,8 +13,11 @@
 """
 Arabic lexical analyser constants, provides feature for stemming arabic word as verb
 """
-import pyarabic.araby as araby
+import re
+import pyarabic.araby as ar
 import libqutrub.verb_const as qutrubVerbConst
+VERB_STAMP_PAT = re.compile(ur"[%s%s%s%s%s%s]" % (ar.ALEF, ar.YEH, ar.WAW, ar.ALEF_MAKSURA,
+                         ar.HAMZA, ar.SHADDA), re.UNICODE)
 # Compound affixes
 COMP_PREFIX_LETTERS = u"أسلفو"
 COMP_SUFFIX_LETTERS = u"ينهكماو"
@@ -25,37 +28,37 @@ COMP_MIN_STEM = 2
 COMP_JOKER = u"*"
 """COMP_PREFIX_LIST=set([
     "",
-    araby.ALEF_HAMZA_ABOVE,
-    araby.ALEF_HAMZA_ABOVE+ araby.FEH,
-    araby.ALEF_HAMZA_ABOVE+ araby.FEH+ araby.LAM,
-    araby.ALEF_HAMZA_ABOVE+ araby.FEH+ araby.SEEN,
-    araby.ALEF_HAMZA_ABOVE+ araby.WAW,
-    araby.ALEF_HAMZA_ABOVE+ araby.WAW+ araby.SEEN,
-    araby.ALEF_HAMZA_ABOVE+ araby.WAW+ araby.LAM,
-    araby.ALEF_HAMZA_ABOVE+ araby.LAM,
-    araby.ALEF_HAMZA_ABOVE+ araby.SEEN,
-    araby.FEH,
-    araby.FEH+ araby.LAM,
-    araby.FEH+ araby.SEEN,
-    araby.WAW,
-    araby.WAW+ araby.LAM,
-    araby.WAW+ araby.SEEN,
-    araby.LAM,
-    araby.SEEN,
+    ar.ALEF_HAMZA_ABOVE,
+    ar.ALEF_HAMZA_ABOVE+ ar.FEH,
+    ar.ALEF_HAMZA_ABOVE+ ar.FEH+ ar.LAM,
+    ar.ALEF_HAMZA_ABOVE+ ar.FEH+ ar.SEEN,
+    ar.ALEF_HAMZA_ABOVE+ ar.WAW,
+    ar.ALEF_HAMZA_ABOVE+ ar.WAW+ ar.SEEN,
+    ar.ALEF_HAMZA_ABOVE+ ar.WAW+ ar.LAM,
+    ar.ALEF_HAMZA_ABOVE+ ar.LAM,
+    ar.ALEF_HAMZA_ABOVE+ ar.SEEN,
+    ar.FEH,
+    ar.FEH+ ar.LAM,
+    ar.FEH+ ar.SEEN,
+    ar.WAW,
+    ar.WAW+ ar.LAM,
+    ar.WAW+ ar.SEEN,
+    ar.LAM,
+    ar.SEEN,
     ]);
 COMP_SUFFIX_LIST=set(["",
-    araby.YEH,
-    araby.NOON+ araby.YEH,
-    araby.NOON+ araby.ALEF,
-    araby.KAF,
-    araby.KAF+ araby.MEEM+ araby.ALEF,
-    araby.KAF+ araby.MEEM,
-    araby.KAF+ araby.NOON,
-    araby.HEH,
-    araby.HEH+ araby.ALEF,
-    araby.HEH+ araby.MEEM+ araby.ALEF,
-    araby.HEH+ araby.MEEM,
-    araby.HEH+ araby.NOON,
+    ar.YEH,
+    ar.NOON+ ar.YEH,
+    ar.NOON+ ar.ALEF,
+    ar.KAF,
+    ar.KAF+ ar.MEEM+ ar.ALEF,
+    ar.KAF+ ar.MEEM,
+    ar.KAF+ ar.NOON,
+    ar.HEH,
+    ar.HEH+ ar.ALEF,
+    ar.HEH+ ar.MEEM+ ar.ALEF,
+    ar.HEH+ ar.MEEM,
+    ar.HEH+ ar.NOON,
 # To double MAf3ool suffix
     u'يي',
     u'يني',
@@ -340,59 +343,59 @@ CONJ_MAX_PREFIX = 1
 CONJ_MAX_SUFFIX = 3
 CONJ_MIN_STEM = 2
 CONJ_JOKER = u"*"
-CONJ_PREFIX_LIST = ("", araby.ALEF, araby.YEH, araby.TEH, araby.NOON,
-                    araby.ALEF_HAMZA_ABOVE, araby.HAMZA)
+CONJ_PREFIX_LIST = ("", ar.ALEF, ar.YEH, ar.TEH, ar.NOON,
+                    ar.ALEF_HAMZA_ABOVE, ar.HAMZA)
 CONJ_SUFFIX_LIST = (
     "",
-    araby.TEH,
-    araby.TEH + araby.ALEF,
-    araby.TEH + araby.MEEM,
-    araby.TEH + araby.MEEM + araby.WAW,
-    araby.TEH + araby.MEEM + araby.ALEF,
-    araby.TEH + araby.NOON,
-    araby.ALEF,
-    araby.NOON,
-    araby.NOON + araby.ALEF,
-    araby.ALEF + araby.NOON,
-    araby.WAW + araby.ALEF,
-    araby.WAW + araby.NOON,
-    araby.WAW,
-    araby.YEH,
-    araby.YEH + araby.NOON,
+    ar.TEH,
+    ar.TEH + ar.ALEF,
+    ar.TEH + ar.MEEM,
+    ar.TEH + ar.MEEM + ar.WAW,
+    ar.TEH + ar.MEEM + ar.ALEF,
+    ar.TEH + ar.NOON,
+    ar.ALEF,
+    ar.NOON,
+    ar.NOON + ar.ALEF,
+    ar.ALEF + ar.NOON,
+    ar.WAW + ar.ALEF,
+    ar.WAW + ar.NOON,
+    ar.WAW,
+    ar.YEH,
+    ar.YEH + ar.NOON,
 )
 SUFFIX_LIST_STRIPOUS = set([
     u"",
-    araby.TEH,
-    araby.TEH + araby.ALEF,
-    araby.WAW + araby.ALEF,
-    araby.WAW + araby.NOON,
-    araby.WAW,
-    araby.YEH,
-    araby.YEH + araby.NOON,
+    ar.TEH,
+    ar.TEH + ar.ALEF,
+    ar.WAW + ar.ALEF,
+    ar.WAW + ar.NOON,
+    ar.WAW,
+    ar.YEH,
+    ar.YEH + ar.NOON,
 ])
 SUFFIX_LIST_SAKEN = set([
     u"",
-    araby.TEH,
+    ar.TEH,
     # حالة خاصة مع الفعل الناقص
-    araby.TEH + araby.ALEF,
-    araby.TEH + araby.MEEM,
+    ar.TEH + ar.ALEF,
+    ar.TEH + ar.MEEM,
     #TEH+MEEM+WAW,
-    araby.TEH + araby.MEEM + araby.ALEF,
-    araby.TEH + araby.NOON,
-    araby.NOON,
-    araby.NOON + araby.ALEF,
+    ar.TEH + ar.MEEM + ar.ALEF,
+    ar.TEH + ar.NOON,
+    ar.NOON,
+    ar.NOON + ar.ALEF,
 ])
 SUFFIX_LIST_VOWELED = set([
     u"",
-    araby.ALEF,
-    araby.ALEF + araby.NOON,
-    araby.NOON,
-    araby.TEH,
-    araby.TEH + araby.NOON,
-    araby.TEH + araby.MEEM,
+    ar.ALEF,
+    ar.ALEF + ar.NOON,
+    ar.NOON,
+    ar.TEH,
+    ar.TEH + ar.NOON,
+    ar.TEH + ar.MEEM,
 ])
-PREFIX_LIST_STRIPOUS = (araby.YEH, araby.TEH, araby.NOON,
-                        araby.ALEF_HAMZA_ABOVE, araby.HAMZA)
+PREFIX_LIST_STRIPOUS = (ar.YEH, ar.TEH, ar.NOON,
+                        ar.ALEF_HAMZA_ABOVE, ar.HAMZA)
 VERBAL_CONJUGATION_AFFIX = set([
     u'-',
     u'-ا',

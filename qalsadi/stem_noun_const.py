@@ -11,7 +11,7 @@
 # Licence:     GPL
 #-------------------------------------------------------------------------------
 """Constants for stemming nouns"""
-import pyarabic.araby as araby
+import pyarabic.araby as ar
 COMP_PREFIX_LETTERS = u"أابتفكلو"
 COMP_SUFFIX_LETTERS = u"ينهكماو"
 COMP_INFIX_LETTERS = u""
@@ -826,8 +826,8 @@ CONJ_PREFIX_LIST = ("")
 CONJ_SUFFIX_LIST_TAGS = {
     u"": {
         'tags': (u'', ),
-        'vocalized': (araby.FATHA, araby.DAMMA, araby.KASRA, araby.DAMMATAN,
-                      araby.KASRATAN, araby.FATHATAN)
+        'vocalized': (ar.FATHA, ar.DAMMA, ar.KASRA, ar.DAMMATAN,
+                      ar.KASRATAN, ar.FATHATAN)
     },
     u"ُ": {
         'tags': (
@@ -1183,3 +1183,28 @@ NOMINAL_CONJUGATION_AFFIX = set([
     u"-تان",  #TEH+ALEF+NOON,
     u"-يات",  #YEH+ALEF+TEH,
 ])
+
+AJUST_VOCAL_PATTERNS = [
+(ar.FATHA + ar.ALEF_MAKSURA + ar.FATHATAN, ar.FATHATAN + ar.ALEF_MAKSURA ), 
+(ar.FATHA + ar.ALEF_MAKSURA + ar.KASRATAN, ar.FATHATAN + ar.ALEF_MAKSURA ), 
+(ar.FATHA + ar.ALEF_MAKSURA + ar.DAMMATAN, ar.FATHATAN + ar.ALEF_MAKSURA ), 
+(ar.ALEF_MAKSURA + ar.FATHA, ar.ALEF_MAKSURA ), 
+(ar.ALEF_MAKSURA + ar.KASRA, ar.ALEF_MAKSURA ), 
+(ar.ALEF_MAKSURA + ar.DAMMA, ar.ALEF_MAKSURA ), 
+]
+
+    #~ word_vocalized = re.sub(ur"(%s)+" % ar.FATHA, ar.FATHA, word_vocalized)
+    #~ word_vocalized = re.sub(ur"%s%s%s" % (ar.FATHA, ar.ALEF_MAKSURA,
+                                         #~ ar.KASRATAN),
+                            #~ ar.FATHATAN + ar.ALEF_MAKSURA, word_vocalized)
+    #~ word_vocalized = re.sub(ur"%s%s%s" % (ar.FATHA, ar.ALEF_MAKSURA,
+                                         #~ ar.DAMMATAN),
+                            #~ ar.FATHATAN + ar.ALEF_MAKSURA, word_vocalized)
+    #~ word_vocalized = re.sub(ur"%s%s%s" % (ar.FATHA, ar.ALEF_MAKSURA,
+                                         #~ ar.FATHATAN),
+                            #~ ar.FATHATAN + ar.ALEF_MAKSURA, word_vocalized)
+    #~ word_vocalized = re.sub(ur"%s%s%s" % (ar.FATHA, ar.ALEF_MAKSURA, ar.KASRA),
+                            #~ ar.FATHA + ar.ALEF_MAKSURA, word_vocalized)
+    #~ word_vocalized = re.sub(ur"%s[%s|%s|%s]" % (ar.ALEF_MAKSURA, ar.DAMMA,
+                                               #~ ar.FATHA, ar.KASRA),
+                            #~ ar.ALEF_MAKSURA, word_vocalized)

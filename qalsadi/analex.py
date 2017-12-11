@@ -78,10 +78,10 @@ class Analex:
         # contains [FATHA, DAMMA, KASRA, SUKUN, DAMMATAN, KASRATAN,
         #  FATHATAN, SHADDA])
         # used to tokenize arabic text
-        self.token_pat = re.compile(r"([\w%s]+)" % marks, re.UNICODE)
+        self.token_pat = re.compile(ur"([\w%s]+)" % marks, re.UNICODE)
         #used to split text into clauses
         self.clause_pattern = re.compile(
-            r"([\w%s\s]+)" % (u"".join(araby.TASHKEEL), ), re.UNICODE)
+            r"([\w%s\s]+)" % (ur"".join(araby.TASHKEEL), ), re.UNICODE)
 
         # allow partial vocalization support,
         #~The text is analyzed as partial or fully vocalized.
