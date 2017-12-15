@@ -99,6 +99,10 @@ class Analex:
         #self.allow_cache_use = True
         self.allow_cache_use = False
         self.cache = cache.Cache()
+        
+        # In case of training and vocalized text analysis, 
+        # we propose to respect Shadda in the given word
+        self.fully_vocalized_input = False
 
     def __del__(self):
         """
@@ -197,6 +201,12 @@ class Analex:
         # to allow syntax last mark on noun stemming
         self.verbstemmer.enable_syntax_lastmark()
         # to allow syntax last mark  on verb stemming
+        
+    def enable_fully_vocalized_input(self):
+        """
+        Enable fully vocalized  input in case of vocalized text analysis.
+        """
+        self.fully_vocalized_input = True
 
     def disable_syntax_lastmark(self):
         """
@@ -338,7 +348,8 @@ class Analex:
                 #check if the word is nomralized and solution are equivalent
             resulted_data = check_normalized(word_vocalised, resulted_data)
             #check if the word is shadda like
-            resulted_data = check_shadda(word_vocalised, resulted_data)
+            
+            resulted_data = check_shadda(word_vocalised, resulted_data, self.fully_vocalized_input)
 
             # add word frequency information in tags
             resulted_data = self.add_word_frequency(resulted_data)
@@ -560,7 +571,7 @@ class Analex:
         return self.unknownstemmer.stemming_noun(noun)
 
 
-def check_shadda(word_vocalised, resulted_data):
+def check_shadda(word_vocalised, resulted_data, fully_vocalized_input=False):
     """
     if the entred word is like the found word in dictionary,
     to treat some normalized cases,
@@ -570,16 +581,27 @@ def check_shadda(word_vocalised, resulted_data):
     @type word_vocalised: unicode.
     @param resulted_data: the founded resulat from dictionary.
     @type resulted_data: list of dict.
+    @param fully_vocalized_input: if the two words must resect the shadda and vocalized.
+    @param fully_vocalized_input: Boolean, default is False.
+    @type word_vocalised: unicode.    
     @return: list of dictionaries of analyzed words with tags.
     @rtype: list.
     """
     #~return filter(lambda item: araby.shaddalike(word_vocalised,
     #~item.__dict__.get('vocalized', '')), resulted_data)
     #~x for x in [1, 1, 2] if x == 1
-    return [
+    #~ return [
+    #~ x for x in resulted_data
+    #~ if araby.shaddalike(word_vocalised, x.__dict__.get('vocalized', '')) ]
+    if fully_vocalized_input:
+        return [x for x in resulted_data if araby.strip_harakat(word_vocalised) == 
+    araby.strip_harakat(x.__dict__.get('vocalized', ''))]
+    else:
+        return [
         x for x in resulted_data
         if araby.shaddalike(word_vocalised, x.__dict__.get('vocalized', ''))
     ]
+    
 
 
 def check_normalized(word_vocalised, resulted_data):

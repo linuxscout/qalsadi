@@ -18,4 +18,5 @@ md2rst:
 	pandoc -s -r markdown -w rst README.md -o README.rst
 md2html:
 	pandoc -s -r markdown -w html README.md -o README.html
-	
+install:
+	sudo python setup.py install	
