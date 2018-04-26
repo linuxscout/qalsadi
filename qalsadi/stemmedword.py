@@ -201,6 +201,8 @@ class StemmedWord:
         if u'غائب' in self.get_tags() or (given_person_tag
                                           and u'غائب' in given_person_tag):
             self.tag_person += 4
+        if not self.tag_person:
+            self.tag_person = 4 
         #~ print self.tag_person
         #tempdislay
         #~ print self.word.encode('utf8'), self.get_tags().encode('utf8'), self.tag_person
@@ -303,8 +305,10 @@ class StemmedWord:
         # ما كات اصله تاء مربوطة
         # للعمل TODO
         # دالة حاصة للكلمات المؤنثة
-
-        if u'مؤنث' in self.tag_original_gender or u'مؤنث' in self.get_tags():
+        ##print "stemmedword", self.get_original(), (araby.TEH_MARBUTA in self.get_original())
+        if araby.TEH_MARBUTA in self.get_original():
+            self.tag_gender += 2
+        elif u'مؤنث' in self.tag_original_gender or u'مؤنث' in self.get_tags():
             self.tag_gender += 2
         elif u'جمع مؤنث سالم' in self.get_tags():
             self.tag_gender += 2
@@ -315,8 +319,7 @@ class StemmedWord:
               and (araby.TEH_MARBUTA in self.get_original()
                    or u'جمع' in self.tag_original_number)):
             self.tag_gender += 2
-        elif araby.TEH_MARBUTA in self.get_original():
-            self.tag_gender += 2
+            
         # جمع التكسير للمصادر والجوامد مؤنث
         elif u'جمع' in self.tag_original_number and (
                 u"جامد" in self.get_type() or u"مصدر" in self.get_type()):
@@ -348,7 +351,7 @@ class StemmedWord:
         @return: is mamnou3 min sarf.
         @rtype: True/False
         """
-        return u'ممنوع من الصرف' in self.get_tags()
+        return u'ممنوع من الصرف' in self.get_tags() or "noun_prop" in self.get_type()
 
     def get_procletic(self, ):
         """Get the procletic"""
@@ -413,7 +416,8 @@ class StemmedWord:
 
     def _is_added(self):
         """Return True if the word has the state added مضاف."""
-        return self._affix_is_added() or u'اسم إضافة' in self.get_tags()
+        #~ return self._affix_is_added() or u'اسم إضافة' in self.get_tags()
+        return self._affix_is_added()
 
     def _affix_is_feminin(self):
         """Return True if the word is Feminin."""
@@ -678,7 +682,8 @@ class StemmedWord:
                 return False
             else:
                 return True
-
+        if u"منصوب" in self.get_tags() and self.is_feminin_plural():
+            return True
         if self.affix_key in GLOBAL_AFFIXES:
             return GLOBAL_AFFIXES[self.affix_key].is_mansoub()
         return False
@@ -886,6 +891,17 @@ class StemmedWord:
             text += u"\n\t\tu'%s' = u'%s', " % (key, stmword[key])
         text += u'\n\t\t}'
         return text.encode('utf8')
+        
+    def __dict__(self):
+        """get dict objects result from analysis"""
+        return self.__dict__
+        #~ text = u"{"
+        #~ stmword = self.__dict__
+        #~ stmword['affix'] = 'Taha'
+        #~ for key in stmword.keys():
+            #~ text += u"\n\t\tu'%s' = u'%s', " % (key, stmword[key])
+        #~ text += u'\n\t\t}'
+        #~ return text.encode('utf8')
 
 
 if __name__ == "__main__":

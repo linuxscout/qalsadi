@@ -1,7 +1,11 @@
-﻿import sys
+﻿#!/usr/bin/python
+# -*- coding = utf-8 -*-
+from __future__ import absolute_import
+import sys
 sys.path.append("../")
 sys.path.append("../support")
-from qalsadi.analex import *
+#~ from . import qalsadi.analex
+import qalsadi.analex
 
 
 filename="samples/text.txt"
@@ -18,14 +22,17 @@ except:
 
 debug=False;
 limit=500
-analyzer=Analex()
+analyzer=qalsadi.analex.Analex()
+analyzer.disable_allow_cache_use()
 analyzer.set_debug(debug);
 result = analyzer.check_text(text);
-print '----------------python format result-------'
-print result
-for i in range(len(result)):
-#       print "--------تحليل كلمة  ------------", word.encode('utf8');
-    print "-------------One word detailed case------";
-    for analyzed in  result[i]:
-        print "-------------one case for word------";
-        print repr(analyzed);
+
+import pandas as pd
+adapted_result = []
+
+for i, analyzed_list in enumerate(result):
+    for analyzed in analyzed_list:
+        adapted_result.append(analyzed.__dict__)
+
+df = pd.DataFrame(adapted_result)
+print df

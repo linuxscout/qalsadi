@@ -21,6 +21,9 @@ from CodernityDB.hash_index import HashIndex
 from hashlib import md5
 import pyarabic.arabrepr as arabrepr
 arabicRepr = arabrepr.ArabicRepr()
+import os
+#DB_PATH = '/var/qalsadiCache'
+DB_PATH = os.path.join(os.path.expanduser('~'), '.qalsadiCache')
 
 
 class WithAIndex(HashIndex):
@@ -64,7 +67,7 @@ class Cache(object):
                 'stopword': {}
             },
         }
-        self.db = Database('~/tmp/qalsadiCache')
+        self.db = Database(DB_PATH)
         if not self.db.exists():
             self.db.create()
             x_ind = WithAIndex(self.db.path, 'a')

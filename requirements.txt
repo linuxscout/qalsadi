@@ -1,0 +1,6 @@
+CodernityDB>=0.5.0
+libqutrubi>=1.0
+naftawayhi>=0.2
+pyarabici>=0.6.2
+repr==0.3.1
+tashaphyne==0.3.1

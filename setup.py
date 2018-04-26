@@ -7,7 +7,7 @@ def readme():
     with open('README.md') as f:
         return f.read()
 
-setup (name='qalsadi', version='0.2',
+setup (name='qalsadi', version='0.3',
       description='Qalsadi Arabic Morpholoc=gical Analyzer for Python',
       long_description = readme(),      
       author='Taha Zerrouki',
@@ -20,7 +20,7 @@ setup (name='qalsadi', version='0.2',
       install_requires=[ 'pyarabic',
       ],         
       package_data = {
-        'qalsadi': ['doc/*.*','doc/html/*', 'data/*.*'],
+        'qalsadi': ['doc/*.*','doc/html/*', 'data/*.*', 'qalsadi/data'],
         },
       classifiers=[
           'Development Status :: 5 - Production/Stable',

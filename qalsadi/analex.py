@@ -96,8 +96,8 @@ class Analex:
         #added as a global variable to avoid duplucated search
         #in mutliple call of analex
         # cache used to avoid duplicata
-        #self.allow_cache_use = True
-        self.allow_cache_use = False
+        self.allow_cache_use = True
+        #~ self.allow_cache_use = False
         self.cache = cache.Cache()
         
         # In case of training and vocalized text analysis, 
@@ -346,10 +346,10 @@ class Analex:
                 #check the word as unkonwn
                 resulted_data += self.check_word_as_unknown(word_nm)
                 #check if the word is nomralized and solution are equivalent
-            resulted_data = check_normalized(word_vocalised, resulted_data)
+            resulted_data = self.check_normalized(word_vocalised, resulted_data)
             #check if the word is shadda like
             
-            resulted_data = check_shadda(word_vocalised, resulted_data, self.fully_vocalized_input)
+            resulted_data = self.check_shadda(word_vocalised, resulted_data, self.fully_vocalized_input)
 
             # add word frequency information in tags
             resulted_data = self.add_word_frequency(resulted_data)
@@ -361,7 +361,7 @@ class Analex:
 
         #check if the word is vocalized like results
         if self.partial_vocalization_support:
-            resulted_data = check_partial_vocalized(word_vocalised,
+            resulted_data = self.check_partial_vocalized(word_vocalised,
                                                     resulted_data)
 
         if len(resulted_data) == 0:
@@ -570,93 +570,93 @@ class Analex:
         """
         return self.unknownstemmer.stemming_noun(noun)
 
+    @staticmethod
+    def check_shadda(word_vocalised, resulted_data, fully_vocalized_input=False):
+        """
+        if the entred word is like the found word in dictionary,
+        to treat some normalized cases,
+        the analyzer return the vocalized like words.
+        This function treat the Shadda case.
+        @param word_vocalised: the input word.
+        @type word_vocalised: unicode.
+        @param resulted_data: the founded resulat from dictionary.
+        @type resulted_data: list of dict.
+        @param fully_vocalized_input: if the two words must resect the shadda and vocalized.
+        @param fully_vocalized_input: Boolean, default is False.
+        @type word_vocalised: unicode.    
+        @return: list of dictionaries of analyzed words with tags.
+        @rtype: list.
+        """
+        #~return filter(lambda item: araby.shaddalike(word_vocalised,
+        #~item.__dict__.get('vocalized', '')), resulted_data)
+        #~x for x in [1, 1, 2] if x == 1
+        #~ return [
+        #~ x for x in resulted_data
+        #~ if araby.shaddalike(word_vocalised, x.__dict__.get('vocalized', '')) ]
+        if fully_vocalized_input:
+            return [x for x in resulted_data if araby.strip_harakat(word_vocalised) == 
+        araby.strip_harakat(x.__dict__.get('vocalized', ''))]
+        else:
+            return [
+            x for x in resulted_data
+            if araby.shaddalike(word_vocalised, x.__dict__.get('vocalized', ''))
+        ]
+        
 
-def check_shadda(word_vocalised, resulted_data, fully_vocalized_input=False):
-    """
-    if the entred word is like the found word in dictionary,
-    to treat some normalized cases,
-    the analyzer return the vocalized like words.
-    This function treat the Shadda case.
-    @param word_vocalised: the input word.
-    @type word_vocalised: unicode.
-    @param resulted_data: the founded resulat from dictionary.
-    @type resulted_data: list of dict.
-    @param fully_vocalized_input: if the two words must resect the shadda and vocalized.
-    @param fully_vocalized_input: Boolean, default is False.
-    @type word_vocalised: unicode.    
-    @return: list of dictionaries of analyzed words with tags.
-    @rtype: list.
-    """
-    #~return filter(lambda item: araby.shaddalike(word_vocalised,
-    #~item.__dict__.get('vocalized', '')), resulted_data)
-    #~x for x in [1, 1, 2] if x == 1
-    #~ return [
-    #~ x for x in resulted_data
-    #~ if araby.shaddalike(word_vocalised, x.__dict__.get('vocalized', '')) ]
-    if fully_vocalized_input:
-        return [x for x in resulted_data if araby.strip_harakat(word_vocalised) == 
-    araby.strip_harakat(x.__dict__.get('vocalized', ''))]
-    else:
-        return [
-        x for x in resulted_data
-        if araby.shaddalike(word_vocalised, x.__dict__.get('vocalized', ''))
-    ]
-    
-
-
-def check_normalized(word_vocalised, resulted_data):
-    """
-    If the entred word is like the found word in dictionary,
-    to treat some normalized cases,
-    the analyzer return the vocalized like words
-    ُIf the word is ذئب, the normalized form is ذءب,
-    which can give from dictionary ذئبـ ذؤب.
-    this function filter normalized resulted word according
-    the given word, and give ذئب.
-    @param word_vocalised: the input word.
-    @type word_vocalised: unicode.
-    @param resulted_data: the founded resulat from dictionary.
-    @type resulted_data: list of dict.
-    @return: list of dictionaries of analyzed words with tags.
-    @rtype: list.
-    """
-    #print word_vocalised.encode('utf8')
-    filtred_data = []
-    inputword = araby.strip_tashkeel(word_vocalised)
-    for item in resulted_data:
-        if 'vocalized' in item.__dict__:  #.has_key('vocalized') :
-            #~ if 'vocalized' in item :
-            #~ outputword = araby.strip_tashkeel(item['vocalized'])
-            outputword = araby.strip_tashkeel(item.__dict__['vocalized'])
-            #~ print u'\t'.join([inputword, outputword]).encode('utf8')
-            if inputword == outputword:
-                #item['tags'] += ':a'
-                filtred_data.append(item)
-            #~ filtred_data.append(item)
-    return filtred_data
-
-
-def check_partial_vocalized(word_vocalised, resulted_data):
-    """
-    if the entred word is vocalized fully or partially,
-    the analyzer return the vocalized like words
-    This function treat the partial vocalized case.
-    @param word_vocalised: the input word.
-    @type word_vocalised: unicode.
-    @param resulted_data: the founded resulat from dictionary.
-    @type resulted_data: list of dict.
-    @return: list of dictionaries of analyzed words with tags.
-    @rtype: list.
-    """
-    filtred_data = []
-    if not araby.is_vocalized(word_vocalised):
-        return resulted_data
-    else:
-        #compare the vocalized output with the vocalized input
-        #print ' is vocalized'
+    @staticmethod
+    def check_normalized(word_vocalised, resulted_data):
+        """
+        If the entred word is like the found word in dictionary,
+        to treat some normalized cases,
+        the analyzer return the vocalized like words
+        ُIf the word is ذئب, the normalized form is ذءب,
+        which can give from dictionary ذئبـ ذؤب.
+        this function filter normalized resulted word according
+        the given word, and give ذئب.
+        @param word_vocalised: the input word.
+        @type word_vocalised: unicode.
+        @param resulted_data: the founded resulat from dictionary.
+        @type resulted_data: list of dict.
+        @return: list of dictionaries of analyzed words with tags.
+        @rtype: list.
+        """
+        #print word_vocalised.encode('utf8')
+        filtred_data = []
+        inputword = araby.strip_tashkeel(word_vocalised)
         for item in resulted_data:
-            if 'vocalized' in item and araby.vocalizedlike(
-                    word_vocalised, item['vocalized']):
-                item['tags'] += ':' + analex_const.PARTIAL_VOCALIZED_TAG
-                filtred_data.append(item)
-    return filtred_data
+            if 'vocalized' in item.__dict__:  #.has_key('vocalized') :
+                #~ if 'vocalized' in item :
+                #~ outputword = araby.strip_tashkeel(item['vocalized'])
+                outputword = araby.strip_tashkeel(item.__dict__['vocalized'])
+                #~ print u'\t'.join([inputword, outputword]).encode('utf8')
+                if inputword == outputword:
+                    #item['tags'] += ':a'
+                    filtred_data.append(item)
+                #~ filtred_data.append(item)
+        return filtred_data
+
+    @staticmethod
+    def check_partial_vocalized(word_vocalised, resulted_data):
+        """
+        if the entred word is vocalized fully or partially,
+        the analyzer return the vocalized like words
+        This function treat the partial vocalized case.
+        @param word_vocalised: the input word.
+        @type word_vocalised: unicode.
+        @param resulted_data: the founded resulat from dictionary.
+        @type resulted_data: list of dict.
+        @return: list of dictionaries of analyzed words with tags.
+        @rtype: list.
+        """
+        filtred_data = []
+        if not araby.is_vocalized(word_vocalised):
+            return resulted_data
+        else:
+            #compare the vocalized output with the vocalized input
+            #print ' is vocalized'
+            for item in resulted_data:
+                if 'vocalized' in item and araby.vocalizedlike(
+                        word_vocalised, item['vocalized']):
+                    item['tags'] += ':' + analex_const.PARTIAL_VOCALIZED_TAG
+                    filtred_data.append(item)
+        return filtred_data
