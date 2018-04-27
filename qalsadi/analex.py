@@ -45,7 +45,7 @@ class Analex:
         Can treat text as verbs or as nouns.
     """
 
-    def __init__(self, allow_tag_guessing=True, allow_disambiguation=True):
+    def __init__(self, cache_path=False ,allow_tag_guessing=True, allow_disambiguation=True):
         """
         Create Analex instance.
         """
@@ -98,7 +98,7 @@ class Analex:
         # cache used to avoid duplicata
         self.allow_cache_use = True
         #~ self.allow_cache_use = False
-        self.cache = cache.Cache()
+        self.cache = cache.Cache(cache_path)
         
         # In case of training and vocalized text analysis, 
         # we propose to respect Shadda in the given word

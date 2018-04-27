@@ -19,11 +19,7 @@ if __name__ == "__main__":
 from CodernityDB.database import Database
 from CodernityDB.hash_index import HashIndex
 from hashlib import md5
-import pyarabic.arabrepr as arabrepr
-arabicRepr = arabrepr.ArabicRepr()
 import os
-#DB_PATH = '/var/qalsadiCache'
-DB_PATH = os.path.join(os.path.expanduser('~'), '.qalsadiCache')
 
 
 class WithAIndex(HashIndex):
@@ -54,8 +50,9 @@ class Cache(object):
     """
         cache for word morphological analysis
     """
+    DB_PATH = os.path.join(os.path.expanduser('~'), '.qalsadiCache')
 
-    def __init__(self, ):
+    def __init__(self, dp_path = False):
         """
         Create Analex Cache
         """
@@ -67,7 +64,11 @@ class Cache(object):
                 'stopword': {}
             },
         }
-        self.db = Database(DB_PATH)
+        if not dp_path:
+            dp_path = self.DB_PATH
+        else:
+            dp_path = os.path.join(os.path.dirname(dp_path), '.qalsadiCache')
+        self.db = Database(dp_path)
         if not self.db.exists():
             self.db.create()
             x_ind = WithAIndex(self.db.path, 'a')

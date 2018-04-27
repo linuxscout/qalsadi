@@ -22,8 +22,8 @@ except:
 
 debug=False;
 limit=500
-analyzer=qalsadi.analex.Analex()
-analyzer.disable_allow_cache_use()
+analyzer=qalsadi.analex.Analex(cache_path="cache/")
+#ianalyzer.disable_allow_cache_use()
 analyzer.set_debug(debug);
 result = analyzer.check_text(text);
 
