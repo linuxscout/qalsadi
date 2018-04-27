@@ -113,8 +113,6 @@ class StopWordStemmer:
         @type stop2: unicode.
         @param procletic: the syntaxic prefixe extracted in the fisrt stage.
         @type procletic: unicode.
-        @param encletic: the syntaxic suffixe extracted in the fisrt stage.
-        @type encletic: unicode.
         @param encletic_nm: the syntaxic suffixe extracted in the
         first stage (not vocalized).
         @type encletic_nm: unicode.
@@ -381,8 +379,6 @@ class StopWordStemmer:
         The word and enclitic are geminated.
         @param word: word found in dictionary.
         @type word: unicode.
-        @param suffix: second level suffix.
-        @type suffix: unicode.
         @param enclitic: first level suffix.
         @type enclitic: unicode.
         @return: variant of suffixes  (vocalized suffix and vocalized
@@ -524,8 +520,6 @@ class StopWordStemmer:
         @type procletic: unicode.
         @param encletic_nm: first level suffix vocalized.
         @type encletic_nm: unicode.
-        @param suffix_nm: first level suffix vocalized.
-        @type suffix_nm: unicode.
         @return: if the tags are compaatible.
         @rtype: Boolean.
         """

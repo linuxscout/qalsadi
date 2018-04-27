@@ -8,7 +8,7 @@ def readme():
         return f.read()
 
 setup (name='qalsadi', version='0.3',
-      description='Qalsadi Arabic Morpholoc=gical Analyzer for Python',
+      description='Qalsadi Arabic Morphological Analyzer for Python',
       long_description = readme(),      
       author='Taha Zerrouki',
       author_email='taha. zerrouki@gmail .com',

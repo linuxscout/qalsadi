@@ -462,12 +462,6 @@ def validate_tags(noun_tuple, affix_tags):
     @type noun_tuple: dict.
     @param affix_tags: a list of tags given by affixes.
     @type affix_tags:list.
-    @param procletic: first level prefix vocalized.
-    @type procletic: unicode.
-    @param encletic_nm: first level suffix vocalized.
-    @type encletic_nm: unicode.
-    @param suffix_nm: first level suffix vocalized.
-    @type suffix_nm: unicode.
     @return: if the tags are compatible.
     @rtype: Boolean.
     """

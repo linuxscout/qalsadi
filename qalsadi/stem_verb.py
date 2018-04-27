@@ -339,11 +339,11 @@ class VerbStemmer:
         generate a stamp for a verb,
         the verb stamp is different of word stamp, by hamza noralization
         remove all letters which can change form in the word :
-        - ALEF,
-        - YEH,
-        - WAW,
-        - ALEF_MAKSURA
-        - SHADDA
+            - ALEF,
+            - YEH,
+            - WAW,
+            - ALEF_MAKSURA
+            - SHADDA
         @return: stamped word
         """
         word = ar.strip_tashkeel(word)

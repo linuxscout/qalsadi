@@ -117,11 +117,8 @@ class Analex:
         self.disambiguator = None
 
     def count_word(self, ):
-        """ count input words.
-        Used just for profiling and tests.
-        @param word: input word
-        @type word: unicode
-        @return : counter.
+        """ count input words. Used just for profiling and tests.
+        @return: counter.
         @rtype: integer.
         """
         self.wordcounter += 1
@@ -422,8 +419,6 @@ class Analex:
         from dictionary ذئبـ ذؤب.
         this function filter normalized resulted word according the
         given word, and give ذئب.
-        @param word_vocalised: the input word.
-        @type word_vocalised: unicode.
         @param resulted_data: the founded resulat from dictionary.
         @type resulted_data: list of dict.
         @return: list of dictionaries of analyzed words with tags.
@@ -582,8 +577,7 @@ class Analex:
         @param resulted_data: the founded resulat from dictionary.
         @type resulted_data: list of dict.
         @param fully_vocalized_input: if the two words must resect the shadda and vocalized.
-        @param fully_vocalized_input: Boolean, default is False.
-        @type word_vocalised: unicode.    
+        @type fully_vocalized_input: Boolean, default is False.
         @return: list of dictionaries of analyzed words with tags.
         @rtype: list.
         """

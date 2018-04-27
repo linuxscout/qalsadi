@@ -683,8 +683,8 @@ class NounStemmer:
         @type noun_tuple: dict.
         @param affix_tags: a list of tags given by affixes.
         @type affix_tags:list.
-        @param proclitic: first level prefix vocalized.
-        @type proclitic: unicode.
+        @param proclitic_nm: first level prefix vocalized.
+        @type proclitic_nm: unicode.
         @param enclitic_nm: first level suffix vocalized.
         @type enclitic_nm: unicode.
         @param suffix_nm: first level suffix vocalized.

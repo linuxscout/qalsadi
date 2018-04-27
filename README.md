@@ -1,4 +1,4 @@
-# Qalsadi
+#Qalsadi Arabic Morphological Analyzer for Python
 
 
 
