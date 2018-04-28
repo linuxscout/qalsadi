@@ -4,3 +4,4 @@ naftawayh>=0.2
 pyarabic>=0.6.2
 repr==0.3.1
 tashaphyne>=0.3.1
+arramooz-pysqlite>=0.1
