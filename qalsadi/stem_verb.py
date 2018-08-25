@@ -22,11 +22,11 @@ if __name__ == '__main__':
     sys.path.append('..')
 import pyarabic.araby as ar
 import tashaphyne.stemming
-import qalsadi.stem_verb_const as SVC
+import stem_verb_const as SVC
 #~import analex_const
 import libqutrub.classverb
 import arramooz.arabicdictionary as arabicdictionary
-import qalsadi.wordcase as wordcase
+import wordcase
 
 #~ import  stemmedword
 
@@ -188,6 +188,7 @@ class VerbStemmer:
                 word_seg_l3 = word_seg.copy()
                 word_seg_l3['inf'] = item['verb']
                 word_seg_l3['haraka'] = item['haraka']
+                word_seg_l3['root'] = item.get('root','')
                 word_seg_l3['transitive'] = bool(item['transitive'] in ('y',
                                                                         1))
                 tmp_list.append(word_seg_l3)
@@ -232,6 +233,7 @@ class VerbStemmer:
                 'word':word_seg['verb'],
                 'affix': (word_seg['pro'], word_seg['prefix'], word_seg['suffix'], word_seg['enc']),
                 'stem':word_seg['stem_conj'],
+                'root':ar.normalize_hamza(word_seg.get('root','')),
                 'original':conj['verb'],
                 'vocalized':vocalized,
                 'semivocalized':semivocalized,
@@ -282,7 +284,8 @@ class VerbStemmer:
                     'verb': verb_tuple['vocalized'],
                     'transitive': verb_tuple['transitive'],
                     'haraka': verb_tuple['future_type'],
-                    "stamp": verb_tuple['stamped']
+                    "stamp": verb_tuple['stamped'],
+                    "root":verb_tuple['root'],
                 })
         #~ print "vs, 296", liste
         # if the verb in dictionary is vi and the stemmed verb is vt,

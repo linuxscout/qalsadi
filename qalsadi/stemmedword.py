@@ -14,7 +14,7 @@
 stemmed_word represents the data resulted from the morpholocigal analysis
 """
 import pyarabic.araby as araby
-import qalsadi.stemmedaffix as stemmedaffix
+import stemmedaffix
 GLOBAL_AFFIXES = {}
 
 class StemmedWord:
@@ -57,6 +57,7 @@ class StemmedWord:
             self.vocalized = resultdict.get('vocalized', u'')
             self.semivocalized = resultdict.get('semivocalized', u'')
             self.stem = resultdict.get('stem', u'')
+            self.root = resultdict.get('root', u'')
             self.affix = u'-'.join(resultdict.get('affix', []))
 
             affix_tags = resultdict.get('tags', u'')

@@ -23,9 +23,9 @@ if __name__ == '__main__':
 import pyarabic.araby as ar
 import tashaphyne.stemming
 #~ import tashaphyne.normalize
-import qalsadi.stem_noun_const as SNC
+import stem_noun_const as SNC
 import arramooz.arabicdictionary as arabicdictionary
-import qalsadi.wordcase as wordcase
+import wordcase
 
 
 class NounStemmer:
@@ -234,6 +234,7 @@ class NounStemmer:
                                   word_seg['enc_voc']),
                         'stem':
                         word_seg['stem_conj'],
+                        'root':ar.normalize_hamza(word_seg['noun_tuple'].get('root','')),
                         'original':
                         word_seg['noun_tuple']['vocalized'],  #original,
                         'vocalized':

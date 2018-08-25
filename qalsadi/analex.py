@@ -23,20 +23,32 @@ if __name__ == "__main__":
 
 import re
 import pyarabic.araby as araby  # basic arabic text functions
-import qalsadi.analex_const as analex_const  # special constant for analex
-import qalsadi.stem_noun as stem_noun  # noun stemming
-import qalsadi.stem_verb as stem_verb  # verb stemming
-import qalsadi.stem_unknown as stem_unknown  # unknown word stemming
-#~import qalsadi.stem_stopwords as  stem_stopwords     # stopwords word stemming
-import qalsadi.stem_stop as stem_stopwords  # stopwords word stemming
-import qalsadi.stem_pounct_const as stem_pounct_const  # pounctaution constants
-import naftawayh.wordtag  # word tagger
-import arramooz.wordfreqdictionaryclass as wordfreqdictionaryclass
-import qalsadi.disambig as disambig  # disambiguation const
-import qalsadi.wordcase as wordcase
-import qalsadi.stemmedword as stemmedword  # the result object for stemming
-import qalsadi.cache as cache
+#~ import qalsadi.analex_const as analex_const  # special constant for analex
+#~ import qalsadi.stem_noun as stem_noun  # noun stemming
+#~ import qalsadi.stem_verb as stem_verb  # verb stemming
+#~ import qalsadi.stem_unknown as stem_unknown  # unknown word stemming
+#~ #~import qalsadi.stem_stopwords as  stem_stopwords     # stopwords word stemming
+#~ import qalsadi.stem_stop as stem_stopwords  # stopwords word stemming
+#~ import qalsadi.stem_pounct_const as stem_pounct_const  # pounctaution constants
+#~ import naftawayh.wordtag  # word tagger
+#~ import arramooz.wordfreqdictionaryclass as wordfreqdictionaryclass
+#~ import qalsadi.disambig as disambig  # disambiguation const
+#~ import qalsadi.wordcase as wordcase
+#~ import qalsadi.stemmedword as stemmedword  # the result object for stemming
+#~ import qalsadi.cache as cache
 
+import arramooz.wordfreqdictionaryclass as wordfreqdictionaryclass
+import naftawayh.wordtag  # word tagger
+import analex_const  # special constant for analex
+import stem_noun  # noun stemming
+import stem_verb  # verb stemming
+import stem_unknown  # unknown word stemming
+import stem_stop as stem_stopwords  # stopwords word stemming
+import stem_pounct_const  # pounctaution constants
+import disambig  # disambiguation const
+import wordcase
+import stemmedword  # the result object for stemming
+import cache
 
 class Analex:
     """
@@ -78,10 +90,11 @@ class Analex:
         # contains [FATHA, DAMMA, KASRA, SUKUN, DAMMATAN, KASRATAN,
         #  FATHATAN, SHADDA])
         # used to tokenize arabic text
-        self.token_pat = re.compile(ur"([\w%s]+)" % marks, re.UNICODE)
+        #decprecated, we use araby.tokenize
+        #~ self.token_pat = re.compile(ur"([\w%s]+)" % marks, re.UNICODE)
         #used to split text into clauses
         self.clause_pattern = re.compile(
-            r"([\w%s\s]+)" % (ur"".join(araby.TASHKEEL), ), re.UNICODE)
+            "([\w%s\s]+)" % (u"".join(araby.TASHKEEL), ), re.UNICODE)
 
         # allow partial vocalization support,
         #~The text is analyzed as partial or fully vocalized.
@@ -115,7 +128,6 @@ class Analex:
         self.stopwordsstemmer = None
         self.tagger = None
         self.disambiguator = None
-
     def count_word(self, ):
         """ count input words. Used just for profiling and tests.
         @return: counter.
@@ -504,6 +516,7 @@ class Analex:
                     'type': 'NUMBER',
                     'freq': 0,
                     'syntax': '',
+                    'root':'',
                 }))
         # test if all chars in word are punctuation
         for char in word:
@@ -531,6 +544,7 @@ class Analex:
                     0,
                     'syntax':
                     '',
+                    'root':'',
                 }))
 
         return detailed_result

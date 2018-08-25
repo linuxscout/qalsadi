@@ -20,7 +20,8 @@ if __name__ == "__main__":
     sys.path.append('../')
     sys.path.append('../support')
 
-import qalsadi.disambig_const as dconst
+#~ import qalsadi.disambig_const as dconst
+import disambig_const as dconst
 import naftawayh.wordtag
 
 

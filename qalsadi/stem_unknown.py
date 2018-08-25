@@ -20,10 +20,12 @@ import pyarabic.araby as araby
 import tashaphyne.stemming
 import tashaphyne.normalize
 #~import analex_const
-import qalsadi.stem_noun_const as snconst
 #~import arramooz.arabicdictionary as arabicdictionary
 import arramooz.wordfreqdictionaryclass as wordfreqdictionaryclass
-import qalsadi.wordcase as wordcase
+#~ import qalsadi.stem_noun_const as snconst
+import stem_noun_const as snconst
+#~ import qalsadi.wordcase as wordcase
+import wordcase
 #Todo:  remove all individual constants of arabic letters, Done
 NOUN_DICTIONARY_INDEX = {
     u'id': 0,

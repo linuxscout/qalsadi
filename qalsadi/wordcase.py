@@ -59,6 +59,7 @@ class WordCase:
                 self.vocalized = result_dict.get('word', u'T')
             self.semivocalized = result_dict.get('semivocalized', u'')
             self.stem = result_dict.get('stem', u'')
+            self.root = result_dict.get('root', u'')
             self.affix = result_dict.get('affix', [])
             self.tags = u':'.join([
                 result_dict.get('tags', u''),
