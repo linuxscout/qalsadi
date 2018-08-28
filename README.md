@@ -111,10 +111,45 @@ for i in range(len(result)):
 
 
 
+## Output description
+
+| Category | Applied on | feature | شرح | example |
+| affix | all | affix_key | مفتاح الزوائد | ال--َاتُ-|البيانات |
+| affix | all | affix | الزوائد |  |
+| input | all | word | الكلمة المدخلة | البيانات |
+| input | all | unvocalized | غير مشكول |  |
+| morphology | noun | tag_mamnou3 | ممنوع من الصرف | 0 |
+| morphology | verb | tag_confirmed | خاصية الفعل المؤكد | 0 |
+| morphology | verb | tag_mood |  حالة الفعل المضارع (منصوب، مجزوم، مرفوع) | 0 |
+| morphology | verb | tag_pronoun | الضمير | 0 |
+| morphology | verb | tag_transitive | التعدي اللزوم | 0 |
+| morphology | verb | tag_voice | البناء للمعلوم/ البناء للمجهول | 0 |
+| morphology | noun | tag_regular | قياسي/ سماعي | 1 |
+| morphology | noun/verb | tag_gender | النوع ( مؤنث مذكر) | 3 |
+| morphology | verb | tag_person | الشخص (المتكلم الغائب المخاطب) | 4 |
+| morphology | noun | tag_number | العدد(فرد/مثنى/جمع) | 21 |
+| original | noun/verb | freq | درجة  شيوع الكلمة | 694644 |
+| original | all | original_tags | خصائص الكلمة الأصلية | (u |
+| original | all | original | الكلمة الأصلية | بَيَانٌ |
+| original | all | root | الجذر | بين |
+| original | all | tag_original_gender | جنس الكلمة الأصلية | مذكر |
+| original | noun | tag_original_number | عدد الكلمة الأصلية | مفرد |
+| output | all | type | نوع الكلمة | Noun:مصدر |
+| output | all | semivocalized | الكلمة مشكولة بدون علامة الإعراب | الْبَيَانَات |
+| output | all | vocalized | الكلمةمشكولة | الْبَيَانَاتُ |
+| output | all | stem | الجذع | بيان |
+| output | all | tags |  | تعريف::جمع مؤنث سالم:مرفوع:متحرك:ينون:جمع::: |
+| syntax | all | tag_break | الكلمة منفصلة عمّا قبلها | 0 |
+| syntax | all | tag_initial | خاصية نحوية، الكلمة في بداية الجملة | 0 |
+| syntax | all | tag_transparent | البدل | 0 |
+| syntax | noun | tag_added | خاصية نحوية، الكلمة مضاف | 0 |
+| syntax | all | need | الكلمة تحتاج إلى  كلمة أخرى (المتعدي، العوامل) غير منجزة |  |
+| syntax | tool | action | العمل |  |
+| syntax | tool | object_type | نوع المعمول، بالنسبة للعامل، مثلا اسم لحرف الجر |  |
 
 
-Files
-=====
+### Files
+
 * file/directory    category    description 
 
 
