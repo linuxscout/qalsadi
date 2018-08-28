@@ -113,7 +113,9 @@ for i in range(len(result)):
 
 ## Output description
 
-| Category | Applied on | feature | شرح | example |
+
+| Category | Applied on | feature | شرح                         | example |
+|-------------|----------------|-----------|--------------------------|-------------|
 | affix | all | affix_key | مفتاح الزوائد | ال--َاتُ-|البيانات |
 | affix | all | affix | الزوائد |  |
 | input | all | word | الكلمة المدخلة | البيانات |
