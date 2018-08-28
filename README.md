@@ -83,7 +83,7 @@ Usage
 
 ``` python
 filename="samples/text.txt"
-
+import qalsadi.analex as qa
 try:
     myfile=open(filename)
     text=(myfile.read()).decode('utf8');
@@ -96,7 +96,7 @@ except:
 
 debug=False;
 limit=500
-analyzer=Analex()
+analyzer = qa.Analex()
 analyzer.set_debug(debug);
 result = analyzer.check_text(text);
 print '----------------python format result-------'
