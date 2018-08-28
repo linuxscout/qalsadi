@@ -66,11 +66,15 @@ pip install qalsadi
 ```    
 Requirements
 ----------------
+``` 
+pip install -r requirements.txt 
+```
+
  - libQutrub: Qutrub verb conjugation library: http://pypi.pyton/LibQutrub
  - PyArabic: Arabic language tools library   : http://pypi.pyton/pyarabic
  - Tashaphyne;Arabic Light Stemmer library	: http://pypi.python.org/pypi/Tashaphyne/
  - Naftawayh : Arabic words tagger: 	: http://pypi.python.org/pypi/Naftawayh/ 
- - Arramooz : Arabic dictionary
+ - Arramooz-pysqlite : Arabic dictionary
  - CodernityDB : No Sql native python database 
   
 Usage
