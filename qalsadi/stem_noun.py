@@ -27,7 +27,6 @@ import stem_noun_const as SNC
 import arramooz.arabicdictionary as arabicdictionary
 import wordcase
 
-
 class NounStemmer:
     """
         Arabic noun stemmer
@@ -85,7 +84,7 @@ class NounStemmer:
                 # ajusting nouns variant
                 list_stem = [
                     stem,
-                ] + self.get_in_stem_variants(stem, enclitic_nm)
+                ] + self.get_input_stem_variants(stem, enclitic_nm)
 
                 # stem reduced noun : level two
                 for stem in list_stem:
@@ -395,6 +394,8 @@ class NounStemmer:
         if stem.endswith(ar.HAMZA):
             possible_noun = stem[:-1] + ar.YEH_HAMZA
             possible_noun_list.add(possible_noun)
+            #~ possible_noun = stem[:-1] + ar.WAW_HAMZA
+            #~ possible_noun_list.add(possible_noun)
         #to be validated
         validated_list = possible_noun_list
         return validated_list
@@ -466,12 +467,14 @@ class NounStemmer:
         return enclitic_voc, encl_vo_no_inflect_mark
 
     @staticmethod
-    def get_word_variant(word, suffix, enclitic):
+    def get_word_variant(word, proclitic, suffix, enclitic):
         """
         Get the word variant to be joined to the suffix.
         For example: word = مدرسة, suffix = ي. The word is converted to مدرست.
         @param word: word found in dictionary.
         @type word: unicode.
+        @param proclitic: proclitic ( first level).
+        @type proclitic: unicode.
         @param suffix: suffix ( first level).
         @type suffix: unicode.
         @param enclitic: enclitic( second level).
@@ -519,11 +522,12 @@ class NounStemmer:
         # إذا كانت اللاحقة الصرفية حركات فقط والضمير المتصل  تتحول الألف المقصورة إلى ألف
             elif enclitic_nm != u"":
                 word_stem = word_stem[:-1] + ar.ALEF
+
         elif word_stem.endswith(ar.KASRA + ar.YEH):
             # الاسم المنقوص ينتهي بياء قبلها مكسور
             # إذا كان لا ضمير واللاحقة فقط حركات
             # نحذف ال
-            if not enclitic_nm and not suffix_nm:
+            if u"ال" not in proclitic and not enclitic_nm and not suffix_nm:
                 word_stem = ar.strip_lastharaka(word_stem[:-2])
         # الاسم المنقوص ينتهي بياء قبلها مكسور
         # إذا كانت اللاحقة ياء ونون
@@ -531,7 +535,7 @@ class NounStemmer:
                 word_stem = ar.strip_lastharaka(word_stem[:-2])
 
         #ضبط المنتهي بالهمزة حسب حركة اللاحقة النحوية
-        elif word_stem.endswith(ar.HAMZA) and suffix_nm != u"":
+        elif word_stem.endswith(ar.HAMZA) and (suffix_nm or enclitic_nm):
             if suffix.startswith(ar.DAMMA):
                 word_stem = word_stem[:-1] + ar.WAW_HAMZA
             elif suffix.startswith(ar.KASRA):
@@ -603,7 +607,7 @@ class NounStemmer:
         # for example مدرسة+ي = مدرست+ي
         mankous = True if noun.endswith(ar.KASRA + ar.YEH) else False
 
-        noun = self.get_word_variant(noun, suffix, enclitic)
+        noun = self.get_word_variant(noun, proclitic, suffix, enclitic)
 
         # generate the suffix variant. if the suffix is Teh_marbuta or
         #Alef_maksura, or hamza, the variant is influed by the enclitic harakat,
@@ -640,7 +644,7 @@ class NounStemmer:
         return noun_list
 
     @staticmethod
-    def get_in_stem_variants(stem, enclitic_nm):
+    def get_input_stem_variants(stem, enclitic_nm):
         """ generate stem varaintes """
         list_stem = []
         if enclitic_nm:
