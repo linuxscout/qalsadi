@@ -527,7 +527,7 @@ class NounStemmer:
             # الاسم المنقوص ينتهي بياء قبلها مكسور
             # إذا كان لا ضمير واللاحقة فقط حركات
             # نحذف ال
-            if u"ال" not in proclitic and not enclitic_nm and not suffix_nm:
+            if u"ال" not in proclitic and u"لل" not in proclitic and not enclitic_nm and not suffix_nm:
                 word_stem = ar.strip_lastharaka(word_stem[:-2])
         # الاسم المنقوص ينتهي بياء قبلها مكسور
         # إذا كانت اللاحقة ياء ونون
@@ -641,6 +641,8 @@ class NounStemmer:
         if ar.ALEF_MADDA in noun:
             noun_list.append(
                 noun.replace(ar.ALEF_MADDA, ar.ALEF_HAMZA_ABOVE * 2))
+            noun_list.append(
+                noun.replace(ar.ALEF_MADDA, ar.HAMZA +ar.ALEF))
         return noun_list
 
     @staticmethod
