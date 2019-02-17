@@ -34,3 +34,9 @@ upload:
 
 doc:
 	epydoc -v --config epydoc.conf
+test:
+	cd tests;python test_analex.py -f samples/text.txt -o output/text.csv > output/text.txt
+teststop:
+	cd tests;python test_analex.py -f samples/stopwords.txt -o output/stopwords.csv > output/text.txt
+	cd tests;grep "unknown" output/stopwords.csv  > output/stopwords.unk.txt
+
