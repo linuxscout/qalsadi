@@ -35,11 +35,8 @@ or in bibtex format
 }
 ```
 
-
-##   مزايا
  
- 
-## Features
+## Features  مزايا
  - Arabic word Light Stemming.
 * Features:
 	- Vocalized Text Analyzer, 
