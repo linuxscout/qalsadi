@@ -116,7 +116,8 @@ class Analex:
         # In case of training and vocalized text analysis, 
         # we propose to respect Shadda in the given word
         self.fully_vocalized_input = False
-
+        self.error_code = ""
+    
     def __del__(self):
         """
         Delete instance and clear cache
@@ -135,7 +136,11 @@ class Analex:
         """
         self.wordcounter += 1
         return self.wordcounter
-
+    def get_error_code(self,):
+        """
+        Return error code when word is not recognized
+        """
+        return "N%s-V%s"%(self.nounstemmer.get_error_code(),self.verbstemmer.get_error_code(), )
     def tokenize(self, text=u""):
         """
         Tokenize text into words
@@ -377,6 +382,7 @@ class Analex:
                                                     resulted_data)
 
         if len(resulted_data) == 0:
+            error_code = self.get_error_code()
             resulted_data.append(
                 wordcase.WordCase({
                     'word':
@@ -391,7 +397,7 @@ class Analex:
                     'semivocalized':
                     word,
                     'tags':
-                    u'',
+                    u'%s'%error_code,
                     'type':
                     'unknown',
                     'root':

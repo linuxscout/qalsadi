@@ -36,7 +36,12 @@ doc:
 	epydoc -v --config epydoc.conf
 test:
 	cd tests;python test_analex.py -f samples/text.txt -o output/text.csv > output/text.txt
+testqrn:
+	cut -f2 tests/samples/klm.csv.unknown.csv  >/tmp/klm.txt
+	cd tests;python test_analex.py -c test_quran -f /tmp/klm.txt -o output/klm.csv > output/klm.txt
 teststop:
 	cd tests;python test_analex.py -f samples/stopwords.txt -o output/stopwords.csv > output/text.txt
 	cd tests;grep "unknown" output/stopwords.csv  > output/stopwords.unk.txt
+testone:
+	cd tests;python test_analex.py -c test_one -f samples/words.txt -o output/words.csv > output/words.txt
 
