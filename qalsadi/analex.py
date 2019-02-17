@@ -188,6 +188,8 @@ class Analex:
         """
         #~text = self.text_treat(text)
         list_word = self.tokenize(text)
+        # avoid null values
+        list_word = [word for word in list_word if word]
         #print "text_tokenize", u" ".join(list_word).encode('utf8')
         return list_word
 
@@ -336,20 +338,21 @@ class Analex:
             # the stop word can also be another normal word (verb or noun),
             # we must consider it in future works
             # if word is stopword allow stop words analysis
-            resulted_data += self.check_word_as_stopword(word_nm)
+            if araby.is_arabicword(word_nm):
+                resulted_data += self.check_word_as_stopword(word_nm)
 
-            #if word is verb
-            # مشكلة بعض الكلمات المستبعدة تعتبر أفعلا أو اسماء
-            #~if  self.tagger.has_verb_tag(guessedtag) or \
-            #~self.tagger.is_stopword_tag(guessedtag):
-            #~resulted_data += self.check_word_as_verb(word_nm)
-            resulted_data += self.check_word_as_verb(word_nm)
-            #print "is verb", rabti, len(resulted_data)
-            #if word is noun
-            #~if self.tagger.has_noun_tag(guessedtag) or \
-            #~self.tagger.is_stopword_tag(guessedtag):
-            #~resulted_data += self.check_word_as_noun(word_nm)
-            resulted_data += self.check_word_as_noun(word_nm)
+                #if word is verb
+                # مشكلة بعض الكلمات المستبعدة تعتبر أفعلا أو اسماء
+                #~if  self.tagger.has_verb_tag(guessedtag) or \
+                #~self.tagger.is_stopword_tag(guessedtag):
+                #~resulted_data += self.check_word_as_verb(word_nm)
+                resulted_data += self.check_word_as_verb(word_nm)
+                #print "is verb", rabti, len(resulted_data)
+                #if word is noun
+                #~if self.tagger.has_noun_tag(guessedtag) or \
+                #~self.tagger.is_stopword_tag(guessedtag):
+                #~resulted_data += self.check_word_as_noun(word_nm)
+                resulted_data += self.check_word_as_noun(word_nm)
             if len(resulted_data) == 0:
                 #print (u"1 _unknown %s-%s"%(word, word_nm)).encode('utf8')
                 #check the word as unkonwn
@@ -611,8 +614,8 @@ class Analex:
         ]
         
 
-    @staticmethod
-    def check_normalized(word_vocalised, resulted_data):
+    #~ @staticmethod
+    def check_normalized(self, word_vocalised, resulted_data):
         """
         If the entred word is like the found word in dictionary,
         to treat some normalized cases,
@@ -636,7 +639,8 @@ class Analex:
                 #~ if 'vocalized' in item :
                 #~ outputword = araby.strip_tashkeel(item['vocalized'])
                 outputword = araby.strip_tashkeel(item.__dict__['vocalized'])
-                #~ print u'\t'.join([inputword, outputword]).encode('utf8')
+                if self.debug:
+                    print u'\t'.join([inputword, outputword]).encode('utf8')
                 if inputword == outputword:
                     #item['tags'] += ':a'
                     filtred_data.append(item)
