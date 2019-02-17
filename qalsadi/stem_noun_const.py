@@ -1191,6 +1191,8 @@ AJUST_VOCAL_PATTERNS = [
 (ar.ALEF_MAKSURA + ar.FATHA, ar.ALEF_MAKSURA ), 
 (ar.ALEF_MAKSURA + ar.KASRA, ar.ALEF_MAKSURA ), 
 (ar.ALEF_MAKSURA + ar.DAMMA, ar.ALEF_MAKSURA ), 
+# Alef MAdda
+(ar.ALEF_HAMZA_ABOVE +ar.FATHA + ar.ALEF, ar.ALEF_MADDA ), 
 ]
 
     #~ word_vocalized = re.sub(ur"(%s)+" % ar.FATHA, ar.FATHA, word_vocalized)

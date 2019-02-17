@@ -21,11 +21,14 @@ if __name__ == '__main__':
     sys.path.append('support')
     sys.path.append('..')
 import pyarabic.araby as ar
+from pyarabic.arabrepr import arepr
+from print_debug  import print_table
 import tashaphyne.stemming
 #~ import tashaphyne.normalize
-import stem_noun_const as SNC
+import alyahmor.aly_stem_noun_const as SNC
 import arramooz.arabicdictionary as arabicdictionary
 import wordcase
+import alyahmor.noun_affixer
 
 class NounStemmer:
     """
@@ -43,7 +46,9 @@ class NounStemmer:
         # configure the stemmer object
         self.conj_stemmer.set_prefix_list(SNC.CONJ_PREFIX_LIST)
         self.conj_stemmer.set_suffix_list(SNC.CONJ_SUFFIX_LIST)
-
+        
+        # generator 
+        self.generator = alyahmor.noun_affixer.noun_affixer()
         # enable the last mark (Harakat Al-I3rab)
         self.allow_syntax_lastmark = True
 
@@ -54,7 +59,19 @@ class NounStemmer:
         self.cache_dict_search = {}
         self.cache_affixes_verification = {}
         self.debug = debug
-
+        self.error_code = ""
+        
+    def get_error_code(self,):
+        """
+        Return error code when word is not recognized
+        """
+        return self.error_code
+    def set_error_code(self, error_code):
+        """
+        set error code when word is not recognized
+        """
+        if not self.error_code:
+            self.error_code = error_code
 
     def stemming_noun(self, noun_in):
         """
@@ -64,7 +81,11 @@ class NounStemmer:
         @return: list of dictionaries of analyzed words with tags.
         @rtype: list.
         """
-        debug = False
+        self.set_error_code('')
+        if not noun_in:
+            self.set_error_code('Empty word')
+            return None
+        debug = self.debug
         #~list_found = []
         detailed_result = []
         noun_list = [
@@ -95,12 +116,18 @@ class NounStemmer:
                         'enc': enclitic_nm,
                     }
                     word_segmented_list.append(word_seg)
+        if not word_segmented_list:
+            self.set_error_code(" First level segmentation error")
+
         # level two
+
         tmp_list = []
         if debug: print("after first level")
         if debug:
-            print(repr(word_segmented_list).replace(
-                '},', '},\n').decode("unicode-escape"))
+            #~ print(repr(word_segmented_list).replace(
+                #~ '},', '},\n').decode("unicode-escape"))
+            print(arepr(noun_in))
+            print(print_table(word_segmented_list))
 
         for word_seg in word_segmented_list:
 
@@ -140,9 +167,11 @@ class NounStemmer:
 
         if debug: print("after second level")
         if debug:
-            print(repr(tmp_list).replace('},',
-                                         '},\n').decode("unicode-escape"))
+            print(arepr(noun_in))
+            print(print_table(tmp_list))
         # lookup in dictionary
+        if not tmp_list:
+            self.set_error_code(" Second level segmentation error")
         word_segmented_list = tmp_list
         tmp_list = []
         for word_seg in word_segmented_list:
@@ -166,10 +195,13 @@ class NounStemmer:
 
         if debug: print("after lookup dict")
         if debug:
-            print(repr(tmp_list).replace('},',
-                                         '},\n').decode("unicode-escape"))
+            print(arepr(noun_in))
+            noun_tuples = [item['noun_tuple'] for item in  tmp_list]        
+            print(print_table(noun_tuples))
         # test compatiblity noun_tuple with affixes and proaffixes
         # and generate vocalized affixes and suffixes
+        if not tmp_list:
+            self.set_error_code("Not exists in dictionary")
         word_segmented_list = tmp_list
         tmp_list = []
         for word_seg in word_segmented_list:
@@ -181,80 +213,92 @@ class NounStemmer:
                              word_seg['pro'], word_seg['enc'],
                              word_seg['suffix']):
                 ## get all vocalized form of suffixes
-                for enc_voc in SNC.COMP_SUFFIX_LIST_TAGS[word_seg['enc']][
+                for pro_voc in SNC.COMP_PREFIX_LIST_TAGS[word_seg['pro']][
                         'vocalized']:
-                    for suf_voc in SNC.CONJ_SUFFIX_LIST_TAGS[word_seg[
-                            'suffix']]['vocalized']:
-                        ## verify compatibility between proclitics and affix
-                        if self.__check_clitic_affix(word_seg['noun_tuple'],
-                                                     word_seg['pro'], enc_voc,
-                                                     suf_voc):
-                            # get affix tags
-                            affix_tags_voc = SNC.COMP_PREFIX_LIST_TAGS[word_seg['pro']]['tags']\
-                              +SNC.COMP_SUFFIX_LIST_TAGS[enc_voc]['tags']\
-                              +SNC.CONJ_SUFFIX_LIST_TAGS[suf_voc]['tags']
-                            word_seg_l4 = word_seg.copy()
-                            word_seg_l4['suf_voc'] = suf_voc
-                            word_seg_l4['enc_voc'] = enc_voc
-                            word_seg_l4['affix_tags'] = affix_tags_voc
-                            tmp_list.append(word_seg_l4)
+                    for enc_voc in SNC.COMP_SUFFIX_LIST_TAGS[word_seg['enc']][
+                            'vocalized']:
+                        for suf_voc in SNC.CONJ_SUFFIX_LIST_TAGS[word_seg[
+                                'suffix']]['vocalized']:
+                            ## verify compatibility between proclitics and affix
+                            if self.__check_clitic_affix(word_seg['noun_tuple'],
+                                                         pro_voc, enc_voc,
+                                                         suf_voc):
+                                # get affix tags
+                                affix_tags_voc = SNC.COMP_PREFIX_LIST_TAGS[pro_voc]['tags']\
+                                  +SNC.COMP_SUFFIX_LIST_TAGS[enc_voc]['tags']\
+                                  +SNC.CONJ_SUFFIX_LIST_TAGS[suf_voc]['tags']
+                                word_seg_l4 = word_seg.copy()
+                                word_seg_l4['suf_voc'] = suf_voc
+                                word_seg_l4['enc_voc'] = enc_voc
+                                word_seg_l4['affix_tags'] = affix_tags_voc
+                                tmp_list.append(word_seg_l4)
 
         if debug: print("after check compatibility")
         if debug:
-            print(repr(tmp_list).replace('},',
-                                         '},\n').decode("unicode-escape"))
+            print(arepr(noun_in))
+            noun_tuples = [item['noun_tuple'] for item in  tmp_list]        
+            print(print_table(noun_tuples))
         # Generate results
+        if not tmp_list:
+            self.set_error_code("Affixes not compatible")
+
         word_segmented_list = tmp_list
         tmp_list = []
         for word_seg in word_segmented_list:
             # get voalized and vocalized without inflection
-            vocalized, semi_vocalized, _ = self.vocalize(
+            #~ vocalized, semi_vocalized, _ = self.vocalize(
+            voca_tuple_list = self.vocalize(
                 word_seg['noun_tuple']['vocalized'], word_seg['pro'], word_seg['suf_voc'],
                 word_seg['enc_voc'])
+            for vocalized, semi_vocalized, _ in voca_tuple_list:
+                #add some tags from dictionary entry as
+                #mamnou3 min sarf and broken plural
+                original_tags = []
+                if word_seg['noun_tuple']['mankous'] == u"Tk":
+                    original_tags.append(u"منقوص")
+                # if there are many cases like feminin plural with mansoub and majrour
+                if 'cases' in SNC.CONJ_SUFFIX_LIST_TAGS[word_seg['suf_voc']]:
+                    list_cases = SNC.CONJ_SUFFIX_LIST_TAGS[word_seg['suf_voc']][
+                        'cases']
+                else:
+                    list_cases = ('', )
+                for case in list_cases:
+                    voc_affix_case = word_seg['affix_tags'] + (case, )
+                    # filter empty
+                    voc_affix_case = [ vac for vac in voc_affix_case if vac]
+                    detailed_result.append(
+                        wordcase.WordCase({
+                            'word':
+                            noun_in,
+                            'affix': (word_seg['pro'], '', word_seg['suf_voc'],
+                                      word_seg['enc_voc']),
+                            'stem':
+                            word_seg['stem_conj'],
+                            'root':ar.normalize_hamza(word_seg['noun_tuple'].get('root','')),
+                            'original':
+                            word_seg['noun_tuple']['vocalized'],  #original,
+                            'vocalized':
+                            vocalized,
+                            'semivocalized':
+                            semi_vocalized,
+                            'tags':
+                            u':'.join(voc_affix_case),
+                            'type':
+                            u':'.join(['Noun', word_seg['noun_tuple']['wordtype']]),
+                            'number':
+                            word_seg['noun_tuple']['number'],
+                            'gender':
+                            word_seg['noun_tuple']['gender'],
+                            'freq':
+                            'freqnoun',  # to note the frequency type
+                            'originaltags':
+                            u':'.join(original_tags),
+                            'syntax':
+                            '',
+                        }))
+        if not detailed_result:
+            self.set_error_code("Forms are not generated")
 
-            #add some tags from dictionary entry as
-            #mamnou3 min sarf and broken plural
-            original_tags = []
-            if word_seg['noun_tuple']['mankous'] == u"Tk":
-                original_tags.append(u"منقوص")
-            # if there are many cases like feminin plural with mansoub and majrour
-            if 'cases' in SNC.CONJ_SUFFIX_LIST_TAGS[word_seg['suf_voc']]:
-                list_cases = SNC.CONJ_SUFFIX_LIST_TAGS[word_seg['suf_voc']][
-                    'cases']
-            else:
-                list_cases = ('', )
-            for case in list_cases:
-                voc_affix_case = word_seg['affix_tags'] + (case, )
-                detailed_result.append(
-                    wordcase.WordCase({
-                        'word':
-                        noun_in,
-                        'affix': (word_seg['pro'], '', word_seg['suf_voc'],
-                                  word_seg['enc_voc']),
-                        'stem':
-                        word_seg['stem_conj'],
-                        'root':ar.normalize_hamza(word_seg['noun_tuple'].get('root','')),
-                        'original':
-                        word_seg['noun_tuple']['vocalized'],  #original,
-                        'vocalized':
-                        vocalized,
-                        'semivocalized':
-                        semi_vocalized,
-                        'tags':
-                        u':'.join(voc_affix_case),
-                        'type':
-                        u':'.join(['Noun', word_seg['noun_tuple']['wordtype']]),
-                        'number':
-                        word_seg['noun_tuple']['number'],
-                        'gender':
-                        word_seg['noun_tuple']['gender'],
-                        'freq':
-                        'freqnoun',  # to note the frequency type
-                        'originaltags':
-                        u':'.join(original_tags),
-                        'syntax':
-                        '',
-                    }))
         if debug: print("after generate result")
         if debug: print(len(detailed_result))
         #~ if debug: print repr(detailed_result).replace('},','},\n').decode("unicode-escape")
@@ -285,6 +329,7 @@ class NounStemmer:
           and not noun_tuple['masculin_plural']:
             return False
                     # التنوين لا يتطابق مع الممنوع من الصرف
+        #~ print "stem_noun", noun_tuple["unvocalized"].encode('utf8'), noun_tuple['mamnou3_sarf'],type(noun_tuple['mamnou3_sarf']),    bool(noun_tuple['mamnou3_sarf'])
         #~ print "stem_noun", noun_tuple["unvocalized"].encode('utf8'), noun_tuple['masculin_plural'],type(noun_tuple['masculin_plural']),    bool(noun_tuple['masculin_plural'])
         if u'تنوين' in SNC.CONJ_SUFFIX_LIST_TAGS[suffix]['tags'] and noun_tuple['mamnou3_sarf']:
             return False
@@ -561,6 +606,9 @@ class NounStemmer:
         @return: vocalized word.
         @rtype: unicode.
         """
+        return self.generator.vocalize(noun, proclitic, suffix, enclitic)
+        
+        
         # proclitic have only an uniq vocalization in arabic
         proclitic_voc = SNC.COMP_PREFIX_LIST_TAGS[proclitic]["vocalized"][0]
         # enclitic can be variant according to suffix

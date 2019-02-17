@@ -21,13 +21,16 @@ if __name__ == '__main__':
     sys.path.append('support')
     sys.path.append('..')
 import pyarabic.araby as ar
+from pyarabic.arabrepr import arepr
+from print_debug  import print_table
 import tashaphyne.stemming
-import stem_verb_const as SVC
+#~ import stem_verb_const as SVC
+import alyahmor.aly_stem_verb_const as SVC
 #~import analex_const
 import libqutrub.classverb
 import arramooz.arabicdictionary as arabicdictionary
 import wordcase
-
+import alyahmor.verb_affixer
 #~ import  stemmedword
 
 
@@ -50,6 +53,9 @@ class VerbStemmer:
         # configure the stemmer object
         self.conj_stemmer.set_prefix_list(SVC.CONJ_PREFIX_LIST)
         self.conj_stemmer.set_suffix_list(SVC.CONJ_SUFFIX_LIST)
+        
+        # generator 
+        self.generator = alyahmor.verb_affixer.verb_affixer()
         # enable the last mark (Harakat Al-I3rab)
         self.allow_syntax_lastmark = True
 
@@ -68,7 +74,18 @@ class VerbStemmer:
 
         self.verb_stamp_pat = SVC.VERB_STAMP_PAT
 
-
+        self.error_code = ""
+    def get_error_code(self,):
+        """
+        Return error code when word is not recognized
+        """
+        return self.error_code
+    def set_error_code(self, error_code):
+        """
+        set error code when word is not recognized
+        """
+        if not self.error_code:
+            self.error_code = error_code       
 
     def stemming_verb(self, verb_in):
         """
@@ -78,12 +95,14 @@ class VerbStemmer:
         @return : stemmed words
         @rtype:
         """
+        if not verb_in:
+            return None
         #~ list_found = []
         detailed_result = []
         verb_list = [
             verb_in,
         ] + self.get_verb_variants(verb_in)
-
+        debug = self.debug
         #list of segmented words
         word_segmented_list = []
         for verb in verb_list:
@@ -113,7 +132,12 @@ class VerbStemmer:
                         'trans_comp': transitive_comp,
                     }
                     word_segmented_list.append(word_seg)
-
+        if debug: print("after first level")
+        if debug:
+            #~ print(repr(word_segmented_list).replace(
+                #~ '},', '},\n').decode("unicode-escape"))
+            print(arepr(verb_in))
+            print(print_table(word_segmented_list))
         # second level for segmented word
         tmp_list = []
         #~ print 'first level', verb_in, len(word_segmented_list)
@@ -159,6 +183,10 @@ class VerbStemmer:
             if self.verb_dictionary.exists_as_stamp(word_seg['stem_conj']):
                 tmp_list.append(word_seg.copy())
 
+        if debug: print("after second level")
+        if debug:
+            print(arepr(verb_in))
+            print(print_table(tmp_list))
         #~ print 'infinitive', verb_in, len(tmp_list)
         # get infinitive of condidate verbs
         word_segmented_list = tmp_list
@@ -176,13 +204,21 @@ class VerbStemmer:
             #conjugation step
             infverb_dict = self.__get_infinitive_verb_by_stem(
                 word_seg['stem_conj'], word_seg['trans_comp'])
+            if debug: print("infinitive candidat verbs")
+            if debug:
+                print(arepr(verb_in))            
+                print(print_table(infverb_dict))                
             #~ print "list possible verbs", len(infverb_dict)
             #~ for item in infverb_dict:
             #~ print item['verb']
             # filter verbs
             infverb_dict = self.__verify_infinitive_verbs(
                 word_seg['stem_conj'], infverb_dict)
-
+            
+            if debug: print("valid infinitive candidat verbs")
+            if debug:
+                print(arepr(verb_in))            
+                print(print_table(infverb_dict)) 
             for item in infverb_dict:
                 #The haraka from is given from the dict
                 word_seg_l3 = word_seg.copy()
@@ -193,7 +229,10 @@ class VerbStemmer:
                                                                         1))
                 tmp_list.append(word_seg_l3)
                 # conjugation step
-
+        if debug: print("after lookup dict")
+        if debug:
+            print(arepr(verb_in))            
+            print(print_table(tmp_list))
         #~ print repr(tmp_list).replace('},','},\n').decode("unicode-escape")
         #~ print 'conj', verb_in, len(tmp_list)
         # get conjugation for every infinitive verb
@@ -216,7 +255,11 @@ class VerbStemmer:
                 word_seg_l4 = word_seg.copy()
                 word_seg_l4['conj'] = conj.copy()
                 tmp_list.append(word_seg_l4)
-
+        if debug: print("after generating conjugation")
+        if debug:
+            print(arepr(verb_in))  
+            conjs = [item['conj'] for item in tmp_list]          
+            print(print_table(conjs))
         #~ print 'result', verb_in, len(tmp_list)
         # generate all resulted data
         word_segmented_list = tmp_list
@@ -224,40 +267,53 @@ class VerbStemmer:
         #~ tmp_list = []
         for word_seg in word_segmented_list:
             conj = word_seg['conj']
-            vocalized, semivocalized = self.vocalize(
+            #~ vocalized, semivocalized = self.vocalize(
+            vocal_tuple_list = self.vocalize(
                 conj['vocalized'], word_seg['pro'], word_seg['enc'])
             tag_type = 'Verb'
             original_tags = "y" if conj['transitive'] else "n"
-
-            detailed_result.append(wordcase.WordCase({
-                'word':word_seg['verb'],
-                'affix': (word_seg['pro'], word_seg['prefix'], word_seg['suffix'], word_seg['enc']),
-                'stem':word_seg['stem_conj'],
-                'root':ar.normalize_hamza(word_seg.get('root','')),
-                'original':conj['verb'],
-                'vocalized':vocalized,
-                'semivocalized':semivocalized,
-                'tags':u':'.join((conj['tense'], conj['pronoun'])+\
-                SVC.COMP_PREFIX_LIST_TAGS[proclitic]['tags']+\
-                SVC.COMP_SUFFIX_LIST_TAGS[enclitic]['tags']),#\
-                'type':tag_type,
-                'number': conj['pronoun_tags'].get('number', ''),
-                'gender': conj['pronoun_tags'].get('gender', ''),
-                'person': conj['pronoun_tags'].get('person', ''),
-                'tense2': conj['tense_tags'].get('tense', ''),
-                'voice': conj['tense_tags'].get('voice', ''),
-                'mood': conj['tense_tags'].get('mood', ''),
-                'confirmed': conj['tense_tags'].get('confirmed', ''),
-                'transitive': conj['transitive'],
-                'tense': conj['tense'],
-                'pronoun': conj['pronoun'],
-                'freq':'freqverb',
-                'originaltags':original_tags,
-                'syntax':'',
-            }))
+            for vocalized, semivocalized in vocal_tuple_list:
+                # prepare tags
+                tags = self.prepare_tags(conj, proclitic, enclitic)
+                
+                detailed_result.append(wordcase.WordCase({
+                    'word':word_seg['verb'],
+                    'affix': (word_seg['pro'], word_seg['prefix'], word_seg['suffix'], word_seg['enc']),
+                    'stem':word_seg['stem_conj'],
+                    'root':ar.normalize_hamza(word_seg.get('root','')),
+                    'original':conj['verb'],
+                    'vocalized':vocalized,
+                    'semivocalized':semivocalized,
+                    'tags':tags,#\
+                    'type':tag_type,
+                    'number': conj['pronoun_tags'].get('number', ''),
+                    'gender': conj['pronoun_tags'].get('gender', ''),
+                    'person': conj['pronoun_tags'].get('person', ''),
+                    'tense2': conj['tense_tags'].get('tense', ''),
+                    'voice': conj['tense_tags'].get('voice', ''),
+                    'mood': conj['tense_tags'].get('mood', ''),
+                    'confirmed': conj['tense_tags'].get('confirmed', ''),
+                    'transitive': conj['transitive'],
+                    'tense': conj['tense'],
+                    'pronoun': conj['pronoun'],
+                    'freq':'freqverb',
+                    'originaltags':original_tags,
+                    'syntax':'',
+                }))
 
         return detailed_result
-
+    def prepare_tags(self, conj, proclitic, enclitic):
+        """ prepare tags to be displayed """
+        
+        tags = [conj['tense'], conj['pronoun']]
+        tags.extend(SVC.COMP_PREFIX_LIST_TAGS.get(proclitic, {}).get('tags',[]))
+        tags.extend(SVC.COMP_SUFFIX_LIST_TAGS.get(enclitic, {}).get('tags',[]))
+        #~ tags += SVC.COMP_SUFFIX_LIST_TAGS[enclitic]['tags']
+        # remove empty tags
+        tags = [t for t in tags if t]
+        tags = u':'.join(tags)
+        return tags
+        
     def __get_infinitive_verb_by_stem(self, verb, transitive):
         """
         Get the infinitive verb form by given stem, and transitivity
@@ -333,7 +389,10 @@ class VerbStemmer:
         tmp = []
         stem_stamp = self.verb_stamp(stem_conj)
         for item in infverb_dict:
-            if self.verb_stamp(item['stamp']) == stem_stamp:
+            #~ print('****')
+            #~ print((u'\t'.join([item['stamp'], stem_stamp])).encode('utf8'))
+            #~ if self.verb_stamp(item['stamp']) == stem_stamp:
+            if item['stamp'] == stem_stamp:
                 tmp.append(item)
         return tmp
 
@@ -605,6 +664,8 @@ class VerbStemmer:
         @return: (vocalized word, semivocalized).
         @rtype: (unicode, unicode).
         """
+        return self.generator.vocalize(verb, proclitic, enclitic)        
+    
         enclitic_voc = SVC.COMP_SUFFIX_LIST_TAGS[enclitic]["vocalized"][0]
         enclitic_voc = self.get_enclitic_variant(verb, enclitic_voc)
         proclitic_voc = SVC.COMP_PREFIX_LIST_TAGS[proclitic]["vocalized"][0]

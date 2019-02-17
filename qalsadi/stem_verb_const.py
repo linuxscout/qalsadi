@@ -267,8 +267,8 @@ COMP_PREFIX_LIST_TAGS = {
         "vocalized": (u"أَفَسَ", )
     },
     u'ل': {
-        'tags': (u'جر', ),
-        "vocalized": (u"لِ", )
+        'tags': (u'لام', ),
+        "vocalized": (u"لِ", u"لَ" )
     },
     u'ول': {
         'tags': (u'عطف', u'لام'),
@@ -276,7 +276,7 @@ COMP_PREFIX_LIST_TAGS = {
     },
     u'فل': {
         'tags': (u'عطف', u'لام'),
-        "vocalized": (u"فَلَ", )
+        "vocalized": (u"فَلَ", u"فَلِ", u'فَلْ')
     },
 }
 COMP_PREFIX_LIST = COMP_PREFIX_LIST_TAGS.keys()
@@ -295,7 +295,7 @@ COMP_SUFFIX_LIST_TAGS = {
     },
     u'ك': {
         'tags': (u"مفعول به", ),
-        "vocalized": (u"كَ", ),
+        "vocalized": (u"كَ", u"كِ", ),
     },
     u'ه': {
         'tags': (u"مفعول به", ),
@@ -303,7 +303,7 @@ COMP_SUFFIX_LIST_TAGS = {
     },
     u'كم': {
         'tags': (u"مفعول به", ),
-        "vocalized": (u"كُمْ", ),
+        "vocalized": (u"كُمْ", u"كُمُ"),
     },
     u'كن': {
         'tags': (u"مفعول به", ),
@@ -315,7 +315,7 @@ COMP_SUFFIX_LIST_TAGS = {
     },
     u'هم': {
         'tags': (u"مفعول به", ),
-        "vocalized": (u"هُمْ", ),
+        "vocalized": (u"هُمْ", u"هُمُ" ),
     },
     u'هن': {
         'tags': (u"مفعول به", ),
