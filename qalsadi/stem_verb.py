@@ -29,6 +29,7 @@ import alyahmor.aly_stem_verb_const as SVC
 #~import analex_const
 import libqutrub.classverb
 import arramooz.arabicdictionary as arabicdictionary
+import custom_dictionary
 import wordcase
 import alyahmor.verb_affixer
 #~ import  stemmedword
@@ -71,6 +72,9 @@ class VerbStemmer:
         self.cache_verb = {'verb': {}}
 
         self.verb_dictionary = arabicdictionary.ArabicDictionary("verbs")
+        
+        # costum verb dictionary
+        self.custom_verb_dictionary = custom_dictionary.custom_dictionary("verbs")        
 
         self.verb_stamp_pat = SVC.VERB_STAMP_PAT
 
@@ -85,7 +89,24 @@ class VerbStemmer:
         set error code when word is not recognized
         """
         if not self.error_code:
-            self.error_code = error_code       
+            self.error_code = error_code     
+           
+    def lookup_by_stamp(self, word):
+        """
+        lookup for word in dict
+        """
+        result = self.verb_dictionary.lookup_by_stamp(word)
+        if not result:
+            result =  self.custom_verb_dictionary.lookup_by_stamp(word)
+        return result              
+    def exists_as_stamp(self, word):
+        """
+        lookup for word in dict
+        """
+        result = self.verb_dictionary.exists_as_stamp(word)
+        if not result:
+            result =  self.custom_verb_dictionary.exists_as_stamp(word)
+        return result            
 
     def stemming_verb(self, verb_in):
         """
@@ -180,7 +201,7 @@ class VerbStemmer:
         tmp_list = []
         for word_seg in word_segmented_list:
             # verify existance of condidate verb by stamp
-            if self.verb_dictionary.exists_as_stamp(word_seg['stem_conj']):
+            if self.exists_as_stamp(word_seg['stem_conj']):
                 tmp_list.append(word_seg.copy())
 
         if debug: print("after second level")
@@ -331,7 +352,8 @@ class VerbStemmer:
         # a solution by using verbs stamps
         liste = []
         #~ print (u"* ".join([verb,])).encode('utf8')
-        verb_id_list = self.verb_dictionary.lookup_by_stamp(verb)
+        #~ verb_id_list = self.verb_dictionary.lookup_by_stamp(verb)
+        verb_id_list = self.lookup_by_stamp(verb)
 
         if len(verb_id_list):
             for verb_tuple in verb_id_list:

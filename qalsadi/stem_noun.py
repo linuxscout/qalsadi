@@ -27,6 +27,7 @@ import tashaphyne.stemming
 #~ import tashaphyne.normalize
 import alyahmor.aly_stem_noun_const as SNC
 import arramooz.arabicdictionary as arabicdictionary
+import custom_dictionary
 import wordcase
 import alyahmor.noun_affixer
 
@@ -54,6 +55,8 @@ class NounStemmer:
 
         # noun dictionary
         self.noun_dictionary = arabicdictionary.ArabicDictionary("nouns")
+        # costum noun dictionary
+        self.custom_noun_dictionary = custom_dictionary.custom_dictionary("nouns")
 
         # allow to print internal results.
         self.cache_dict_search = {}
@@ -72,7 +75,18 @@ class NounStemmer:
         """
         if not self.error_code:
             self.error_code = error_code
-
+    def lookup_dict(self, word):
+        """
+        lookup for word in dict
+        """
+        result = self.noun_dictionary.lookup(word)
+        print("type result",type(result), len(result), not result)
+        if not result:
+            print((u'Not found word, %s'%word).encode('utf8')) 
+            result =  self.custom_noun_dictionary.lookup(word)
+            print("second chance type result",type(result), len(result))
+        return result
+        
     def stemming_noun(self, noun_in):
         """
         Analyze word morphologically as noun
@@ -184,7 +198,7 @@ class NounStemmer:
             if inf_noun in self.cache_dict_search:
                 infnoun_foundlist = self.cache_dict_search[inf_noun]
             else:
-                infnoun_foundlist = self.noun_dictionary.lookup(inf_noun)
+                infnoun_foundlist = self.lookup_dict(inf_noun)
                 self.cache_dict_search[inf_noun] = infnoun_foundlist
 
             for noun_tuple in infnoun_foundlist:
