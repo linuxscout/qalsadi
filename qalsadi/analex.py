@@ -22,7 +22,8 @@ if __name__ == "__main__":
     sys.path.append('..')
 
 import re
-import pyarabic.araby as araby  # basic arabic text functions
+import pyarabic.araby as araby 
+from pyarabic.arabrepr import arepr
 #~ import qalsadi.analex_const as analex_const  # special constant for analex
 #~ import qalsadi.stem_noun as stem_noun  # noun stemming
 #~ import qalsadi.stem_verb as stem_verb  # verb stemming
@@ -673,8 +674,16 @@ class Analex:
             #compare the vocalized output with the vocalized input
             #print ' is vocalized'
             for item in resulted_data:
-                if 'vocalized' in item and araby.vocalizedlike(
-                        word_vocalised, item['vocalized']):
-                    item['tags'] += ':' + analex_const.PARTIAL_VOCALIZED_TAG
-                    filtred_data.append(item)
+                if 'vocalized' in item:
+                    output = item['vocalized']
+                    is_verb = "Verb" in item['type']
+                    if araby.vocalizedlike(word_vocalised, output):
+                        item['tags'] += ':' + analex_const.PARTIAL_VOCALIZED_TAG
+                        filtred_data.append(item)
+                        # حالة التقا الساكنين، مع نص مشكول مسبقا، والفعل في آخره كسرة بدل السكون
+                    elif is_verb and  word_vocalised.endswith(araby.KASRA) and output.endswith(araby.SUKUN):
+                        if araby.vocalizedlike(word_vocalised[:-1], output[:-1]):
+                            item['tags'] += ':' + analex_const.PARTIAL_VOCALIZED_TAG
+                            filtred_data.append(item)
+                    
         return filtred_data
