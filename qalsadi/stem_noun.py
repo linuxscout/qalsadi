@@ -80,10 +80,7 @@ class NounStemmer:
         lookup for word in dict
         """
         result = self.noun_dictionary.lookup(word)
-        print("type result",type(result), len(result), not result)
-        print((u'Not found word, %s'%word).encode('utf8')) 
         result +=  self.custom_noun_dictionary.lookup(word)
-        print("second chance type result",type(result), len(result))
         return result
         
     def stemming_noun(self, noun_in):
@@ -330,6 +327,8 @@ class NounStemmer:
         @return: compatible.
         @rtype: True/False.
         """
+        #~ print "XXXstem_noun", noun_tuple["unvocalized"].encode('utf8'), noun_tuple['mamnou3_sarf'],type(noun_tuple['mamnou3_sarf']),    bool(noun_tuple['mamnou3_sarf'])
+        
         # avoid Fathatan on no ALEF Tawnwin expect on Teh marbuta and Alef followed by Hamza
         # تجنب تنوين النصب على غير الألف ما عدا التاء المربوطة أو همزة بعد ألف
         if suffix == ar.FATHATAN and not (
@@ -342,7 +341,7 @@ class NounStemmer:
           and not noun_tuple['masculin_plural']:
             return False
                     # التنوين لا يتطابق مع الممنوع من الصرف
-        #~ print "stem_noun", noun_tuple["unvocalized"].encode('utf8'), noun_tuple['mamnou3_sarf'],type(noun_tuple['mamnou3_sarf']),    bool(noun_tuple['mamnou3_sarf'])
+        #~ print "XXXstem_noun", noun_tuple["unvocalized"].encode('utf8'), noun_tuple['mamnou3_sarf'],type(noun_tuple['mamnou3_sarf']),    bool(noun_tuple['mamnou3_sarf'])
         #~ print "stem_noun", noun_tuple["unvocalized"].encode('utf8'), noun_tuple['masculin_plural'],type(noun_tuple['masculin_plural']),    bool(noun_tuple['masculin_plural'])
         if u'تنوين' in SNC.CONJ_SUFFIX_LIST_TAGS[suffix]['tags'] and noun_tuple['mamnou3_sarf']:
             return False
@@ -441,6 +440,12 @@ class NounStemmer:
                          ar.YEH + ar.ALEF + ar.TEH):
             possible_noun = stem + ar.TEH_MARBUTA
             possible_noun_list.add(possible_noun)
+        # فئت +ان
+        if suffix_nm in (ar.ALEF+ar.NOON, ar.YEH + ar.NOON) and stem.endswith(ar.TEH):
+            possible_noun = stem[:-1] + ar.TEH_MARBUTA
+            possible_noun_list.add(possible_noun)
+            
+            
         if not suffix_nm or suffix_nm in (ar.YEH + ar.NOON, ar.WAW + ar.NOON):
             possible_noun = stem + ar.YEH
             possible_noun_list.add(possible_noun)
