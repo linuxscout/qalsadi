@@ -96,16 +96,14 @@ class VerbStemmer:
         lookup for word in dict
         """
         result = self.verb_dictionary.lookup_by_stamp(word)
-        if not result:
-            result =  self.custom_verb_dictionary.lookup_by_stamp(word)
+        result +=  self.custom_verb_dictionary.lookup_by_stamp(word)
         return result              
     def exists_as_stamp(self, word):
         """
         lookup for word in dict
         """
         result = self.verb_dictionary.exists_as_stamp(word)
-        if not result:
-            result =  self.custom_verb_dictionary.exists_as_stamp(word)
+        result +=  self.custom_verb_dictionary.exists_as_stamp(word)
         return result            
 
     def stemming_verb(self, verb_in):

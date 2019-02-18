@@ -81,10 +81,9 @@ class NounStemmer:
         """
         result = self.noun_dictionary.lookup(word)
         print("type result",type(result), len(result), not result)
-        if not result:
-            print((u'Not found word, %s'%word).encode('utf8')) 
-            result =  self.custom_noun_dictionary.lookup(word)
-            print("second chance type result",type(result), len(result))
+        print((u'Not found word, %s'%word).encode('utf8')) 
+        result +=  self.custom_noun_dictionary.lookup(word)
+        print("second chance type result",type(result), len(result))
         return result
         
     def stemming_noun(self, noun_in):
