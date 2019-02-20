@@ -709,6 +709,8 @@ class NounStemmer:
                 noun.replace(ar.ALEF_MADDA, ar.ALEF_HAMZA_ABOVE * 2))
             noun_list.append(
                 noun.replace(ar.ALEF_MADDA, ar.HAMZA +ar.ALEF))
+            noun_list.append(
+                noun.replace(ar.ALEF_MADDA, ar.ALEF_HAMZA_ABOVE +ar.ALEF))
         return noun_list
 
     @staticmethod

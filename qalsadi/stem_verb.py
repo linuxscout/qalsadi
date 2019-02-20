@@ -629,10 +629,13 @@ class VerbStemmer:
         """ return modified forms of input verb"""
         verb_list = []
         #cases like verb started with Alef madda, it can ءا or أأ
-        if verb.startswith(ar.ALEF_MADDA):
-            verb_list.append(ar.ALEF_HAMZA_ABOVE + ar.ALEF_HAMZA_ABOVE \
-            +verb[1:])
-            verb_list.append(ar.HAMZA + ar.ALEF + verb[1:])
+        if ar.ALEF_MADDA in verb:        
+            verb_list.append(
+                verb.replace(ar.ALEF_MADDA, ar.ALEF_HAMZA_ABOVE * 2))
+            verb_list.append(
+                verb.replace(ar.ALEF_MADDA, ar.HAMZA +ar.ALEF))
+            verb_list.append(
+                verb.replace(ar.ALEF_MADDA, ar.ALEF_HAMZA_ABOVE +ar.ALEF))
         return verb_list
     @staticmethod
     def get_in_stem_variants(stem, enclitic):
