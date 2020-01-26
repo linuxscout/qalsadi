@@ -14,6 +14,11 @@
 """
     Arabic noun stemmer
 """
+#~ from __future__ import (
+    #~ absolute_import,
+    #~ print_function,
+    #~ unicode_literals,
+    #~ )
 import re
 if __name__ == '__main__':
     import sys
@@ -22,14 +27,15 @@ if __name__ == '__main__':
     sys.path.append('..')
 import pyarabic.araby as ar
 from pyarabic.arabrepr import arepr
-from print_debug  import print_table
 import tashaphyne.stemming
 #~ import tashaphyne.normalize
 import alyahmor.aly_stem_noun_const as SNC
-import arramooz.arabicdictionary as arabicdictionary
-import custom_dictionary
-import wordcase
 import alyahmor.noun_affixer
+import arramooz.arabicdictionary as arabicdictionary
+from .print_debug import print_table
+from . import custom_dictionary
+from . import wordcase
+
 
 class NounStemmer:
     """

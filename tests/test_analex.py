@@ -1,7 +1,12 @@
 ﻿#!/usr/bin/python
 # -*- coding = utf-8 -*-
-from __future__ import absolute_import
-
+from __future__ import (
+    absolute_import,
+    print_function,
+    #~ unicode_literals,
+    #~ division,
+    )
+from io import open
 import argparse
 import sys
 import pyarabic.araby as araby
@@ -24,8 +29,9 @@ def grabargs():
     return args
     
 #~ import qalsadi.analex as qanalex
-sys.path.append('../qalsadi')
-import analex as qanalex
+#~ sys.path.append('../qalsadi')
+sys.path.append('../')
+import qalsadi.analex as qanalex
 
 import pandas as pd
 class tester:
@@ -44,9 +50,12 @@ class tester:
         for i, analyzed_list in enumerate(result):
             for analyzed in analyzed_list:
                 adapted_result.append(analyzed.__dict__)
-
+          
         df = pd.DataFrame(adapted_result)
-        print df.columns.values
+
+
+        print(df.columns.values)
+
         #~ print(df.columns.values)
         #~ print(df.head(12))
         display = df[['vocalized','unvocalized', 'word','stem','type','root', 'original', "tags"]]
@@ -54,7 +63,7 @@ class tester:
         #~ print(display.head(10))
         #~ print(display)
         #~ print("root exists ", ('root' in df.columns))
-        display.to_csv(outfile, sep='\t', encoding="utf8")
+        display.to_csv(outfile, sep=str('\t'), encoding="utf8")
         display_unknown = display[display.type =="unknown"]
         display_unknown.to_csv(outfile+".unknown.csv",sep='\t',encoding='utf8')
         display_known = display[display.type !="unknown"]
@@ -78,14 +87,20 @@ class tester:
         for i, analyzed_list in enumerate(result):
             for analyzed in analyzed_list:
                 adapted_result.append(analyzed.__dict__)
-
+                #~ adapted_result.append(vars(analyzed))
+        if(not adapted_result):
+            print("Empty out Data")
+            sys.exit() 
+        print("Adapted Data")
+        #~ print(adapted_result)
         df = pd.DataFrame(adapted_result)
-        print df.columns.values
+        print(df.columns.values)
+        #~ sys.exit()
         #~ print(df.columns.values)
         #~ print(df.head(12))
         display = df[['vocalized','unvocalized', 'word','stem','type','root', 'original', "tags"]]
         display = display.drop_duplicates()
-        display.to_csv(outfile, sep='\t', encoding="utf8")
+        display.to_csv(outfile, sep=str('\t'), encoding="utf8")
 
     def run(self, command, text, limit, debug, outfile):
         """ run command to test"""
@@ -94,7 +109,8 @@ class tester:
         elif command=="test_one":
             df = self.test_one(text, debug, outfile)
         else:
-            print("choose a command")
+            df = self.test_one(text, debug, outfile)
+            #print("choose a command")
             
 def main(args):
     args = grabargs()
@@ -102,14 +118,14 @@ def main(args):
     outfile = args.outfile
     command = args.command
     try:
-        myfile=open(filename)
-        text=(myfile.read()).decode('utf8');
+        myfile=open(filename, encoding="utf-8")
+        text=(myfile.read())#.decode('utf8');
 
         if text == None:
             text=u"السلام عليكم يستعملونهم"
     except:
         text=u"أسلم"
-        print " given text"
+        print(" given text")
 
     #~ debug=True;
     debug=False;

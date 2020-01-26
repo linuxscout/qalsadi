@@ -16,7 +16,12 @@
     Provides routins  to alanyze text.
     Can treat text as verbs or as nouns.
 """
-
+from __future__ import (
+    absolute_import,
+    print_function,
+    unicode_literals,
+    #~ division,
+    )
 if __name__ == "__main__":
     import sys
     sys.path.append('..')
@@ -40,16 +45,16 @@ from pyarabic.arabrepr import arepr
 
 import arramooz.wordfreqdictionaryclass as wordfreqdictionaryclass
 import naftawayh.wordtag  # word tagger
-import analex_const  # special constant for analex
-import stem_noun  # noun stemming
-import stem_verb  # verb stemming
-import stem_unknown  # unknown word stemming
-import stem_stop as stem_stopwords  # stopwords word stemming
-import stem_pounct_const  # pounctaution constants
-import disambig  # disambiguation const
-import wordcase
-import stemmedword  # the result object for stemming
-import cache
+from . import analex_const  # special constant for analex
+from . import stem_noun  # noun stemming
+from . import stem_verb  # verb stemming
+from . import stem_unknown  # unknown word stemming
+from . import stem_stop as stem_stopwords  # stopwords word stemming
+from . import stem_pounct_const  # pounctaution constants
+from . import disambig  # disambiguation const
+from . import wordcase
+from . import stemmedword  # the result object for stemming
+from . import cache
 
 class Analex:
     """
@@ -456,12 +461,13 @@ class Analex:
             #~ item = resulted_data[i]
             # search for the original (lexique entry)
             #~ original = item.get('original', '')
-            original = item.__dict__.get('original', '')
+            #~ original = item.__dict__.get('original', '')
+            original = item.original
             # in the freq attribute we found 'freqverb, or freqnoun,
             #  or a frequency for stopwords or unkown
             # the freqtype is used to note the wordtype,
             # this type is passed by stem_noun , or stem_verb modules
-            freqtype = item.__dict__.get('freq', '')
+            freqtype = item.freq
             #~ freqtype = item.get('freq', '')
             if freqtype == 'freqverb':
                 wordtype = 'verb'
@@ -476,8 +482,7 @@ class Analex:
                 #  don't access to database
                 if self.allow_cache_use and self.cache.exists_cache_freq(
                         original, wordtype):
-                    item.__dict__['freq'] = self.cache.get_freq(
-                        original, wordtype)
+                    item.freq = self.cache.get_freq(original, wordtype)
 
                 else:
                     freq = self.wordfreq.get_freq(original, wordtype)
@@ -488,7 +493,8 @@ class Analex:
                         self.cache.add_freq(original, wordtype, freq)
 
                     #~ item.__dict__['freq'] = freq
-                    item.__dict__['freq'] = freq
+                    #~ item.__dict__['freq'] = freq
+                    item.freq = freq
             resulted_data[i] = item
         return resulted_data
 
@@ -613,11 +619,13 @@ class Analex:
         #~ if araby.shaddalike(word_vocalised, x.__dict__.get('vocalized', '')) ]
         if fully_vocalized_input:
             return [x for x in resulted_data if araby.strip_harakat(word_vocalised) == 
-        araby.strip_harakat(x.__dict__.get('vocalized', ''))]
+        #~ araby.strip_harakat(x.__dict__.get('vocalized', ''))]
+        araby.strip_harakat(x.vocalized)]
         else:
             return [
             x for x in resulted_data
-            if araby.shaddalike(word_vocalised, x.__dict__.get('vocalized', ''))
+            #~ if araby.shaddalike(word_vocalised, x.__dict__.get('vocalized', ''))
+            if araby.shaddalike(word_vocalised, x.vocalized)
         ]
         
 
@@ -642,12 +650,12 @@ class Analex:
         filtred_data = []
         inputword = araby.strip_tashkeel(word_vocalised)
         for item in resulted_data:
-            if 'vocalized' in item.__dict__:  #.has_key('vocalized') :
+            #~ if 'vocalized' in item.__dict__: 
+            if hasattr(item, 'vocalized'): 
                 #~ if 'vocalized' in item :
-                #~ outputword = araby.strip_tashkeel(item['vocalized'])
-                outputword = araby.strip_tashkeel(item.__dict__['vocalized'])
+                outputword = araby.strip_tashkeel(item.vocalized)
                 if self.debug:
-                    print u'\t'.join([inputword, outputword]).encode('utf8')
+                    print(u'\t'.join([inputword, outputword]).encode('utf8'))
                 if inputword == outputword:
                     #item['tags'] += ':a'
                     filtred_data.append(item)

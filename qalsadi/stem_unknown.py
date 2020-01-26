@@ -23,9 +23,9 @@ import tashaphyne.normalize
 #~import arramooz.arabicdictionary as arabicdictionary
 import arramooz.wordfreqdictionaryclass as wordfreqdictionaryclass
 #~ import qalsadi.stem_noun_const as snconst
-import stem_noun_const as snconst
+from . import stem_noun_const as snconst
 #~ import qalsadi.wordcase as wordcase
-import wordcase
+from . import wordcase
 #Todo:  remove all individual constants of arabic letters, Done
 NOUN_DICTIONARY_INDEX = {
     u'id': 0,
@@ -287,10 +287,10 @@ def vocalize(noun, proclitic, prefix, suffix, enclitic):
     #~ print "stem_unknown.vocalize; 2", noun.encode('utf8');
 
     noun = noun.replace(araby.ALEF_MAKSURA, araby.FATHA + araby.ALEF_MAKSURA)
-    noun = re.sub(ur"(%s)+" % araby.FATHA, araby.FATHA, noun)
+    noun = re.sub(u"(%s)+" % araby.FATHA, araby.FATHA, noun)
 
     # remove initial fatha if alef is the first letter
-    noun = re.sub(ur"^(%s)+" % araby.FATHA, "", noun)
+    noun = re.sub(u"^(%s)+" % araby.FATHA, "", noun)
     #~ print "stem_unknown.vocalize; 3", noun.encode('utf8');
 
     #add shadda if the first letter is sunny and the prefix

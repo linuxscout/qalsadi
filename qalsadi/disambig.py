@@ -1,4 +1,4 @@
-﻿#!/usr/bin/python
+﻿    #!/usr/bin/python
 # -*- coding=utf-8 -*-
 
 #------------------------------------------------------------------------
@@ -21,7 +21,7 @@ if __name__ == "__main__":
     sys.path.append('../support')
 
 #~ import qalsadi.disambig_const as dconst
-import disambig_const as dconst
+from . import disambig_const as dconst
 import naftawayh.wordtag
 
 
@@ -52,7 +52,7 @@ class Disambiguator:
             return word_list
         else:
             newwordlist = []
-            wordtaglist = zip(word_list, tag_list)
+            wordtaglist = list(zip(word_list, tag_list))
             # print wordtaglist
             for i, wordtag in enumerate(wordtaglist):
                 currentword = wordtag[0]
@@ -152,7 +152,7 @@ class Disambiguator:
         @return : if word has an disambiguated.
         @rtype: True/False.
         """
-        return dconst.DISAMBIGUATATION_TABLE.get(word, {}).has_key('noun')
+        return 'noun' in dconst.DISAMBIGUATATION_TABLE.get(word, {})#.has_key('noun')
     @staticmethod
     def is_disambiguated_by_next_verb(word):
         """ test if the word can be disambiguated if the next word is a verb
@@ -161,7 +161,7 @@ class Disambiguator:
         @return : if word has an disambiguated.
         @rtype: True/False.
         """
-        return dconst.DISAMBIGUATATION_TABLE.get(word, {}).has_key('verb')
+        return 'verb' in dconst.DISAMBIGUATATION_TABLE.get(word, {})#.has_key('verb')
 
 
 def mainly():

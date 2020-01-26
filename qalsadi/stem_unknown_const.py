@@ -343,7 +343,7 @@ COMP_PREFIX_LIST_TAGS = {
     },
 }
 
-COMP_PREFIX_LIST = COMP_PREFIX_LIST_TAGS.keys()
+COMP_PREFIX_LIST = list(COMP_PREFIX_LIST_TAGS.keys())
 COMP_SUFFIX_LIST_TAGS = {
     "": {
         'tags': (u"", ),
@@ -395,7 +395,7 @@ COMP_SUFFIX_LIST_TAGS = {
     },
 }
 
-COMP_SUFFIX_LIST = COMP_SUFFIX_LIST_TAGS.keys()
+COMP_SUFFIX_LIST = list(COMP_SUFFIX_LIST_TAGS.keys())
 
 COMP_NOUN_AFFIXES = set([
     u'-',  #قصد
@@ -951,7 +951,7 @@ CONJ_SUFFIX_LIST_TAGS = {
         'vocalized': (u'ِيَاتٍ', )
     },  #YEH+ALEF+TEH,
 }
-CONJ_SUFFIX_LIST = CONJ_SUFFIX_LIST_TAGS.keys()
+CONJ_SUFFIX_LIST = list(CONJ_SUFFIX_LIST_TAGS.keys())
 
 NOMINAL_CONJUGATION_AFFIX = set([
     u"-",

@@ -12,12 +12,16 @@
 # Licence:     GPL
 #-------------------------------------------------------------------------------
 """Cache Module for analex"""
+import sys
 if __name__ == "__main__":
-    import sys
     sys.path.append('..')
-
-from CodernityDB.database import Database
-from CodernityDB.hash_index import HashIndex
+if sys.version_info[0] < 3:
+    from CodernityDB.database import Database
+    from CodernityDB.hash_index import HashIndex
+else:
+    from CodernityDB3.database import Database
+    from CodernityDB3.hash_index import HashIndex
+    
 from hashlib import md5
 import os
 

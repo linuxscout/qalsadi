@@ -14,7 +14,7 @@
 stemmed_word represents the data resulted from the morpholocigal analysis
 """
 import pyarabic.araby as araby
-import stemmedaffix
+from . import stemmedaffix
 GLOBAL_AFFIXES = {}
 
 class StemmedWord:
@@ -893,9 +893,9 @@ class StemmedWord:
         text += u'\n\t\t}'
         return text.encode('utf8')
         
-    def __dict__(self):
-        """get dict objects result from analysis"""
-        return self.__dict__
+    #~ def __dict__(self):
+        #~ """get dict objects result from analysis"""
+        #~ return self.__dict__
         #~ text = u"{"
         #~ stmword = self.__dict__
         #~ stmword['affix'] = 'Taha'

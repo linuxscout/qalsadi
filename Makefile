@@ -34,8 +34,10 @@ upload:
 
 doc:
 	epydoc -v --config epydoc.conf
-test:
-	cd tests;python test_analex.py -f samples/text.txt -o output/text.csv > output/text.txt
+test2:
+	cd tests;python test_analex.py -f samples/text.txt -o output/text2.csv > output/text2.txt
+test3:
+	cd tests;python3 test_analex.py -f samples/text.txt -o output/text3.csv > output/text3.txt
 testqrn:
 	cut -f2 tests/samples/klm.csv.unknown.csv  >/tmp/klm.txt
 	cd tests;python test_analex.py -c test_quran -f /tmp/klm.txt -o output/klm.csv > output/klm.txt
@@ -44,4 +46,6 @@ teststop:
 	cd tests;grep "unknown" output/stopwords.csv  > output/stopwords.unk.txt
 testone:
 	cd tests;python test_analex.py -c test_one -f samples/words.txt -o output/words.csv > output/words.txt
+testone3:
+	cd tests;python3 test_analex.py -c test_one -f samples/words.txt -o output/words.csv > output/words.txt
 

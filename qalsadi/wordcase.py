@@ -250,8 +250,8 @@ class WordCase:
     ######################################################################
     #{ Display Functions
     ######################################################################
-    def __dict__(self, ):
-        return self.__dict__
+    #~ def __dict__(self, ):
+        #~ return self.__dict__
 
     def __repr__(self):
         """

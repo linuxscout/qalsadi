@@ -14,6 +14,12 @@
 """
     Arabic verb stemmer
 """
+from __future__ import (
+    absolute_import,
+    print_function,
+    #~ unicode_literals,
+    #~ division,
+    )
 #~ import re
 if __name__ == '__main__':
     import sys
@@ -22,16 +28,17 @@ if __name__ == '__main__':
     sys.path.append('..')
 import pyarabic.araby as ar
 from pyarabic.arabrepr import arepr
-from print_debug  import print_table
 import tashaphyne.stemming
 #~ import stem_verb_const as SVC
 import alyahmor.aly_stem_verb_const as SVC
+import alyahmor.verb_affixer
 #~import analex_const
 import libqutrub.classverb
 import arramooz.arabicdictionary as arabicdictionary
-import custom_dictionary
-import wordcase
-import alyahmor.verb_affixer
+from .print_debug import print_table
+from . import custom_dictionary
+from . import wordcase
+
 #~ import  stemmedword
 
 
@@ -263,6 +270,7 @@ class VerbStemmer:
             # تصريف الفعل مع الزوائد
             # إذا توافق التصريف مع الكلمة الناتجة
             # تعرض النتيجة
+
             one_correct_conj = self.__generate_possible_conjug(
                 word_seg['inf'], word_seg['stem_comp'],
                 word_seg['prefix'] + '-' + word_seg['suffix'],
@@ -557,6 +565,7 @@ class VerbStemmer:
         list_correct_conj = []
         if infinitive_verb == "" or unstemed_verb == "" or affix == "":
             return set()
+        #~ infinitive_verb = infinitive_verb.replace(ar.ALEF_MADDA, ar.HAMZA+ ar.ALEF)
         vbc = libqutrub.classverb.VerbClass(infinitive_verb, transitive,
                                             future_type)
         # الألف ليست جزءا من السابقة، لأنها تستعمل لمنع الابتداء بساكن
@@ -634,8 +643,8 @@ class VerbStemmer:
                 verb.replace(ar.ALEF_MADDA, ar.ALEF_HAMZA_ABOVE * 2))
             verb_list.append(
                 verb.replace(ar.ALEF_MADDA, ar.HAMZA +ar.ALEF))
-            verb_list.append(
-                verb.replace(ar.ALEF_MADDA, ar.ALEF_HAMZA_ABOVE +ar.ALEF))
+            #~ verb_list.append(
+                #~ verb.replace(ar.ALEF_MADDA, ar.ALEF_HAMZA_ABOVE +ar.ALEF))
         return verb_list
     @staticmethod
     def get_in_stem_variants(stem, enclitic):
@@ -648,11 +657,18 @@ class VerbStemmer:
                 list_stem.append(stem + ar.ALEF)
             elif stem.endswith(ar.ALEF):
                 list_stem.append(stem[:-1] + ar.ALEF_MAKSURA)
-        if stem.startswith(ar.ALEF_MADDA):
-            # االبداية بألف مد
-            list_stem.append(ar.ALEF_HAMZA_ABOVE + \
-            ar.ALEF_HAMZA_ABOVE + stem[1:])
-            list_stem.append(ar.HAMZA + ar.ALEF + stem[1:])
+        #~ if stem.startswith(ar.ALEF_MADDA):
+            #~ # االبداية بألف مد
+            #~ list_stem.append(ar.ALEF_HAMZA_ABOVE + \
+            #~ ar.ALEF_HAMZA_ABOVE + stem[1:])
+            #~ list_stem.append(ar.HAMZA + ar.ALEF + stem[1:])
+        if ar.ALEF_MADDA in stem:        
+            list_stem.append(
+                stem.replace(ar.ALEF_MADDA, ar.ALEF_HAMZA_ABOVE * 2))
+            list_stem.append(
+                stem.replace(ar.ALEF_MADDA, ar.HAMZA +ar.ALEF))
+            list_stem.append(
+                stem.replace(ar.ALEF_MADDA, ar.ALEF_HAMZA_ABOVE +ar.ALEF))            
         return list_stem
     @staticmethod
     def get_enclitic_variant(word, enclitic):
