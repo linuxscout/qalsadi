@@ -11,6 +11,7 @@
 # Licence:     GPL
 #-------------------------------------------------------------------------------
 """Constants for analex"""
+
 PARTIAL_VOCALIZED_TAG = u'مدخل مشكول'
 #fields names and abbriviations
 

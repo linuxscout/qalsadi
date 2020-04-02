@@ -13,6 +13,14 @@
 #-------------------------------------------------------------------------------
 """Cache Module for analex"""
 import sys
+
+    
+from hashlib import md5
+import os
+try:
+    unicode
+except NameError:
+    from six import text_type as unicode
 if __name__ == "__main__":
     sys.path.append('..')
 if sys.version_info[0] < 3:
@@ -21,11 +29,6 @@ if sys.version_info[0] < 3:
 else:
     from CodernityDB3.database import Database
     from CodernityDB3.hash_index import HashIndex
-    
-from hashlib import md5
-import os
-
-
 class WithAIndex(HashIndex):
     """ hache with Index Class """
     def __init__(self, *args, **kwargs):

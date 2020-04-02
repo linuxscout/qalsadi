@@ -891,7 +891,7 @@ class StemmedWord:
         for key in stmword.keys():
             text += u"\n\t\tu'%s' = u'%s', " % (key, stmword[key])
         text += u'\n\t\t}'
-        return text.encode('utf8')
+        return text #.encode('utf8')
         
     #~ def __dict__(self):
         #~ """get dict objects result from analysis"""

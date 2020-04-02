@@ -25,7 +25,10 @@ from __future__ import (
 if __name__ == "__main__":
     import sys
     sys.path.append('..')
-
+try:
+    unicode
+except NameError:
+    from six import text_type as unicode
 import re
 import pyarabic.araby as araby 
 from pyarabic.arabrepr import arepr
@@ -298,7 +301,7 @@ class Analex:
         #checkedWords = {} #global
         if mode == 'all':
 
-            for i in range(len(list_word[:self.limit])):
+            for i in list(range(len(list_word[:self.limit]))):
                 word = list_word[i]
                 self.count_word(
                 )  # a ghost function to count words check function calls
