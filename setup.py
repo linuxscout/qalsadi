@@ -1,10 +1,10 @@
 #! /usr/bin/python
 from setuptools import setup
-
+from io import open
 # to install type:
 # python setup.py install --root=/
 def readme():
-    with open('README.md') as f:
+    with open('README.rst') as f:
         return f.read()
 
 setup (name='qalsadi', version='0.3.3',
