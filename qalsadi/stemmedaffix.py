@@ -498,7 +498,7 @@ class StemmedAffix:
         @return: is a verb.
         @rtype: True/False
         """
-        return bool(self.tag_type / 2 % 2)
+        return bool(self.tag_type // 2 % 2)
 
     def is_noun(self):
         """
@@ -506,7 +506,7 @@ class StemmedAffix:
         @return: is a noun.
         @rtype: True/False
         """
-        return bool(self.tag_type / 4 % 2)
+        return bool(self.tag_type // 4 % 2)
 
     def is_invariable(self):
         """
@@ -522,7 +522,7 @@ class StemmedAffix:
         @return: has the state marfou3.
         @rtype: True/False
         """
-        return bool(self.tag_inflect / 2 % 2)
+        return bool(self.tag_inflect // 2 % 2)
 
     def is_mabni(self):
         """
@@ -538,7 +538,7 @@ class StemmedAffix:
         @return: has the state mansoub.
         @rtype: True/False
         """
-        return bool(self.tag_inflect / 4 % 2) or self.is_invariable()
+        return bool(self.tag_inflect // 4 % 2) or self.is_invariable()
 
     def is_majrour(self):
         """
@@ -546,7 +546,7 @@ class StemmedAffix:
         @return: has the state majrour.
         @rtype: True/False
         """
-        return bool(self.tag_inflect / 8 % 2)  #or self.is_invariable()
+        return bool(self.tag_inflect // 8 % 2)  #or self.is_invariable()
 
     def is_majzoum(self):
         """
@@ -554,7 +554,7 @@ class StemmedAffix:
         @return: has the state majrour.
         @rtype: True/False
         """
-        return bool(self.tag_inflect / 16 % 2) or self.is_invariable()
+        return bool(self.tag_inflect // 16 % 2) or self.is_invariable()
 
     def is_defined(self):
         """
@@ -579,7 +579,7 @@ class StemmedAffix:
         @return: has the  tense present.
         @rtype: True/False
         """
-        return bool(self.tag_tense / 2 % 2)
+        return bool(self.tag_tense // 2 % 2)
         #~return  u'مضارع' in self.get_tags()
 
     def is_passive(self):
@@ -588,7 +588,7 @@ class StemmedAffix:
         @return: has the  tense passive.
         @rtype: True/False
         """
-        return bool(self.tag_tense / 8 % 2)
+        return bool(self.tag_tense // 8 % 2)
         #~return  u'مجهول'in self.get_tags()
 
     def is3rdperson(self):
@@ -658,7 +658,7 @@ class StemmedAffix:
         @rtype: True/False
         """
         #~return self.tag_feminin
-        return bool(self.tag_gender / 2 % 2)
+        return bool(self.tag_gender // 2 % 2)
 
     def is_dual(self):
         """
@@ -667,7 +667,7 @@ class StemmedAffix:
         @rtype: True/False
         """
         #~return self.tag_dual
-        return bool(self.tag_number / 2 % 2)
+        return bool(self.tag_number // 2 % 2)
 
     def is_plural(self):
         """
@@ -676,7 +676,7 @@ class StemmedAffix:
         @rtype: True/False
         """
         #~return self.tag_plural
-        return bool(self.tag_number / 4 % 2)
+        return bool(self.tag_number // 4 % 2)
 
     def is_masculin_plural(self):
         """
@@ -685,7 +685,7 @@ class StemmedAffix:
         @rtype: True/False
         """
         #~return self.tag_masculin_plural
-        return bool(self.tag_number / 8 % 2)
+        return bool(self.tag_number // 8 % 2)
 
     def is_feminin_plural(self):
         """
@@ -694,7 +694,7 @@ class StemmedAffix:
         @rtype: True/False
         """
         #~return self.tag_feminin_plural
-        return bool(self.tag_number / 16 % 2)
+        return bool(self.tag_number // 16 % 2)
 
     ######################################################################
     #{ Display Functions

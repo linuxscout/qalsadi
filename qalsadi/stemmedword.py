@@ -620,31 +620,31 @@ class StemmedWord:
 
     def is_verb(self):
         """Return True if the word is a verb."""
-        return bool(self.tag_type / 2 % 2)
+        return bool(self.tag_type // 2 % 2)
 
     def is_noun(self):
         """Return True if the word is a noun."""
-        return bool(self.tag_type / 4 % 2)
+        return bool(self.tag_type // 4 % 2)
 
     def is_masdar(self):
         """Return True if the word is a masdar."""
-        return bool(self.tag_type / 8 % 2)
+        return bool(self.tag_type // 8 % 2)
 
     def is_adj(self):
         """Return True if the word is an adjective."""
-        return bool(self.tag_type / 16 % 2)
+        return bool(self.tag_type // 16 % 2)
 
     def is_proper_noun(self):
         """Return True if the word is a proper noun."""
-        return bool(self.tag_type / 32 % 2)
+        return bool(self.tag_type // 32 % 2)
 
     def is_pounct(self):
         """Return True if the word is a pounctuation."""
-        return bool(self.tag_type / 64 % 2)
+        return bool(self.tag_type // 64 % 2)
 
     def is_number(self):
         """Return True if the word is a number."""
-        return bool(self.tag_type / 128 % 2)
+        return bool(self.tag_type // 128 % 2)
 
     def is_transparent(self):
         """Return True if the word has the state transparent,
@@ -756,12 +756,12 @@ class StemmedWord:
 
     def is_present_person(self):
         """Return True if the word has the 2nd person."""
-        return bool(self.tag_person / 2 % 2)
+        return bool(self.tag_person // 2 % 2)
 
     def is_absent_person(self):
         """Return True if the word has the 3rd person."""
 
-        return bool(self.tag_person / 4 % 2)
+        return bool(self.tag_person // 4 % 2)
 
     def is1stperson(self):
         """Return True if the word has the 1st person."""
@@ -769,21 +769,21 @@ class StemmedWord:
 
     def is2ndperson(self):
         """Return True if the word has the 2nd person."""
-        return bool(self.tag_person / 2 % 2) and self.is_single()
+        return bool(self.tag_person // 2 % 2) and self.is_single()
 
     def is3rdperson(self):
         """Return True if the word has the 3rd person."""
         #~ print "tag_person", self.tag_person, self.word.encode('utf8')
-        return bool(self.tag_person / 4 % 2) and self.is_single()
+        return bool(self.tag_person // 4 % 2) and self.is_single()
 
     def is3rdperson_feminin(self):
         """Return True if the word has the 3rd person."""
-        return bool(self.tag_person / 4 %
+        return bool(self.tag_person // 4 %
                     2) and self.is_single() and self.is_feminin()
 
     def is3rdperson_masculin(self):
         """Return True if the word has the 3rd person."""
-        return bool(self.tag_person / 4 %
+        return bool(self.tag_person // 4 %
                     2) and self.is_single() and self.is_masculin()
         #~
         #~ if self.affix_key in GLOBAL_AFFIXES:
@@ -791,7 +791,7 @@ class StemmedWord:
         #~ return False
     def has_imperative_pronoun(self):
         """Return True if the word has the 3rd person."""
-        return bool(self.tag_person / 2 % 2)
+        return bool(self.tag_person // 2 % 2)
         #~ return (u':أنت:' in self.get_tags() or u':أنتِ:' in self.get_tags()) \
         #~ and u'أنتما' in self.get_tags() and  u':أنتما مؤ:' in self.get_tags() \
         #~ and u':أنتم:' in self.get_tags() and  u':أنتن:' in self.get_tags()
@@ -850,15 +850,15 @@ class StemmedWord:
 
     def is_feminin(self):
         """Return True if the word is Feminin."""
-        return bool(self.tag_gender / 2 % 2)
+        return bool(self.tag_gender // 2 % 2)
 
     def is_plural(self):
         """Return True if the word is a plural."""
-        return bool(self.tag_number / 4 % 2)
+        return bool(self.tag_number // 4 % 2)
 
     def is_broken_plural(self):
         """Return True if the word is broken  plural."""
-        return bool(self.tag_number / 32 % 2)
+        return bool(self.tag_number // 32 % 2)
 
     def is_mamnou3(self):
         """Return True if the word is Mamnou3 min Sarf."""
