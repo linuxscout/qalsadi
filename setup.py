@@ -7,7 +7,7 @@ def readme():
     with open('README.rst', encoding='utf8') as f:
         return f.read()
 
-setup (name='qalsadi', version='0.3.4',
+setup (name='qalsadi', version='0.3.5',
       description='Qalsadi Arabic Morphological Analyzer for Python',
       long_description = readme(),      
       author='Taha Zerrouki',
@@ -17,11 +17,14 @@ setup (name='qalsadi', version='0.3.4',
       package_dir={'qalsadi': 'qalsadi',},
       packages=['qalsadi'],
       include_package_data=True,
-      install_requires=[ 'CodernityDB==0.4.2', 
-						'libqutrub>=1.0',
-						'naftawayh>=0.2',
-						'pyarabic>=0.6.2',
-						'tashaphyne==0.3.1',
+      install_requires=[ "six>=1.10.0",
+				"future>=0.16.0",
+				"CodernityDB>=0.5.0",
+				"alyahmor>=0.1",
+				"libqutrub>=1.2.3",
+				"naftawayh>=0.3",
+				"pyarabic>=0.6.7",
+				"tashaphyne>=0.3.4.1",
       ],         
       package_data = {
         'qalsadi': ['doc/*.*','doc/html/*', 'data/*.*', 'qalsadi/data'],
