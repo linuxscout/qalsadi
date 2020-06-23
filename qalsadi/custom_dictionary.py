@@ -57,7 +57,7 @@ class custom_dictionary(arramooz.arabicdictionary.ArabicDictionary):
                 self.db_connect = sqlite.connect(file_path)                
                 self.db_connect.row_factory = sqlite.Row 
                 self.cursor = self.db_connect.cursor()
-                print("Connect with success")
+                #print("Connect with success")
             except  IOError:
                 print("Fatal Error Can't find the database file", file_path)
         else:
