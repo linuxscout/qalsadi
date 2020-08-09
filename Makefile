@@ -28,9 +28,9 @@ install:
 install3:
 	sudo python3 setup.py install
 sdist:
-	sudo python setup.py sdist
+	sudo python3 setup.py sdist
 upload:
-	echo "use twine upload dist/Tashaphyne-0.3-py2-none-any.whl"
+	echo "use twine upload dist/qalsadi.0.3-py2-none-any.whl"
 
 doc:
 	epydoc -v --config epydoc.conf
