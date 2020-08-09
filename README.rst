@@ -11,7 +11,7 @@ dot com
 | Authors | `Authors.md <https://github.com/linuxscout/qalsadi/master/AUTHOR |
 |         | S.md>`__                                                         |
 +---------+------------------------------------------------------------------+
-| Release | 0.3.4                                                            |
+| Release | 0.3.6                                                            |
 +---------+------------------------------------------------------------------+
 | License | `GPL <https://github.com/linuxscout/qalsadi/master/LICENSE>`__   |
 +---------+------------------------------------------------------------------+
@@ -43,16 +43,6 @@ If you would cite it in academic work, can you use this citation
 
     T. Zerrouki‏, Qalsadi, Arabic mophological analyzer Library for python.,  https://pypi.python.org/pypi/qalsadi/
 
-bibtex:
-    
-.. code::
-
-    @misc{zerrouki2012qalsadi,
-      title={qalsadi, Arabic mophological analyzer Library for python.},
-      author={Zerrouki, Taha},
-      url={https://pypi.python.org/pypi/qalsadi},
-      year={2012}
-    }
 
 Features مزايا
 --------------
