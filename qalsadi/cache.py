@@ -27,8 +27,11 @@ if sys.version_info[0] < 3:
     from CodernityDB.database import Database
     from CodernityDB.hash_index import HashIndex
 else:
-    from CodernityDB3.database import Database
-    from CodernityDB3.hash_index import HashIndex
+    #~ from CodernityDB3.database import Database
+    #~ from CodernityDB3.hash_index import HashIndex
+    from codernitydb3.database import Database
+    from codernitydb3.hash_index import HashIndex
+    
 class WithAIndex(HashIndex):
     """ hache with Index Class """
     def __init__(self, *args, **kwargs):
@@ -75,21 +78,26 @@ class Cache(object):
             dp_path = self.DB_PATH
         else:
             dp_path = os.path.join(os.path.dirname(dp_path), '.qalsadiCache')
-        self.db = Database(dp_path)
-        if not self.db.exists():
-            self.db.create()
-            x_ind = WithAIndex(self.db.path, 'a')
-            self.db.add_index(x_ind)
-        else:
-            self.db.open()
-
+        #~ sys.stderr.write("Tahahahah\n"+" "+ dp_path +" "+str(type(dp_path)))
+        #~ self.db = Database("/tmp/QC")
+        try:
+            self.db = Database(str(dp_path))
+            if not self.db.exists():
+                self.db.create()
+                x_ind = WithAIndex(self.db.path, 'a')
+                self.db.add_index(x_ind)
+            else:
+                self.db.open()
+        except:
+            self.db = None
     def __del__(self):
         """
         Delete instance and clear cache
 
         """
         self.cache = None
-        self.db.close()
+        if self.db:
+            self.db.close()
 
     def is_already_checked(self, word):
         """ return if ``word`` is already cached"""
@@ -110,7 +118,8 @@ class Cache(object):
     def add_checked(self, word, data):
         """ add checked ``word`` form cache"""
         idata = {"a": word, 'd': data}
-        self.db.insert(idata)
+        if self.db:
+            self.db.insert(idata)
 
     def exists_cache_freq(self, word, wordtype):
         """ return if word exists in freq cache"""
