@@ -37,7 +37,7 @@ class Cache(object):
             },
         }
         if not dp_path:
-            dp_path = self.DB_PATH
+            dp_path = DB_PATH
         else:
             dp_path = os.path.join(os.path.dirname(dp_path), '.qalsadiCache')
         #~ self.db =  pickledb.load(dp_path, False)
