@@ -36,7 +36,6 @@ from .print_debug import print_table
 from . import custom_dictionary
 from . import wordcase
 
-
 class NounStemmer:
     """
         Arabic noun stemmer
@@ -67,6 +66,7 @@ class NounStemmer:
         # allow to print internal results.
         self.cache_dict_search = {}
         self.cache_affixes_verification = {}
+        self.noun_cache = {}
         self.debug = debug
         self.error_code = ""
         
@@ -85,8 +85,12 @@ class NounStemmer:
         """
         lookup for word in dict
         """
-        result = self.noun_dictionary.lookup(word)
-        result +=  self.custom_noun_dictionary.lookup(word)
+        if word in self.noun_cache:
+            return self.noun_cache[word]
+        else:
+            result = self.noun_dictionary.lookup(word)
+            result +=  self.custom_noun_dictionary.lookup(word)
+            self.noun_cache[word] = result
         return result
         
     def stemming_noun(self, noun_in):

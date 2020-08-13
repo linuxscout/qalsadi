@@ -9,6 +9,7 @@ from __future__ import (
 from io import open
 import argparse
 import sys
+import os
 import pyarabic.araby as araby
 def grabargs():
     parser = argparse.ArgumentParser(description='Test Qalsadi Analex.')
@@ -32,15 +33,25 @@ def grabargs():
 #~ sys.path.append('../qalsadi')
 sys.path.append('../')
 import qalsadi.analex as qanalex
-
-import pandas as pd
+#~ import qalsadi.cache_codernity
+import qalsadi.cache_pickledb
+PANDAS = False
+# test performance without pandas
+if PANDAS:
+    import pandas as pd
 class tester:
     def __init__(self,):
         pass
     @staticmethod
     def test_quran(text, debug, outfile):
         analyzer = qanalex.Analex(cache_path="cache/")
-        analyzer.disable_allow_cache_use()
+        #~ analyzer.disable_allow_cache_use()
+        # install a cache system for analyzer
+        db_path = os.path.join(os.path.dirname(__file__),"cache", '.qalsadiCache')
+        cacher = qalsadi.cache_codernity.Cache(db_path)
+        analyzer.set_cacher(cacher)
+        analyzer.enable_allow_cache_use()        
+
         analyzer.enable_fully_vocalized_input()
         analyzer.set_debug(debug);
         result = analyzer.check_text(text);
@@ -50,37 +61,44 @@ class tester:
         for i, analyzed_list in enumerate(result):
             for analyzed in analyzed_list:
                 adapted_result.append(analyzed.__dict__)
-          
-        df = pd.DataFrame(adapted_result)
+
+        if not PANDAS:
+            pprint.pprint(adapted_result = [])
+        else:
+            df = pd.DataFrame(adapted_result)
 
 
-        print(df.columns.values)
+            print(df.columns.values)
 
-        #~ print(df.columns.values)
-        #~ print(df.head(12))
-        display = df[['vocalized','unvocalized', 'word','stem','type','root', 'original', "tags"]]
-        display = display.drop_duplicates()
-        #~ print(display.head(10))
-        #~ print(display)
-        #~ print("root exists ", ('root' in df.columns))
-        display.to_csv(outfile, sep=str('\t'), encoding="utf8")
-        display_unknown = display[display.type =="unknown"]
-        display_unknown.to_csv(outfile+".unknown.csv",sep='\t',encoding='utf8')
-        display_known = display[display.type !="unknown"]
-        display_known.to_csv(outfile+".known.csv",sep='\t',encoding='utf8')
-        print("Unknown ",display_unknown.count())      
-        print("known ",display_known.count())      
+            #~ print(df.columns.values)
+            #~ print(df.head(12))
+            display = df[['vocalized','unvocalized', 'word','stem','type','root', 'original', "tags"]]
+            display = display.drop_duplicates()
+            #~ print(display.head(10))
+            #~ print(display)
+            #~ print("root exists ", ('root' in df.columns))
+            display.to_csv(outfile, sep=str('\t'), encoding="utf8")
+            display_unknown = display[display.type =="unknown"]
+            display_unknown.to_csv(outfile+".unknown.csv",sep='\t',encoding='utf8')
+            display_known = display[display.type !="unknown"]
+            display_known.to_csv(outfile+".known.csv",sep='\t',encoding='utf8')
+            print("Unknown ",display_unknown.count())      
+            print("known ",display_known.count())      
 
     @staticmethod
     def test_one(text, debug, outfile):
-        analyzer = qanalex.Analex(cache_path="cache/")
-        analyzer.disable_allow_cache_use()
+        analyzer = qanalex.Analex(cache_path="cache/.qalsadiCache")
+        #~ analyzer.disable_allow_cache_use()
         #~ analyzer.enable_fully_vocalized_input()
-        debug = True
+        #~ debug = True
+        #~ db_path = os.path.join(os.path.dirname(__file__),"cache", '.qalsadiCache')
+        #~ cacher = qalsadi.cache_codernity.Cache(db_path)
+        #~ cacher = qalsadi.cache_pickledb.Cache(db_path)
+        #~ analyzer.set_cacher(cacher)
+        analyzer.enable_allow_cache_use()  
+        
         analyzer.set_debug(debug);
-        #~ tokens = araby.tokenize(text)
-        #~ if tokens:
-            #~ text = tokens[0]
+        print(len(text))
         result = analyzer.check_text(text);
         adapted_result = []
 
@@ -91,16 +109,17 @@ class tester:
         if(not adapted_result):
             print("Empty out Data")
             sys.exit() 
-        print("Adapted Data")
+        #~ print("Adapted Data")
         #~ print(adapted_result)
-        df = pd.DataFrame(adapted_result)
-        print(df.columns.values)
-        #~ sys.exit()
-        #~ print(df.columns.values)
-        #~ print(df.head(12))
-        display = df[['vocalized','unvocalized', 'word','stem','type','root', 'original', "tags"]]
-        display = display.drop_duplicates()
-        display.to_csv(outfile, sep=str('\t'), encoding="utf8")
+        if PANDAS:
+            df = pd.DataFrame(adapted_result)
+            print(df.columns.values)
+            #~ sys.exit()
+            #~ print(df.columns.values)
+            #~ print(df.head(12))
+            display = df[['vocalized','unvocalized', 'word','stem','type','root', 'original', "tags"]]
+            display = display.drop_duplicates()
+            display.to_csv(outfile, sep=str('\t'), encoding="utf8")
 
     def run(self, command, text, limit, debug, outfile):
         """ run command to test"""
@@ -120,7 +139,8 @@ def main(args):
     try:
         myfile=open(filename, encoding="utf-8")
         text=(myfile.read())#.decode('utf8');
-
+        #~ print(len(araby.tokenize(text)))
+        #~ sys.exit()
         if text == None:
             text=u"السلام عليكم يستعملونهم"
     except:

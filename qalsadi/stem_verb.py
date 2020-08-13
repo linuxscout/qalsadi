@@ -84,6 +84,8 @@ class VerbStemmer:
         self.custom_verb_dictionary = custom_dictionary.custom_dictionary("verbs")        
 
         self.verb_stamp_pat = SVC.VERB_STAMP_PAT
+        self.verb_cache = {}
+        self.verb_conj_cache = {}
 
         self.error_code = ""
     def get_error_code(self,):
@@ -102,9 +104,14 @@ class VerbStemmer:
         """
         lookup for word in dict
         """
-        result = self.verb_dictionary.lookup_by_stamp(word)
-        result +=  self.custom_verb_dictionary.lookup_by_stamp(word)
+        if word in self.verb_cache:
+            return self.verb_cache[word]
+        else:
+            result = self.verb_dictionary.lookup_by_stamp(word)
+            result +=  self.custom_verb_dictionary.lookup_by_stamp(word)
+            self.verb_cache[word] = result
         return result              
+        
     def exists_as_stamp(self, word):
         """
         lookup for word in dict
@@ -128,6 +135,7 @@ class VerbStemmer:
         verb_list = [
             verb_in,
         ] + self.get_verb_variants(verb_in)
+        verb_list = list(set(verb_list))
         debug = self.debug
         #list of segmented words
         word_segmented_list = []

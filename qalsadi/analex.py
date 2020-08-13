@@ -58,6 +58,7 @@ from . import disambig  # disambiguation const
 from . import wordcase
 from . import stemmedword  # the result object for stemming
 from . import cache
+from . import cache_pickledb as cache
 
 class Analex:
     """
@@ -118,15 +119,16 @@ class Analex:
         #added as a global variable to avoid duplucated search
         #in mutliple call of analex
         # cache used to avoid duplicata
-        self.allow_cache_use = True
-        #~ self.allow_cache_use = False
+        #~ self.allow_cache_use = True
+        self.allow_cache_use = False
         self.cache = cache.Cache(cache_path)
         
         # In case of training and vocalized text analysis, 
         # we propose to respect Shadda in the given word
         self.fully_vocalized_input = False
         self.error_code = ""
-    
+        self.wordfreq_cache = {}
+
     def __del__(self):
         """
         Delete instance and clear cache
@@ -145,6 +147,17 @@ class Analex:
         """
         self.wordcounter += 1
         return self.wordcounter
+    def get_freq(self, word, wordtype):
+        """
+        Return word_frequency
+        """
+        if word in self.wordfreq_cache:
+            return self.wordfreq_cache[word]
+        else:
+            freq  = self.wordfreq.get_freq(word, wordtype)
+            self.wordfreq_cache[word] = freq
+            return  freq 
+
     def get_error_code(self,):
         """
         Return error code when word is not recognized
@@ -250,6 +263,12 @@ class Analex:
         @type limit: integer.
         """
         self.limit = limit
+
+    def set_cacher(self, cacher=None):
+        """
+        Use a cache system to qalsadi to be used 
+        """
+        self.cache = cacher
 
     def enable_allow_cache_use(self):
         """
@@ -414,7 +433,7 @@ class Analex:
                     'template':
                     '',
                     'freq':
-                    self.wordfreq.get_freq(word, 'unknown'),
+                    self.get_freq(word, 'unknown'),
                     'syntax':
                     '',
                 }))
@@ -488,7 +507,7 @@ class Analex:
                     item.freq = self.cache.get_freq(original, wordtype)
 
                 else:
-                    freq = self.wordfreq.get_freq(original, wordtype)
+                    freq = self.get_freq(original, wordtype)
                     #~print freq, wordtype, original.encode('utf8')
                     #store the freq in the cache
                     if self.allow_cache_use:
