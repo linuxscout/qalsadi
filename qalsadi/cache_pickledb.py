@@ -27,7 +27,7 @@ class Cache(object):
         """
         Create Analex Cache
         """
-        DB_PATH = os.path.join(os.path.expanduser('~'), '.qalsadiCache')
+        DB_PATH = os.path.join(os.path.expanduser('~'), '.qalsadiCache.pickledb')
         self.cache = {
             'checkedWords': {},
             'FreqWords': {
@@ -39,7 +39,7 @@ class Cache(object):
         if not dp_path:
             dp_path = DB_PATH
         else:
-            dp_path = os.path.join(os.path.dirname(dp_path), '.qalsadiCache')
+            dp_path = os.path.join(os.path.dirname(dp_path), '.qalsadiCache.pickledb')
         #~ self.db =  pickledb.load(dp_path, False)
         try:
             self.db =  pickledb.load(dp_path, False)
