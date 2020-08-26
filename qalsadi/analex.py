@@ -121,8 +121,12 @@ class Analex:
         # cache used to avoid duplicata
         #~ self.allow_cache_use = True
         self.allow_cache_use = False
-        self.cache = cache.Cache(cache_path)
-        
+        #~ self.cache = cache.Cache(cache_path)
+        self.cache_path = cache_path
+        if cache_path:
+            self.cache = cache.Cache(cache_path)
+        else:
+            self.cache = None        
         # In case of training and vocalized text analysis, 
         # we propose to respect Shadda in the given word
         self.fully_vocalized_input = False
@@ -275,6 +279,8 @@ class Analex:
         Allow the analex to use Cache to reduce calcul.
         """
         self.allow_cache_use = True
+        if not self.cache:
+            self.cache = cache.Cache(self.cache_path)        
 
     def disable_allow_cache_use(self):
         """
