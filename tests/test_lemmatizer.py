@@ -37,7 +37,11 @@ def main(args):
     lemmer = qalsadi.lemmatizer.Lemmatizer()
     #~ result = lemmer.analyze_text(text)
     #~ lemmas = lemmer.get_lemmas(result)
+    print('****************')
     lemmas = lemmer.lemmatize_text(text, return_pos=True)
+    #~ lemmas = lemmer.lemmatize_text(text)
+    print(lemmas)
+    print('****************')
     # the result contains objects
     pprint.pprint(result)
     tokens = araby.tokenize(text)
@@ -46,6 +50,9 @@ def main(args):
         result = lemmer.lemmatize(tok, return_pos=True)
         #~ lemma, pos = lemmer.lemmatize(tok, return_pos=True)
         print(tok,result)
+    word = u"وفي"
+    result = lemmer.lemmatize(tok, return_pos=True)
+    
     return 0
 
 if __name__ == '__main__':
