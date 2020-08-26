@@ -50,6 +50,7 @@ Features مزايا
 -  Arabic word Light Stemming.
 -  Features:
 
+   -  Lemmatization
    -  Vocalized Text Analyzer,
    -  Use Qutrub library to analyze verbs.
    -  give word frequency in arabic modern use.
@@ -100,6 +101,32 @@ Usage
 
 Example
 -------
+
+.. code:: python
+
+    >>> import qalsadi.lemmatizer 
+	>>> text = u"""هل تحتاج إلى ترجمة كي تفهم خطاب الملك؟ اللغة "الكلاسيكية" (الفصحى) موجودة في كل اللغات وكذلك اللغة "الدارجة" .. الفرنسية التي ندرس في المدرسة ليست الفرنسية التي يستخدمها الناس في شوارع باريس .. وملكة بريطانيا لا تخطب بلغة شوارع لندن .. لكل مقام مقال"""
+	>>> lemmer = qalsadi.lemmatizer.Lemmatizer()
+	>>> # lemmatize a word
+	... lemmer.lemmatize("يحتاج")
+	'احتاج'
+	>>> # lemmatize a word with a specific pos
+	>>> lemmer.lemmatize("وفي")
+	'في'
+	>>> lemmer.lemmatize("وفي", pos="v")
+	'وفى'
+
+	>>> 
+	>>> lemmas = lemmer.lemmatize_text(text)
+	>>> print(lemmas)
+	['هل', 'احتاج', 'إلى', 'ترجمة', 'كي', 'تفهم', 'خطاب', 'ملك', '؟', 'لغة', '"', 'كلاسيكي', '"(', 'فصحى', ')', 'موجود', 'في', 'كل', 'لغة', 'ذلك', 'لغة', '"', 'دارج', '"..', 'فرنسي', 'التي', 'درس', 'في', 'مدرسة', 'ليست', 'فرنسي', 'التي', 'استخدم', 'ناس', 'في', 'شوارع', 'باريس', '..', 'ملك', 'بريطانيا', 'لا', 'خطب', 'بلغة', 'شوارع', 'دنو', '..', 'كل', 'مقام', 'مقالي']
+	>>> # lemmatize a text and return lemma pos
+	... lemmas = lemmer.lemmatize_text(text, return_pos=True)
+	>>> print(lemmas)
+	[('هل', 'stopword'), ('احتاج', 'verb'), ('إلى', 'stopword'), ('ترجمة', 'noun'), ('كي', 'stopword'), ('تفهم', 'noun'), ('خطاب', 'noun'), ('ملك', 'noun'), '؟', ('لغة', 'noun'), '"', ('كلاسيكي', 'noun'), '"(', ('فصحى', 'noun'), ')', ('موجود', 'noun'), ('في', 'stopword'), ('كل', 'stopword'), ('لغة', 'noun'), ('ذلك', 'stopword'), ('لغة', 'noun'), '"', ('دارج', 'noun'), '"..', ('فرنسي', 'noun'), ('التي', 'stopword'), ('درس', 'verb'), ('في', 'stopword'), ('مدرسة', 'noun'), ('ليست', 'stopword'), ('فرنسي', 'noun'), ('التي', 'stopword'), ('استخدم', 'verb'), ('ناس', 'noun'), ('في', 'stopword'), ('شوارع', 'noun'), ('باريس', 'all'), '..', ('ملك', 'noun'), ('بريطانيا', 'noun'), ('لا', 'stopword'), ('خطب', 'verb'), ('بلغة', 'noun'), ('شوارع', 'noun'), ('دنو', 'verb'), '..', ('كل', 'stopword'), ('مقام', 'noun'), ('مقالي', 'noun')]
+
+	>>> 
+
 
 .. code:: python
 
