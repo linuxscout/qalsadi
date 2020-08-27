@@ -1,4 +1,4 @@
-#Qalsadi Arabic Morphological Analyzer for Python
+# Qalsadi Arabic Morphological Analyzer and Lemmatizer for Python
 
 
 
@@ -37,33 +37,25 @@ or in bibtex format
 
  
 ## Features  مزايا
- - Arabic word Light Stemming.
-* Features:
-        - Lemmatization
-	- Vocalized Text Analyzer, 
-	- Use Qutrub library to analyze verbs.
-	- give word frequency in arabic modern use.
+ - Lemmatization
+ - Vocalized Text Analyzer, 
+ - Use Qutrub library to analyze verbs.
+ - give word frequency in arabic modern use.
  
-* Requirement:
-	- libQutrub: Qutrub verb conjugation library: http://pypi.pyton/LibQutrub
-	- PyArabic: Arabic language tools library   : http://pypi.pyton/pyarabic
-	- Tashaphyne;Arabic Light Stemmer library	: http://pypi.python.org/pypi/Tashaphyne/
+### Applications
 
-
-Applications
-====
 * Stemming texts
 * Text Classification and categorization
 * Sentiment Analysis
 * Named Entities Recognition
 
-Installation
-=====
+### Installation
+
 ```
 pip install qalsadi
 ```    
-Requirements
-----------------
+#### Requirements
+
 ``` 
 pip install -r requirements.txt 
 ```
@@ -75,11 +67,7 @@ pip install -r requirements.txt
  - Arramooz-pysqlite : Arabic dictionary
  - CodernityDB : No Sql native python database 
   
-Usage
-=====
-
-
-
+## Usage
 
 ### Example 
 * Lemmatization
@@ -178,13 +166,5 @@ for i in range(len(result)):
 | syntax | tool | action | العمل |  |
 | syntax | tool | object_type | نوع المعمول، بالنسبة للعامل، مثلا اسم لحرف الجر |  |
 
-
-### Files
-
-* file/directory    category    description 
-
-
-
-## Featured Posts
 
 
