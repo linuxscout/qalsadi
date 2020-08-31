@@ -29,7 +29,11 @@ class Lemmatizer:
         Arabic Lemmatizer
     """
     def __init__(self, cache_path=False):
-        pass
+        """
+        """
+        # create analexer
+        self.analexer  =  analex.Analex()
+        
     def __del__(self):
         pass
     
@@ -112,8 +116,7 @@ class Lemmatizer:
         @param text: input text
         @type text: unicode
         """
-        analexer  =  analex.Analex()
-        result    =  analexer.check_text(text)
+        result    =  self.analexer.check_text(text)
         stemnodelist  =  self.analyze(result)
         return stemnodelist
     def lemmatize_text(self, text, return_pos=False, pos=""):
@@ -122,8 +125,7 @@ class Lemmatizer:
         @param text: input text
         @type text: unicode
         """
-        analexer  =  analex.Analex()
-        result    =  analexer.check_text(text)
+        result    =  self.analexer.check_text(text)
         stemnodelist  =  self.analyze(result)
         lemmas = self.get_lemmas(stemnodelist, return_pos=return_pos, pos=pos)
         return lemmas
