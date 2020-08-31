@@ -32,7 +32,7 @@ class Lemmatizer:
         """
         """
         # create analexer
-        self.analexer  =  analex.Analex()
+        self.analexer  =  analex.Analex(cache_path)
         
     def __del__(self):
         pass
