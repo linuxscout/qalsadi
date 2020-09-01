@@ -116,6 +116,12 @@ class VerbStemmer:
         """
         lookup for word in dict
         """
+        stamp = self.verb_dictionary.word_stamp(word)
+        stamp = stamp.replace(ar.TEH,"")
+        # a verb stamp can't more than 4 letters
+        # لا يمكن للفعل أن يكون فيه أكثر من أربعة حروف أصلية
+        if len(stamp) > 4:
+            return False
         result = self.verb_dictionary.exists_as_stamp(word)
         result +=  self.custom_verb_dictionary.exists_as_stamp(word)
         return result            

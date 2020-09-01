@@ -7,7 +7,7 @@ def readme():
     with open('README.rst', encoding='utf8') as f:
         return f.read()
 
-setup (name='qalsadi', version='0.4.1',
+setup (name='qalsadi', version='0.4.2',
       description='Qalsadi Arabic Morphological Analyzer and lemmatizer for Python',
       long_description = readme(),      
       author='Taha Zerrouki',
@@ -26,6 +26,7 @@ setup (name='qalsadi', version='0.4.1',
                 "pyarabic>=0.6.7",
                 "tashaphyne>=0.3.4.1",
                 "arramooz-pysqlite>=0.3",
+                "Arabic-Stopwords>=0.3",
       ],         
       package_data = {
         'qalsadi': ['doc/*.*','doc/html/*', 'data/*.*', 'qalsadi/data'],

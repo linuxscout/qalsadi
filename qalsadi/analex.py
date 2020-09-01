@@ -48,6 +48,7 @@ from pyarabic.arabrepr import arepr
 
 import arramooz.wordfreqdictionaryclass as wordfreqdictionaryclass
 import naftawayh.wordtag  # word tagger
+import arabicstopwords.arabicstopwords as stopwords
 from . import analex_const  # special constant for analex
 from . import stem_noun  # noun stemming
 from . import stem_verb  # verb stemming
@@ -67,7 +68,7 @@ class Analex:
         Can treat text as verbs or as nouns.
     """
 
-    def __init__(self, cache_path=False ,allow_tag_guessing=True, allow_disambiguation=True):
+    def __init__(self, cache_path=False ,allow_tag_guessing=False, allow_disambiguation=True):
         """
         Create Analex instance.
         """
@@ -80,6 +81,7 @@ class Analex:
         # to stem stopwords
 
         self.allow_tag_guessing = allow_tag_guessing
+        #~ self.allow_tag_guessing = False
         # allow gueesing tags by naftawayh before analyis
         # if taggin is disabled, the disambiguation is also disabled
         self.allow_disambiguation = allow_disambiguation and allow_tag_guessing
@@ -301,6 +303,7 @@ class Analex:
         #print "ok", text.encode('utf8')
         list_word = self.text_tokenize(text)
         #print "ok", u"\t".join(list_word).encode('utf8')
+        list_guessed_tag = [""]* len(list_word)
         if self.allow_tag_guessing:
             list_guessed_tag = self.tagger.word_tagging(list_word)
             # avoid errors
@@ -352,7 +355,20 @@ class Analex:
                 resulted_data.append(stemmed_one_data_list)
                 #~ resulted_data.append(one_data_list)
         return resulted_data
-
+    def light_tag(self, word):
+        """
+        tag words as verbs or nouns according to some features
+        Some letters are forbiden in some types like TehMarbuta in verbs
+        """
+        if stopwords.is_stop(word):
+            return "stop"
+        for c in word:
+            if c in u"إة":
+                return "nonverb"
+            if c in araby.TANWIN:
+                return "nonverb"
+        return ""
+        
     def check_word(self, word, guessedtag=""):
         """
         Analyze one word morphologically as verbs
@@ -378,20 +394,23 @@ class Analex:
             # we must consider it in future works
             # if word is stopword allow stop words analysis
             if araby.is_arabicword(word_nm):
-                resulted_data += self.check_word_as_stopword(word_nm)
+                if self.light_tag(word) == "stop":                
+                    resulted_data += self.check_word_as_stopword(word_nm)
 
                 #if word is verb
                 # مشكلة بعض الكلمات المستبعدة تعتبر أفعلا أو اسماء
                 #~if  self.tagger.has_verb_tag(guessedtag) or \
                 #~self.tagger.is_stopword_tag(guessedtag):
                 #~resulted_data += self.check_word_as_verb(word_nm)
-                resulted_data += self.check_word_as_verb(word_nm)
+                if self.light_tag(word) != "nonverb":
+                    resulted_data += self.check_word_as_verb(word_nm)
                 #print "is verb", rabti, len(resulted_data)
                 #if word is noun
                 #~if self.tagger.has_noun_tag(guessedtag) or \
                 #~self.tagger.is_stopword_tag(guessedtag):
                 #~resulted_data += self.check_word_as_noun(word_nm)
-                resulted_data += self.check_word_as_noun(word_nm)
+                if self.light_tag(word) != "nonnoun":                
+                    resulted_data += self.check_word_as_noun(word_nm)
             if len(resulted_data) == 0:
                 #print (u"1 _unknown %s-%s"%(word, word_nm)).encode('utf8')
                 #check the word as unkonwn

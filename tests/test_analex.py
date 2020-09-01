@@ -11,6 +11,8 @@ import argparse
 import sys
 import os
 import pyarabic.araby as araby
+from console_progressbar import ProgressBar
+
 def grabargs():
     parser = argparse.ArgumentParser(description='Test Qalsadi Analex.')
     # add file name to import and filename to export
@@ -22,6 +24,8 @@ def grabargs():
     help="Output file to convert", metavar="OUT_FILE")
     parser.add_argument("-c", dest="command", nargs='?', 
     help="command to run", metavar="COMMAND")
+    parser.add_argument("-l", dest="limit", type=int, nargs='?', default=0, 
+    help="limit lines to treat", metavar="LIMIT")
     
     parser.add_argument("--all", type=bool, nargs='?',
                         const=True, 
@@ -86,7 +90,7 @@ class tester:
             print("known ",display_known.count())      
 
     @staticmethod
-    def test_one(text, debug, outfile):
+    def test_one(text, debug, outfile, limit=False):
         analyzer = qanalex.Analex(cache_path="cache/.qalsadiCache")
         #~ analyzer.disable_allow_cache_use()
         #~ analyzer.enable_fully_vocalized_input()
@@ -96,10 +100,22 @@ class tester:
         #~ cacher = qalsadi.cache_pickledb.Cache(db_path)
         #~ analyzer.set_cacher(cacher)
         analyzer.enable_allow_cache_use()  
-        
+
         analyzer.set_debug(debug);
         print(len(text))
-        result = analyzer.check_text(text);
+        if type(text) ==str:
+            result = analyzer.check_text(text);
+        elif type(text) == list:
+
+            if not limit :
+                limit = len(text)
+            progress = ProgressBar(total=limit,prefix='', suffix='', decimals=2, length=50, fill='#', zfill='-', file=sys.stderr)
+
+            lines = text
+            result = []
+            for counter, line in enumerate(lines[:limit]):
+                result += analyzer.check_text(line);
+                progress.print_progress_bar(counter)
         adapted_result = []
 
         for i, analyzed_list in enumerate(result):
@@ -126,9 +142,9 @@ class tester:
         if command=="test_quran":
             df = self.test_quran(text, debug, outfile)
         elif command=="test_one":
-            df = self.test_one(text, debug, outfile)
+            df = self.test_one(text, debug, outfile, limit)
         else:
-            df = self.test_one(text, debug, outfile)
+            df = self.test_one(text, debug, outfile, limit)
             #print("choose a command")
             
 def main(args):
@@ -136,9 +152,10 @@ def main(args):
     filename = args.filename
     outfile = args.outfile
     command = args.command
+    limit = args.limit
     try:
         myfile=open(filename, encoding="utf-8")
-        text=(myfile.read())#.decode('utf8');
+        text=(myfile.readlines())#.decode('utf8');
         #~ print(len(araby.tokenize(text)))
         #~ sys.exit()
         if text == None:
@@ -149,7 +166,9 @@ def main(args):
 
     #~ debug=True;
     debug=False;
-    limit=500
+    #~ limit=500
+    if not limit:
+        limit = 100000000
     mytester = tester()
     
     #~ command = "test_quran"

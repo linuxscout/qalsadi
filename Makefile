@@ -1,6 +1,6 @@
 #/usr/bin/sh
 # Build pyArabic package
-
+date=$(shell date +'%y.%m.%d-%H:%M')
 default: all
 # Clean build files
 clean:
@@ -9,7 +9,6 @@ backup:
 	
 #create all files 
 all: 
-
 # Publish to github
 publish:
 	git push origin master 
@@ -52,4 +51,11 @@ testone3:
 test1000:
 	cd tests;python3 -m cProfile -o  output/profile.txt test_analex.py -f samples/text1000.txt -o output/text1000.csv > output/text1000.txt
 	wc -w tests/samples/text1000.txt
+	echo "Use cprofilev -f tests/output/profile.txt"
+
+test63:LIMIT= 10000
+test63:
+	cd tests;python3 -m cProfile -o  output/profile.txt test_analex.py -l $(LIMIT) -f samples/text63.txt -o output/text63.csv > output/text63.txt
+	wc -w tests/samples/text63.txt
+	cp  tests/output/profile.txt  tests/output/profile-$(date).txt
 	echo "Use cprofilev -f tests/output/profile.txt"
