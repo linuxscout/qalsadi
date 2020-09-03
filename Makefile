@@ -48,8 +48,9 @@ testone:
 testone3:
 	cd tests;python3 test_analex.py -c test_one -f samples/words.txt -o output/words.csv > output/words.txt
 
+test1000:LIMIT= 10
 test1000:
-	cd tests;python3 -m cProfile -o  output/profile.txt test_analex.py -f samples/text1000.txt -o output/text1000.csv > output/text1000.txt
+	cd tests;python3 -m cProfile -o  output/profile.txt test_analex.py -l ${LIMIT} -f samples/text1000.txt -o output/text1000.csv > output/text1000.txt
 	wc -w tests/samples/text1000.txt
 	echo "Use cprofilev -f tests/output/profile.txt"
 

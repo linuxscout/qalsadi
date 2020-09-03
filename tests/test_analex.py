@@ -11,6 +11,7 @@ import argparse
 import sys
 import os
 import pyarabic.araby as araby
+import mysam.tagmaker
 from console_progressbar import ProgressBar
 
 def grabargs():
@@ -117,14 +118,25 @@ class tester:
                 result += analyzer.check_text(line);
                 progress.print_progress_bar(counter)
         adapted_result = []
-
+        # flatten
         for i, analyzed_list in enumerate(result):
             for analyzed in analyzed_list:
                 adapted_result.append(analyzed.__dict__)
                 #~ adapted_result.append(vars(analyzed))
         if(not adapted_result):
             print("Empty out Data")
-            sys.exit() 
+            sys.exit()
+        # test tagmaker
+        mytagmaker = mysam.tagmaker.tagMaker()
+        mytagmaker.debug = True
+        mytagmaker.lang = "en"
+        for adp in adapted_result:
+            mytagmaker.encode(adp.get("tags").split(':'))
+            mytagmaker.encode(adp.get("type").split(':'))
+            print(str(mytagmaker))
+            print(str(mytagmaker.decode()))
+            mytagmaker.reset()
+            
         #~ print("Adapted Data")
         #~ print(adapted_result)
         if PANDAS:
