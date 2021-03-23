@@ -67,6 +67,7 @@ class Lemmatizer:
             #~ lemmas.append(stnd.get_lemmas())
             lemmas.append(stnd.get_lemma(pos=pos, return_pos= return_pos))
             #~ lemmas.append([stnd.get_lemma(), stnd.get_lemmas()])
+        
         return lemmas
         
         

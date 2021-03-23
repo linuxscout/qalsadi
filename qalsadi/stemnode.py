@@ -14,13 +14,21 @@
 stemNode represents the regrouped data resulted from the 
 morpholocigal analysis
 """
+from collections import Counter
+
 
 import pyarabic.araby as araby
 
 def ispunct(word):
     return word in u'!"#$%&\'()*+,-./:;<=>?@[\\]^_`{|}~،؟'
-def most_frequent(List): 
+#@deprecated_func
+def most_frequent2(List): 
     return max(set(List), key = List.count) 
+    
+      
+def most_frequent(List):
+    occurence_count = Counter(sorted(List))
+    return occurence_count.most_common(1)[0][0]
 #~ from . import syn_const
 
 class StemNode:
