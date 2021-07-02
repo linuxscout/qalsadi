@@ -131,10 +131,10 @@ class tester:
         mytagmaker.debug = True
         mytagmaker.lang = "en"
         for adp in adapted_result:
-            mytagmaker.encode(adp.get("tags").split(':'))
-            mytagmaker.encode(adp.get("type").split(':'))
+            mytagmaker._encode(adp.get("tags").split(':'))
+            mytagmaker._encode(adp.get("type").split(':'))
             print(str(mytagmaker))
-            print(str(mytagmaker.decode()))
+            print(str(mytagmaker._decode()))
             mytagmaker.reset()
             
         #~ print("Adapted Data")

@@ -33,6 +33,7 @@ class Lemmatizer:
         """
         # create analexer
         self.analexer  =  analex.Analex(cache_path)
+        self.vocalized_lemma = False
         
     def __del__(self):
         pass
@@ -55,8 +56,9 @@ class Lemmatizer:
             #~ for order in range(len(stemming_list)):
                 #~ stemming_list[order].order = order 
             #create the stemnode object from tmplist
-            stemnode_list.append(stemnode.StemNode(stemming_list))
+            stemnode_list.append(stemnode.StemNode(stemming_list, self.vocalized_lemma))
         return stemnode_list
+        
     def get_lemmas(self, stemnode_list,  pos="", return_pos = False):
         """
         Generate all lemmas from stemnode_list
@@ -111,7 +113,7 @@ class Lemmatizer:
         flat_list = self.decode(stemmed_synwordlistlist)
         pprint.pprint(flat_list)
     
-    def analyze_text(self, text):
+    def analyze_text(self, text, vocalized_lemma = False):
         """
         Text Analysis syntacticly
         @param text: input text
@@ -120,16 +122,34 @@ class Lemmatizer:
         result    =  self.analexer.check_text(text)
         stemnodelist  =  self.analyze(result)
         return stemnodelist
+    def set_vocalized_lemma(self,):
+        """
+        set output lemma as vocalized
+        @param text: input text
+        @type text: unicode
+        """
+        self.vocalized_lemma = True
+        
+    def unset_vocalized_lemma(self,):
+        """
+        set output lemma as vocalized
+        @param text: input text
+        @type text: unicode
+        """
+        self.vocalized_lemma = False
+               
     def lemmatize_text(self, text, return_pos=False, pos=""):
         """
         Lemmatize text
         @param text: input text
         @type text: unicode
         """
+    
         result    =  self.analexer.check_text(text)
         stemnodelist  =  self.analyze(result)
         lemmas = self.get_lemmas(stemnodelist, return_pos=return_pos, pos=pos)
         return lemmas
+        
     def lemmatize(self, word, return_pos=False, pos=""):
         """
         Lemmatize text

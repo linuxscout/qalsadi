@@ -7,7 +7,7 @@ def readme():
     with open('README.rst', encoding='utf8') as f:
         return f.read()
 
-setup (name='qalsadi', version='0.4.3',
+setup (name='qalsadi', version='0.4.4',
       description='Qalsadi Arabic Morphological Analyzer and lemmatizer for Python',
       long_description = readme(),      
       author='Taha Zerrouki',

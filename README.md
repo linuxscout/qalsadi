@@ -8,7 +8,7 @@
 Features |   value
 ---------|---------------------------------------------------------------------------------
 Authors  | [Authors.md](https://github.com/linuxscout/qalsadi/master/AUTHORS.md)
-Release  | 0.4
+Release  | 0.4.4
 License  |[GPL](https://github.com/linuxscout/qalsadi/master/LICENSE)
 Tracker  |[linuxscout/qalsadi/Issues](https://github.com/linuxscout/qalsadi/issues)
 Website  |[https://pypi.python.org/pypi/qalsadi](https://pypi.python.org/pypi/qalsadi)
@@ -25,7 +25,12 @@ If you would cite it in academic work, can you use this citation
 ```
 T. Zerrouki‏, Qalsadi, Arabic mophological analyzer Library for python.,  https://pypi.python.org/pypi/qalsadi/
 ```
+Another Citation:
+```
+Zerrouki, Taha. "Towards An Open Platform For Arabic Language Processing." (2020).
+```
 or in bibtex format
+
 ```bibtex
 @misc{zerrouki2012qalsadi,
   title={qalsadi, Arabic mophological analyzer Library for python.},
@@ -33,6 +38,14 @@ or in bibtex format
   url={https://pypi.python.org/pypi/qalsadi},
   year={2012}
 }
+
+```bibtex
+@thesis{zerrouki2020towards,
+  title={Towards An Open Platform For Arabic Language Processing},
+  author={Zerrouki, Taha},
+  year={2020}
+}
+
 ```
 
  
@@ -93,7 +106,13 @@ pip install -r requirements.txt
 >>> print(lemmas)
 [('هل', 'stopword'), ('احتاج', 'verb'), ('إلى', 'stopword'), ('ترجمة', 'noun'), ('كي', 'stopword'), ('تفهم', 'noun'), ('خطاب', 'noun'), ('ملك', 'noun'), '؟', ('لغة', 'noun'), '"', ('كلاسيكي', 'noun'), '"(', ('فصحى', 'noun'), ')', ('موجود', 'noun'), ('في', 'stopword'), ('كل', 'stopword'), ('لغة', 'noun'), ('ذلك', 'stopword'), ('لغة', 'noun'), '"', ('دارج', 'noun'), '"..', ('فرنسي', 'noun'), ('التي', 'stopword'), ('درس', 'verb'), ('في', 'stopword'), ('مدرسة', 'noun'), ('ليست', 'stopword'), ('فرنسي', 'noun'), ('التي', 'stopword'), ('استخدم', 'verb'), ('ناس', 'noun'), ('في', 'stopword'), ('شوارع', 'noun'), ('باريس', 'all'), '..', ('ملك', 'noun'), ('بريطانيا', 'noun'), ('لا', 'stopword'), ('خطب', 'verb'), ('بلغة', 'noun'), ('شوارع', 'noun'), ('دنو', 'verb'), '..', ('كل', 'stopword'), ('مقام', 'noun'), ('مقالي', 'noun')]
 
+>>># Get vocalized output lemmas
+>>> lemmer.set_vocalized_lemma()
+>>> lemmas = lemmer.lemmatize_text(text)
+>>> print(lemmas)
+['هَلْ', 'اِحْتَاجَ', 'إِلَى', 'تَرْجَمَةٌ', 'كَيْ', 'تَفَهُّمٌ', 'خَطَّابٌ', 'مَلَكٌ', '؟', 'لُغَةٌ', '"', 'كِلاَسِيكِيٌّ', '"(', 'فُصْحَى', ')', 'مَوْجُودٌ', 'فِي', 'كُلَّ', 'لُغَةٌ', 'ذَلِكَ', 'لُغَةٌ', '"', 'دَارِجٌ', '"..', 'فَرَنْسِيّ', 'الَّتِي', 'دَرَسَ', 'فِي', 'مَدْرَسَةٌ', 'لَيْسَتْ', 'فَرَنْسِيّ', 'الَّتِي', 'اِسْتَخْدَمَ', 'نَاسٌ', 'فِي', 'شَوَارِعٌ', 'باريس', '..', 'مَلَكٌ', 'برِيطانِيا', 'لَا', 'خَطَبَ', 'بَلَغَةٌ', 'شَوَارِعٌ', 'أَدَانَ', '..', 'كُلَّ', 'مَقَامٌ', 'مَقَالٌ']
 >>> 
+
 
 ```
 

@@ -36,10 +36,12 @@ class StemNode:
     stemNode represents the regrouped data resulted from the 
     morpholocigal analysis
     """
-    def __init__(self, case_list):
+    def __init__(self, case_list, vocalized_lemma=False):
         """
         Create the stemNode  from a list of StemmedSynword cases
         """
+        # option to handle vocalized lemmas
+        self.vocalized_lemma = vocalized_lemma
         self.case_count = len(case_list)
         #~""" the number of syntaxtical cases """
         #~ print("case_list", len(case_list))
@@ -178,7 +180,10 @@ class StemNode:
         for type_key in self.lemmas:
             # remove duplicates
             self.lemmas[type_key] = list(set(self.lemmas[type_key]))
-            self.lemmas[type_key] = [araby.strip_tashkeel(l) for l in self.lemmas[type_key] if type_key]
+            if self.vocalized_lemma:
+                self.lemmas[type_key] = [l for l in self.lemmas[type_key] if type_key]
+            else:
+                self.lemmas[type_key] = [araby.strip_tashkeel(l)  for l in self.lemmas[type_key] if type_key]
             
             # think that I sould keep repetition to use it as frequency to select lemma
             # remove duplicates after removing tashkeel
@@ -299,8 +304,13 @@ class StemNode:
         @return: the given lemmas list.
         @rtype: unicode string
         """
+        print("stemnode 307", self.vocalized_lemma)
         originals  = set(list(self.originals.keys()))
-        lemmas = [araby.strip_tashkeel(l) for l in originals]
+        if self.vocalized_lemma:
+            lemmas = [l for l in originals]
+        else:
+            lemmas = [araby.strip_tashkeel(l) for l in originals]
+            
         lemmas = list(set(lemmas))
         return lemmas
 
@@ -314,7 +324,6 @@ class StemNode:
         # if one return it
         # if it's a punct return it directly
 
-        
         if self.lemmas.get("pounct", []):
             return most_frequent(self.lemmas["pounct"])
         # strategy to select lemmas
