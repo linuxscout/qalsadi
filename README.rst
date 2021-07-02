@@ -11,7 +11,7 @@ dot com
 | Authors | `Authors.md <https://github.com/linuxscout/qalsadi/master/AUTHOR |
 |         | S.md>`__                                                         |
 +---------+------------------------------------------------------------------+
-| Release | 0.3.6                                                            |
+| Release | 0.4.4.1                                                            |
 +---------+------------------------------------------------------------------+
 | License | `GPL <https://github.com/linuxscout/qalsadi/master/LICENSE>`__   |
 +---------+------------------------------------------------------------------+
