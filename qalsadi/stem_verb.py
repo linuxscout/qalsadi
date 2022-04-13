@@ -313,7 +313,9 @@ class VerbStemmer:
                 conj['vocalized'], word_seg['pro'], word_seg['enc'])
             tag_type = 'Verb'
             original_tags = "y" if conj['transitive'] else "n"
-            for vocalized, semivocalized in vocal_tuple_list:
+            # ~ print("stem_verb", vocal_tuple_list)
+            for vocalized, semivocalized, __ in vocal_tuple_list:
+            # ~ for XXX in vocal_tuple_list:
                 # prepare tags
                 tags = self.prepare_tags(conj, proclitic, enclitic)
                 

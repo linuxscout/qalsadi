@@ -19,11 +19,11 @@ md2html:
 	pandoc -s -r markdown -w html README.md -o README.html
 
 wheel:
-	sudo python setup.py bdist_wheel
+	sudo python3 setup.py bdist_wheel
 wheel3:
 	sudo python3 setup.py bdist_wheel
 install:
-	sudo python setup.py install
+	sudo python3 setup.py install
 install3:
 	sudo python3 setup.py install
 sdist:
@@ -34,17 +34,17 @@ upload:
 doc:
 	epydoc -v --config epydoc.conf
 test2:
-	cd tests;python test_analex.py -f samples/text.txt -o output/text2.csv > output/text2.txt
+	cd tests;python3 test_analex.py -f samples/text.txt -o output/text2.csv > output/text2.txt
 test3:
 	cd tests;python3 test_analex.py -f samples/text.txt -o output/text3.csv > output/text3.txt
 testqrn:
 	cut -f2 tests/samples/klm.csv.unknown.csv  >/tmp/klm.txt
-	cd tests;python test_analex.py -c test_quran -f /tmp/klm.txt -o output/klm.csv > output/klm.txt
+	cd tests;python3 test_analex.py -c test_quran -f /tmp/klm.txt -o output/klm.csv > output/klm.txt
 teststop:
-	cd tests;python test_analex.py -f samples/stopwords.txt -o output/stopwords.csv > output/text.txt
+	cd tests;python3 test_analex.py -f samples/stopwords.txt -o output/stopwords.csv > output/text.txt
 	cd tests;grep "unknown" output/stopwords.csv  > output/stopwords.unk.txt
 testone:
-	cd tests;python test_analex.py -c test_one -f samples/words.txt -o output/words.csv > output/words.txt
+	cd tests;python3 test_analex.py -c test_one -f samples/words.txt -o output/words.csv > output/words.txt
 testone3:
 	cd tests;python3 test_analex.py -c test_one -f samples/words.txt -o output/words.csv > output/words.txt
 
