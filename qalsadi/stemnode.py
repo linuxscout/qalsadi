@@ -56,6 +56,20 @@ class StemNode:
             self.vocalizeds = [case.get_vocalized() for case in case_list]
             self.vocalizeds = list(set(self.vocalizeds))
             self.vocalizeds.sort()
+            
+        # the  affixs  list
+        self.affixes = []
+        if case_list:        
+            self.affixes = [case.get_affix() for case in case_list]
+            self.affixes = list(set(self.affixes))
+            self.affixes.sort()
+            
+        # the  roots  list
+        self.roots = []
+        if case_list:        
+            self.roots = [case.get_root() for case in case_list]
+            self.roots = list(set(self.roots))
+            self.roots.sort()
         
         #~ all vocalized forms
         self.originals = {}
@@ -291,6 +305,24 @@ class StemNode:
         @type newword: unicode string
         """
         self.word = newword
+    def get_roots(self, ):
+        """
+        Get the root forms of the input word
+        @return: the given root.
+        @rtype: unicode string
+        """
+        return list(self.roots)
+    
+    def get_root(self, ):
+        """
+        Get the root forms of the input word
+        @return: the given root.
+        @rtype: unicode string
+        """
+        if self.roots:
+            return self.roots[0]
+        return ""
+        
     def get_original(self, ):
         """
         Get the original forms of the input word
@@ -304,7 +336,7 @@ class StemNode:
         @return: the given lemmas list.
         @rtype: unicode string
         """
-        print("stemnode 307", self.vocalized_lemma)
+        #print("stemnode 307", self.vocalized_lemma)
         originals  = set(list(self.originals.keys()))
         if self.vocalized_lemma:
             lemmas = [l for l in originals]
@@ -352,7 +384,24 @@ class StemNode:
                     return (most_frequent(self.lemmas[word_type]), word_type)
         return ""
         
-        
+    
+    def get_affixes(self, ):
+        """
+        Get the affixes of the input word
+        @return: the given affixes.
+        @rtype: unicode string
+        """
+        return list(self.affixes)
+
+    def get_affix(self, ):
+        """
+        Get the affixes of the input word
+        @return: the given affixes.
+        @rtype: unicode string
+        """
+        if self.affixes:
+            return self.affixes[0]
+                
     def get_vocalizeds(self, ):
         """
         Get the vocalized forms of the input word

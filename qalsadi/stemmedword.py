@@ -571,6 +571,11 @@ class StemmedWord:
         Get the original form of the input word
         """
         return self.original
+    def get_root(self, ):
+        """
+        Get the root form of the input word
+        """
+        return self.root
 
     def get_tense(self, ):
         """
