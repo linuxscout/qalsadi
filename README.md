@@ -8,7 +8,7 @@
 Features  |   value
 ----------|---------------------------------------------------------------------------------
 Authors   | [Authors.md](https://github.com/linuxscout/qalsadi/master/AUTHORS.md)
-Release   | 0.4.4
+Release   | 0.4.6
 License   |[GPL](https://github.com/linuxscout/qalsadi/master/LICENSE)
 Tracker   |[linuxscout/qalsadi/Issues](https://github.com/linuxscout/qalsadi/issues)
 Website   |[https://pypi.python.org/pypi/qalsadi](https://pypi.python.org/pypi/qalsadi)
@@ -53,7 +53,7 @@ or in bibtex format
  - Lemmatization
  - Vocalized Text Analyzer, 
  - Use Qutrub library to analyze verbs.
- - give word frequency in arabic modern use.
+ - give word frequency in Arabic modern use.
 
 ### Applications
 
