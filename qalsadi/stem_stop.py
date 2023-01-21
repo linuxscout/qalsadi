@@ -22,6 +22,9 @@ from . import stem_stopwords_const as ssconst
 import arramooz.stopwordsdictionaryclass as stopwordsdictionaryclass
 from . import wordcase
 
+# ~ from alyahmor import stop_affixer
+from . import stop_affixer
+
 
 class StopWordStemmer:
     """
@@ -40,6 +43,9 @@ class StopWordStemmer:
         self.conj_stemmer.set_prefix_list(ssconst.CONJ_PREFIX_LIST)
         self.conj_stemmer.set_suffix_list(ssconst.CONJ_SUFFIX_LIST)
 
+        # generator 
+        self.generator = stop_affixer.stopword_affixer()
+        
         # enable the last mark (Harakat Al-I3rab)
         self.allow_syntax_lastmark = True
 
@@ -457,6 +463,8 @@ class StopWordStemmer:
         @return: vocalized word.
         @rtype: unicode.
         """
+        return self.generator.vocalize(stop, proclitic, suffix, enclitic)
+        
         # procletic have only an uniq vocalization in arabic
         proclitic_voc = ssconst.COMP_PREFIX_LIST_TAGS[proclitic]["vocalized"][0]
         # enclitic can have many vocalization in arabic

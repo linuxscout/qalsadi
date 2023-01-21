@@ -7,11 +7,11 @@ def readme():
     with open('README.rst', encoding='utf8') as f:
         return f.read()
 
-setup (name='qalsadi', version='0.4.6.1',
+setup (name='qalsadi', version='0.4.7',
       description='Qalsadi Arabic Morphological Analyzer and lemmatizer for Python',
       long_description = readme(),      
       author='Taha Zerrouki',
-      author_email='taha. zerrouki@gmail .com',
+      author_email='taha.zerrouki@gmail .com',
       url='http://qalsadi.sourceforge.net/',
       license='GPL',
       package_dir={'qalsadi': 'qalsadi',},
