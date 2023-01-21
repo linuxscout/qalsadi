@@ -20,12 +20,9 @@ md2html:
 
 wheel:
 	sudo python3 setup.py bdist_wheel
-wheel3:
-	sudo python3 setup.py bdist_wheel
 install:
 	sudo python3 setup.py install
-install3:
-	sudo python3 setup.py install
+
 sdist:
 	sudo python3 setup.py sdist
 upload:
@@ -37,12 +34,20 @@ test2:
 	cd tests;python3 test_analex.py -f samples/text.txt -o output/text2.csv > output/text2.txt
 test3:
 	cd tests;python3 test_analex.py -f samples/text.txt -o output/text3.csv > output/text3.txt
+	echo " Test File samples/text.txt"
+	echo " Output File output/text3.csv"
+	echo " Log File output/text3.txt"
 testqrn:
 	cut -f2 tests/samples/klm.csv.unknown.csv  >/tmp/klm.txt
 	cd tests;python3 test_analex.py -c test_quran -f /tmp/klm.txt -o output/klm.csv > output/klm.txt
 teststop:
 	cd tests;python3 test_analex.py -f samples/stopwords.txt -o output/stopwords.csv > output/text.txt
 	cd tests;grep "unknown" output/stopwords.csv  > output/stopwords.unk.txt
+	# Test File samples/stopwords.txt
+	# Output File output/stopwords.csv
+	# Log File output/text.txt
+	# Unkown filter File output/output/stopwords.unk.txt
+
 testone:
 	cd tests;python3 test_analex.py -c test_one -f samples/words.txt -o output/words.csv > output/words.txt
 testone3:
