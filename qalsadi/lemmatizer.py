@@ -164,6 +164,8 @@ class Lemmatizer:
                 return ()
             else:
                 return ""
+
+       
             
 
 def mainly():
@@ -175,6 +177,7 @@ def mainly():
     result = []
     lemmer = Lemmatizer()
     result = lemmer.analyze_text(text)
+    result = lemmer.morph(text)
     # the result contains objects
     pprint.pprint(result)
 
