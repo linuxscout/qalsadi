@@ -22,8 +22,9 @@ from . import stem_stopwords_const as ssconst
 import arramooz.stopwordsdictionaryclass as stopwordsdictionaryclass
 from . import wordcase
 
-# ~ from alyahmor import stop_affixer
-from . import stop_affixer
+from alyahmor import stop_affixer
+# ~ from . import stop_affixer
+
 
 
 class StopWordStemmer:

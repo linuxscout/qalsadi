@@ -6,3 +6,5 @@ naftawayh>=0.3
 pyarabic>=0.6.7
 tashaphyne>=0.3.4.1
 arramooz-pysqlite>=0.1
+Arabic-Stopwords>=0.4.2
+alyahmor>=0.2
