@@ -40,19 +40,21 @@ class Cache(object):
             dp_path = DB_PATH
         else:
             dp_path = os.path.join(os.path.dirname(dp_path), '.qalsadiCache.pickledb')
-        #~ self.db =  pickledb.load(dp_path, False)
         try:
-            self.db =  pickledb.load(dp_path, False)
+            self.db =  pickledb.load(open(dp_path,"wb"), False)
         except:
-            print("Can't Open data base")
+            print(__file__," Error: Can't Open data base ", dp_path)
+            
             self.db = None
+        else:
+            print(__file__," Success: Open data base ", dp_path)
     def __del__(self):
         """
         Delete instance and clear cache
 
         """
         self.cache = None
-        if self.db:
+        if hasattr(self, "db") and self.db:
             self.db.dump()
 
     def is_already_checked(self, word):

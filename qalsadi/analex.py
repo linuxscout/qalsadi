@@ -16,12 +16,12 @@
     Provides routins  to alanyze text.
     Can treat text as verbs or as nouns.
 """
-from __future__ import (
-    absolute_import,
-    print_function,
-    unicode_literals,
-    #~ division,
-    )
+# ~ from __future__ import (
+    # ~ absolute_import,
+    # ~ print_function,
+    # ~ unicode_literals,
+    # ~ #~ division,
+    # ~ )
 if __name__ == "__main__":
     import sys
     sys.path.append('..')
@@ -368,6 +368,19 @@ class Analex:
             if c in araby.TANWIN:
                 return "nonverb"
         return ""
+    def light_tag2(self, word):
+        """
+        tag words as verbs or nouns according to some features
+        Some letters are forbiden in some types like TehMarbuta in verbs
+        """
+        if stopwords.is_stop(word):
+            return "stop"
+        for c in word:
+            if c in u"إة":
+                return "nonverb"
+            if c in araby.TANWIN:
+                return "nonverb"
+        return ""
         
     def check_word(self, word, guessedtag=""):
         """
@@ -381,6 +394,7 @@ class Analex:
         word = araby.strip_tatweel(word)
         word_vocalised = word
         word_nm = araby.strip_tashkeel(word)
+        word_nm_shadda = araby.strip_harakat(word)
         # get analysed details from cache if used
         if self.allow_cache_use and self.cache.is_already_checked(word_nm):
             #~ print (u"'%s'"%word).encode('utf8'), 'found'
@@ -396,30 +410,39 @@ class Analex:
             if araby.is_arabicword(word_nm):
                 if self.light_tag(word) == "stop":                
                     resulted_data += self.check_word_as_stopword(word_nm)
+                if self.allow_tag_guessing:
+                    # 2nd method
+                    #if word is a possible verb or just a stop word
+                    # مشكلة بعض الكلمات المستبعدة تعتبر أفعلا أو اسماء
+                    if  self.tagger.has_verb_tag(guessedtag) or \
+                    self.tagger.is_stopword_tag(guessedtag):
+                        resulted_data += self.check_word_as_verb(word_nm)
+                    #if word is noun
+                    if self.tagger.has_noun_tag(guessedtag) or \
+                    self.tagger.is_stopword_tag(guessedtag):
+                        resulted_data += self.check_word_as_noun(word_nm)
+                else:
+                    #if word is verb
+                    if self.light_tag(word) != "nonverb":
+                        resulted_data += self.check_word_as_verb(word_nm)
+                    #if word is noun
+                    if self.light_tag(word) != "nonnoun":                
+                        resulted_data += self.check_word_as_noun(word_nm)
 
-                #if word is verb
-                # مشكلة بعض الكلمات المستبعدة تعتبر أفعلا أو اسماء
-                #~if  self.tagger.has_verb_tag(guessedtag) or \
-                #~self.tagger.is_stopword_tag(guessedtag):
-                #~resulted_data += self.check_word_as_verb(word_nm)
-                if self.light_tag(word) != "nonverb":
-                    resulted_data += self.check_word_as_verb(word_nm)
-                #print "is verb", rabti, len(resulted_data)
-                #if word is noun
-                #~if self.tagger.has_noun_tag(guessedtag) or \
-                #~self.tagger.is_stopword_tag(guessedtag):
-                #~resulted_data += self.check_word_as_noun(word_nm)
-                if self.light_tag(word) != "nonnoun":                
-                    resulted_data += self.check_word_as_noun(word_nm)
             if len(resulted_data) == 0:
                 #print (u"1 _unknown %s-%s"%(word, word_nm)).encode('utf8')
                 #check the word as unkonwn
                 resulted_data += self.check_word_as_unknown(word_nm)
-                #check if the word is nomralized and solution are equivalent
-            resulted_data = self.check_normalized(word_vocalised, resulted_data)
+            
+            # ------- Filters used to reduce cases 
+            # 1- with normalized letters
+            # 2- with given Shadda
+            # 3- vocalized like
+            #check if the word is nomralized and solution are equivalent
+            resulted_data = self.check_normalized(word_nm, resulted_data)
             #check if the word is shadda like
             
-            resulted_data = self.check_shadda(word_vocalised, resulted_data, self.fully_vocalized_input)
+            resulted_data = self.check_shadda(word_nm_shadda, resulted_data, self.fully_vocalized_input)
 
             # add word frequency information in tags
             resulted_data = self.add_word_frequency(resulted_data)
@@ -643,14 +666,14 @@ class Analex:
         return self.unknownstemmer.stemming_noun(noun)
 
     @staticmethod
-    def check_shadda(word_vocalised, resulted_data, fully_vocalized_input=False):
+    def check_shadda(word_nm_shadda, resulted_data, fully_vocalized_input=False):
         """
         if the entred word is like the found word in dictionary,
         to treat some normalized cases,
         the analyzer return the vocalized like words.
         This function treat the Shadda case.
-        @param word_vocalised: the input word.
-        @type word_vocalised: unicode.
+        @param word_nm_shadda: a word without harakat, but shadda
+        @type word_nm_shadda: unicode
         @param resulted_data: the founded resulat from dictionary.
         @type resulted_data: list of dict.
         @param fully_vocalized_input: if the two words must resect the shadda and vocalized.
@@ -658,26 +681,19 @@ class Analex:
         @return: list of dictionaries of analyzed words with tags.
         @rtype: list.
         """
-        #~return filter(lambda item: araby.shaddalike(word_vocalised,
-        #~item.__dict__.get('vocalized', '')), resulted_data)
-        #~x for x in [1, 1, 2] if x == 1
-        #~ return [
-        #~ x for x in resulted_data
-        #~ if araby.shaddalike(word_vocalised, x.__dict__.get('vocalized', '')) ]
         if fully_vocalized_input:
-            return [x for x in resulted_data if araby.strip_harakat(word_vocalised) == 
-        #~ araby.strip_harakat(x.__dict__.get('vocalized', ''))]
-        araby.strip_harakat(x.vocalized)]
+            # strip harakat keep shadda
+            # input word can be vocalized
+            # The output word vocalized
+            return [x for x in resulted_data 
+                    if araby.strip_harakat(word_nm_shadda) == araby.strip_harakat(x.vocalized)]
         else:
-            return [
-            x for x in resulted_data
-            #~ if araby.shaddalike(word_vocalised, x.__dict__.get('vocalized', ''))
-            if araby.shaddalike(word_vocalised, x.vocalized)
-        ]
+            return [x for x in resulted_data
+            if araby.shaddalike(word_nm_shadda, x.vocalized)]
         
 
     #~ @staticmethod
-    def check_normalized(self, word_vocalised, resulted_data):
+    def check_normalized(self, word_nm, resulted_data):
         """
         If the entred word is like the found word in dictionary,
         to treat some normalized cases,
@@ -686,28 +702,24 @@ class Analex:
         which can give from dictionary ذئبـ ذؤب.
         this function filter normalized resulted word according
         the given word, and give ذئب.
-        @param word_vocalised: the input word.
-        @type word_vocalised: unicode.
+        @param word_nm the input word.
+        @type word_nm: unicode.
+        @param word_unvocalised: the input word unvocalized.
+        @type word_unvocalised: unicode.
         @param resulted_data: the founded resulat from dictionary.
         @type resulted_data: list of dict.
         @return: list of dictionaries of analyzed words with tags.
         @rtype: list.
         """
+        return [d for d in resulted_data if d.unvocalized == word_nm]
         #print word_vocalised.encode('utf8')
-        filtred_data = []
-        inputword = araby.strip_tashkeel(word_vocalised)
-        for item in resulted_data:
-            #~ if 'vocalized' in item.__dict__: 
-            if hasattr(item, 'vocalized'): 
-                #~ if 'vocalized' in item :
-                outputword = araby.strip_tashkeel(item.vocalized)
-                if self.debug:
-                    print(u'\t'.join([inputword, outputword]).encode('utf8'))
-                if inputword == outputword:
-                    #item['tags'] += ':a'
-                    filtred_data.append(item)
-                #~ filtred_data.append(item)
-        return filtred_data
+        # ~ filtred_data = []
+        # ~ for item in resulted_data:
+            # ~ outputword = item.unvocalized
+            # ~ inputword = item.word_nm
+            # ~ if inputword == outputword:
+                # ~ filtred_data.append(item)
+        # ~ return filtred_data
 
     @staticmethod
     def check_partial_vocalized(word_vocalised, resulted_data):

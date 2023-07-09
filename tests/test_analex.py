@@ -1,11 +1,6 @@
 ﻿#!/usr/bin/python
 # -*- coding = utf-8 -*-
-from __future__ import (
-    absolute_import,
-    print_function,
-    #~ unicode_literals,
-    #~ division,
-    )
+
 from io import open
 import argparse
 import sys
@@ -38,7 +33,8 @@ def grabargs():
 #~ sys.path.append('../qalsadi')
 sys.path.append('../')
 import qalsadi.analex as qanalex
-#~ import qalsadi.cache_codernity
+import qalsadi.cache_codernity
+import qalsadi.cache_pickle
 import qalsadi.cache_pickledb
 PANDAS = False
 # test performance without pandas
@@ -92,15 +88,19 @@ class tester:
 
     @staticmethod
     def test_one(text, debug, outfile, limit=False):
-        analyzer = qanalex.Analex(cache_path="cache/.qalsadiCache")
-        #~ analyzer.disable_allow_cache_use()
-        #~ analyzer.enable_fully_vocalized_input()
-        #~ debug = True
-        #~ db_path = os.path.join(os.path.dirname(__file__),"cache", '.qalsadiCache')
-        #~ cacher = qalsadi.cache_codernity.Cache(db_path)
-        #~ cacher = qalsadi.cache_pickledb.Cache(db_path)
-        #~ analyzer.set_cacher(cacher)
+        
+        analyzer = qanalex.Analex(allow_tag_guessing=True)
+        # configure cache
+        # ~ db_path = os.path.join(os.path.abspath("./"),"cache", '.qalsadiCache')
+        # ~ print(__file__, db_path)
+        # ~ cacher = qalsadi.cache_codernity.Cache(db_path)
+        # ~ analyzer.set_cacher(cacher)
+        
+        cacher = qalsadi.cache_pickle.Cache("IMPORTANT")
+        analyzer.set_cacher(cacher)
+        
         analyzer.enable_allow_cache_use()  
+        # ~ analyzer.disable_allow_cache_use()        
 
         analyzer.set_debug(debug);
         print(len(text))

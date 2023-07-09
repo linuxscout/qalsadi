@@ -91,6 +91,9 @@ class UnknownStemmer:
             'wordfreq', wordfreqdictionaryclass.WORDFREQ_DICTIONARY_INDEX)
         # use the word frequency dictionary as a dictionary for unkonwn words
         self.noun_dictionary = self.wordfreq
+        
+        self.noun_cache = {}
+        self.noun_vocalize_cache = {}
 
         self.debug = debug
 
@@ -216,8 +219,7 @@ class UnknownStemmer:
                 # get the noun and get all its forms from the dict
                 # if the noun has plural suffix, don't look up
                 # in broken plural dictionary
-                infnoun_foundlist = self.noun_dictionary.lookup(
-                    infnoun, 'unknown')
+                infnoun_foundlist = self.lookup_dict(infnoun)
                 infnoun_form_list += infnoun_foundlist
             for noun_tuple in infnoun_form_list:
                 # noun_tuple = self.noun_dictionary.getEntryById(id)
@@ -225,7 +227,7 @@ class UnknownStemmer:
                 original_tags = ()
                 #~original = noun_tuple['vocalized']
                 wordtype = noun_tuple['word_type']
-                vocalized = vocalize(infnoun, procletic, prefix_conj, suffix_conj, encletic)
+                vocalized = self.vocalize(infnoun, procletic, prefix_conj, suffix_conj, encletic)
                 #print "v", vocalized.encode('utf8')
                 detailed_result.append(wordcase.WordCase({
                     'word':noun,
@@ -233,7 +235,7 @@ class UnknownStemmer:
                     'stem':stem_conj,
                     'original':infnoun, #original,
                     'vocalized':vocalized,
-                    'semivocalized':vocalized,
+                    'semivocalized':vocalized,                     
                     'tags':u':'.join(snconst.COMP_PREFIX_LIST_TAGS[procletic]['tags']\
                     +snconst.COMP_SUFFIX_LIST_TAGS[encletic]['tags']+\
                     snconst.CONJ_SUFFIX_LIST_TAGS[suffix_conj]['tags']),
@@ -252,58 +254,76 @@ class UnknownStemmer:
         @type debug: True/False.
         """
         self.debug = debug
+        
+    def lookup_dict(self, word):
+        """
+        lookup for word in dict
+        """
+        if word in self.noun_cache:
+            return self.noun_cache[word]
+        else:
+            result = self.noun_dictionary.lookup(word, 'unknown')
+            # ~ result +=  self.custom_noun_dictionary.lookup(word)
+            self.noun_cache[word] = result
+        return result        
 
 
-def vocalize(noun, proclitic, prefix, suffix, enclitic):
-    """
-    Join the  noun and its affixes, and get the vocalized form
-    @param noun: noun found in dictionary.
-    @type noun: unicode.
-    @param proclitic: first level prefix.
-    @type proclitic: unicode.
-    @param prefix: second level suffix.
-    @type prefix: unicode.
-    @param suffix: second level suffix.
-    @type suffix: unicode.
-    @param enclitic: first level suffix.
-    @type enclitic: unicode.
-    @return: vocalized word.
-    @rtype: unicode.
-    """
-    enclitic_voc = snconst.COMP_SUFFIX_LIST_TAGS[enclitic]["vocalized"][0]
-    proclitic_voc = snconst.COMP_PREFIX_LIST_TAGS[proclitic]["vocalized"][0]
-    suffix_voc = suffix
-    #adjust some some harakat
+    def vocalize(self, noun, proclitic, prefix, suffix, enclitic):
+        """
+        Join the  noun and its affixes, and get the vocalized form
+        @param noun: noun found in dictionary.
+        @type noun: unicode.
+        @param proclitic: first level prefix.
+        @type proclitic: unicode.
+        @param prefix: second level suffix.
+        @type prefix: unicode.
+        @param suffix: second level suffix.
+        @type suffix: unicode.
+        @param enclitic: first level suffix.
+        @type enclitic: unicode.
+        @return: vocalized word.
+        @rtype: unicode.
+        """
+        
+        key = "-".join([noun, proclitic, prefix, suffix, enclitic])
+        if key in self.noun_vocalize_cache:
+            return self.noun_vocalize_cache[key]
+        enclitic_voc = snconst.COMP_SUFFIX_LIST_TAGS[enclitic]["vocalized"][0]
+        proclitic_voc = snconst.COMP_PREFIX_LIST_TAGS[proclitic]["vocalized"][0]
+        suffix_voc = suffix
+        #adjust some some harakat
 
-    #strip last if tanwin or harakat
-    if noun[-1:] in araby.HARAKAT:
-        noun = noun[:-1]
-    #completate the dictionary word vocalization
-    # this allow to avoid some missed harakat before ALEF
-    # in the dictionary form of word, all alefat are preceded by Fatha
-    #~noun = araby.complet
-    #~ print "stem_unknown.vocalize; before", noun.encode('utf8');
-    noun = noun.replace(araby.ALEF, araby.FATHA + araby.ALEF)
-    #~ print "stem_unknown.vocalize; 2", noun.encode('utf8');
+        #strip last if tanwin or harakat
+        if noun[-1:] in araby.HARAKAT:
+            noun = noun[:-1]
+        #completate the dictionary word vocalization
+        # this allow to avoid some missed harakat before ALEF
+        # in the dictionary form of word, all alefat are preceded by Fatha
+        #~noun = araby.complet
+        #~ print "stem_unknown.vocalize; before", noun.encode('utf8');
+        noun = noun.replace(araby.ALEF, araby.FATHA + araby.ALEF)
+        #~ print "stem_unknown.vocalize; 2", noun.encode('utf8');
 
-    noun = noun.replace(araby.ALEF_MAKSURA, araby.FATHA + araby.ALEF_MAKSURA)
-    noun = re.sub(u"(%s)+" % araby.FATHA, araby.FATHA, noun)
+        noun = noun.replace(araby.ALEF_MAKSURA, araby.FATHA + araby.ALEF_MAKSURA)
+        noun = re.sub(u"(%s)+" % araby.FATHA, araby.FATHA, noun)
 
-    # remove initial fatha if alef is the first letter
-    noun = re.sub(u"^(%s)+" % araby.FATHA, "", noun)
-    #~ print "stem_unknown.vocalize; 3", noun.encode('utf8');
+        # remove initial fatha if alef is the first letter
+        noun = re.sub(u"^(%s)+" % araby.FATHA, "", noun)
+        #~ print "stem_unknown.vocalize; 3", noun.encode('utf8');
 
-    #add shadda if the first letter is sunny and the prefix
-    #ends by al definition
-    if proclitic.endswith(araby.ALEF + araby.LAM) and araby.is_sun(noun[0]):
-        noun = u''.join([noun[0], araby.SHADDA, noun[1:]])
-        #strip the Skun from the lam
-        if proclitic_voc.endswith(araby.SUKUN):
-            proclitic_voc = proclitic_voc[:-1]
-    noun = get_word_variant(noun, suffix)
-    noun = get_word_variant(noun, enclitic)
-    suffix_voc = get_suffix_variant(noun, suffix_voc, enclitic)
-    return ''.join([proclitic_voc, prefix, noun, suffix_voc, enclitic_voc])
+        #add shadda if the first letter is sunny and the prefix
+        #ends by al definition
+        if proclitic.endswith(araby.ALEF + araby.LAM) and araby.is_sun(noun[0]):
+            noun = u''.join([noun[0], araby.SHADDA, noun[1:]])
+            #strip the Skun from the lam
+            if proclitic_voc.endswith(araby.SUKUN):
+                proclitic_voc = proclitic_voc[:-1]
+        noun = get_word_variant(noun, suffix)
+        noun = get_word_variant(noun, enclitic)
+        suffix_voc = get_suffix_variant(noun, suffix_voc, enclitic)
+        noun_conj =  ''.join([proclitic_voc, prefix, noun, suffix_voc, enclitic_voc])
+        self.noun_vocalize_cache[key] = noun_conj
+        return noun_conj
 
 
 def is_compatible_proaffix_affix(procletic, encletic, suffix):

@@ -16,7 +16,7 @@ wordCase represents the data resulted from the morpholocigal analysis
 if __name__ == "__main__":
     import sys
     sys.path.append('..')
-#~import pyarabic.araby as araby
+import pyarabic.araby as araby
 import pyarabic.arabrepr as arabrepr
 arabicRepr = arabrepr.ArabicRepr()
 
@@ -31,10 +31,14 @@ class WordCase:
     def __init__(self, result_dict=None):
         self.word = u"",
         #~"""input word"""
+        self.word_nm = u"",
+        #~"""input word with marks"""
         self.vocalized = u"",
         #~"""vocalized form of the input word """
         self.semivocalized = u"",
         #~"""vocalized form without inflection mark """
+        self.unvocalized = u"",
+        #~"""unvocalized form"""
         self.tags = u"",
         #~"""tags of affixes and tags extracted form lexical dictionary"""
         self.affix_key = u'-'
@@ -81,6 +85,10 @@ class WordCase:
             self.voice = result_dict.get('voice', u'')
             self.mood = result_dict.get('mood', u'')
             self.transitive = result_dict.get('transitive', False)
+            
+            # calculated attributes
+            self.unvocalized = araby.strip_tashkeel(self.vocalized)
+            # ~ self.word_nm = araby.strip_tashkeel(self.word)
 
     ######################################################################
     #{ Attribut Functions

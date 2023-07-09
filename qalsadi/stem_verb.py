@@ -14,32 +14,16 @@
 """
     Arabic verb stemmer
 """
-from __future__ import (
-    absolute_import,
-    print_function,
-    #~ unicode_literals,
-    #~ division,
-    )
-#~ import re
-if __name__ == '__main__':
-    import sys
-    sys.path.append('../support')
-    sys.path.append('support')
-    sys.path.append('..')
 import pyarabic.araby as ar
 from pyarabic.arabrepr import arepr
 import tashaphyne.stemming
-#~ import stem_verb_const as SVC
 import alyahmor.aly_stem_verb_const as SVC
 import alyahmor.verb_affixer
-#~import analex_const
 import libqutrub.classverb
 import arramooz.arabicdictionary as arabicdictionary
 from .print_debug import print_table
 from . import custom_dictionary
 from . import wordcase
-
-#~ import  stemmedword
 
 
 class VerbStemmer:
@@ -73,10 +57,10 @@ class VerbStemmer:
         #~}
         # affixes compatibility
         self.compatibility_cache = {}
-        #~ self.verb_dict_cache = {}
+        self.verb_dict_cache = {}
 
         self.debug = debug
-        self.cache_verb = {'verb': {}}
+        # ~ self.cache_verb = {'verb': {}}
 
         self.verb_dictionary = arabicdictionary.ArabicDictionary("verbs")
         
@@ -84,7 +68,10 @@ class VerbStemmer:
         self.custom_verb_dictionary = custom_dictionary.custom_dictionary("verbs")        
 
         self.verb_stamp_pat = SVC.VERB_STAMP_PAT
+        self.stamp_cache = {}
         self.verb_cache = {}
+        self.verbclass_cache = {}
+        self.stripped_words_cache = {}
         self.verb_conj_cache = {}
 
         self.error_code = ""
@@ -122,9 +109,11 @@ class VerbStemmer:
         # لا يمكن للفعل أن يكون فيه أكثر من أربعة حروف أصلية
         if len(stamp) > 4:
             return False
-        result = self.verb_dictionary.exists_as_stamp(word)
-        result +=  self.custom_verb_dictionary.exists_as_stamp(word)
-        return result            
+        if stamp not in self.stamp_cache:
+            result = self.verb_dictionary.exists_as_stamp(word)
+            result +=  self.custom_verb_dictionary.exists_as_stamp(word)
+            self.stamp_cache[stamp] = result
+        return self.stamp_cache.get(stamp, False)           
 
     def stemming_verb(self, verb_in):
         """
@@ -326,7 +315,7 @@ class VerbStemmer:
                     'root':ar.normalize_hamza(word_seg.get('root','')),
                     'original':conj['verb'],
                     'vocalized':vocalized,
-                    'semivocalized':semivocalized,
+                    'semivocalized':semivocalized,                
                     'tags':tags,#\
                     'type':tag_type,
                     'number': conj['pronoun_tags'].get('number', ''),
@@ -368,9 +357,9 @@ class VerbStemmer:
         @rtype: list of unicode
         """
         # verb key
-        #~ verb_key = u":".join([verb, str(transitive)])
-        #~ if verb_key in self.verb_dict_cache:
-        #~ return self.verb_dict_cache[verb_key]
+        verb_key = u":".join([verb, str(transitive)])
+        if verb_key in self.verb_dict_cache:
+            return self.verb_dict_cache[verb_key]
         # a solution by using verbs stamps
         liste = []
         #~ print (u"* ".join([verb,])).encode('utf8')
@@ -396,7 +385,7 @@ class VerbStemmer:
             #~ #print item['transitive'], transitive
             if item['transitive'] in (u'y', 1) or not transitive:
                 liste.append(item)
-        #~ self.verb_dict_cache[verb_key] = liste
+        self.verb_dict_cache[verb_key] = liste
         return liste
 
     def set_debug(self, debug):
@@ -564,6 +553,34 @@ class VerbStemmer:
         else:
             self.compatibility_cache[comp_key] = False
             return False
+            
+    def _get_verbclass(self, infinitive_verb, transitive,future_type):
+        """
+        return the verb class, used to reduce verb class init
+        """
+        key = "-".join([infinitive_verb, future_type, str(transitive)])
+        if key in self.verbclass_cache:
+            return self.verbclass_cache[key]
+        else:
+            vbc = libqutrub.classverb.VerbClass(infinitive_verb, transitive,
+                                            future_type)
+            self.verbclass_cache[key]= vbc
+            return vbc
+            
+            
+    def _get_conjugation(self, verb_object, tense, pronoun):
+        """
+        return the conjugation from a verb
+        """
+
+        # if the verb is already conjuged return the conjugation
+        # else conjugate and return
+        conj = verb_object.conj_display.get_conj(tense, pronoun)
+        if not conj:
+            conj = verb_object.conjugate_tense_for_pronoun(tense, pronoun)
+        conj_nm = self._strip_tashkeel(conj)
+        return conj, conj_nm
+
 
     def __generate_possible_conjug(self,
                                    infinitive_verb,
@@ -582,8 +599,8 @@ class VerbStemmer:
         if infinitive_verb == "" or unstemed_verb == "" or affix == "":
             return set()
         #~ infinitive_verb = infinitive_verb.replace(ar.ALEF_MADDA, ar.HAMZA+ ar.ALEF)
-        vbc = libqutrub.classverb.VerbClass(infinitive_verb, transitive,
-                                            future_type)
+        
+        vbc = self._get_verbclass(infinitive_verb, transitive,future_type)
         # الألف ليست جزءا من السابقة، لأنها تستعمل لمنع الابتداء بساكن
         # وتصريف الفعل في الامر يولده
         if affix.startswith(ar.ALEF):
@@ -605,10 +622,12 @@ class VerbStemmer:
                 #~ tense, pronoun, str(transitive), "test",str(test)])).encode('utf8')
                 if test:
 
-                    conj_vocalized = vbc.conjugate_tense_for_pronoun(
-                        tense, pronoun)
-                    #strip all marks and shadda
-                    conj_nm = ar.strip_tashkeel(conj_vocalized)
+                    
+                    conj_vocalized, conj_nm  = self._get_conjugation(vbc, tense, pronoun)
+                    # ~ conj_vocalized = vbc.conjugate_tense_for_pronoun(
+                        # ~ tense, pronoun)                        
+                    # ~ #strip all marks and shadda
+                    # ~ conj_nm = self._strip_tashkeel(conj_vocalized)
                     if conj_nm == unstemed_verb:
                         list_correct_conj.append({
                             'verb':
@@ -735,8 +754,15 @@ class VerbStemmer:
         semivocalized = ''.join(
             [proclitic_voc, ar.strip_lastharaka(verb), enclitic_voc])
         return (vocalized, semivocalized)
-
-
+    
+    def _strip_tashkeel(self, word):
+        """
+        reduce amount of calculate strip tashkeel
+        """
+        if not word in self.stripped_words_cache:
+            self.stripped_words_cache[word] = ar.strip_tashkeel(word)
+        return self.stripped_words_cache[word]
+        
 def mainly():
     """
     Test main"""

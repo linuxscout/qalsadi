@@ -22,7 +22,7 @@ from . import stem_stopwords_const as ssconst
 import arramooz.stopwordsdictionaryclass as stopwordsdictionaryclass
 from . import wordcase
 
-from alyahmor import stop_affixer
+from alyahmor import stopword_affixer  as stop_affixer
 # ~ from . import stop_affixer
 
 
@@ -183,9 +183,10 @@ class StopWordStemmer:
                             stop_tuple, procletic, vocalized_encletic,
                             vocalized_suffix)
                         if valid and compatible:
-                            vocalized, semi_vocalized = self.vocalize(
+                            vocalized_list = self.vocalize(
                                 original, procletic, vocalized_suffix,
                                 vocalized_encletic)
+                            vocalized, semi_vocalized =   vocalized_list[0][0],  vocalized_list[0][1]                              
                             vocalized = self.ajust_vocalization(vocalized)
                             #ToDo:
                             # if the stop word is inflected or not
@@ -214,7 +215,7 @@ class StopWordStemmer:
                                     'vocalized':
                                     vocalized,
                                     'semivocalized':
-                                    semi_vocalized,
+                                    semi_vocalized,                                     
                                     'tags':
                                     u':'.join(affix_tags),
                                     'type':
@@ -464,7 +465,10 @@ class StopWordStemmer:
         @return: vocalized word.
         @rtype: unicode.
         """
+        #TODO: fix an error
+        # The generator generate more than one case
         return self.generator.vocalize(stop, proclitic, suffix, enclitic)
+        
         
         # procletic have only an uniq vocalization in arabic
         proclitic_voc = ssconst.COMP_PREFIX_LIST_TAGS[proclitic]["vocalized"][0]

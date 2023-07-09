@@ -1,10 +1,11 @@
 future>=0.16.0
 pickledb>=0.9.2
-alyahmor>=0.1
 libqutrub>=1.2.3
 naftawayh>=0.3
 pyarabic>=0.6.7
 tashaphyne>=0.3.4.1
-arramooz-pysqlite>=0.1
+arramooz-pysqlite>=0.4.2
 Arabic-Stopwords>=0.4.2
 alyahmor>=0.2
+mysam-tagmanager>=0.3.3
+codernitydb3

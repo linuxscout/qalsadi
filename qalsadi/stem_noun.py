@@ -14,21 +14,10 @@
 """
     Arabic noun stemmer
 """
-#~ from __future__ import (
-    #~ absolute_import,
-    #~ print_function,
-    #~ unicode_literals,
-    #~ )
 import re
-if __name__ == '__main__':
-    import sys
-    sys.path.append('../support')
-    sys.path.append('support')
-    sys.path.append('..')
 import pyarabic.araby as ar
 from pyarabic.arabrepr import arepr
 import tashaphyne.stemming
-#~ import tashaphyne.normalize
 import alyahmor.aly_stem_noun_const as SNC
 import alyahmor.noun_affixer
 import arramooz.arabicdictionary as arabicdictionary
@@ -67,6 +56,7 @@ class NounStemmer:
         self.cache_dict_search = {}
         self.cache_affixes_verification = {}
         self.noun_cache = {}
+        self.noun_vocalize_cache = {}
         self.debug = debug
         self.error_code = ""
         
@@ -111,6 +101,8 @@ class NounStemmer:
         noun_list = [
             noun_in,
         ] + self.get_noun_variants(noun_in)
+        noun_list = list(set(noun_list))
+        
         word_segmented_list = []
         for noun in noun_list:
             list_seg_comp = self.comp_stemmer.segment(noun)
@@ -292,29 +284,18 @@ class NounStemmer:
                             noun_in,
                             'affix': (word_seg['pro'], '', word_seg['suf_voc'],
                                       word_seg['enc_voc']),
-                            'stem':
-                            word_seg['stem_conj'],
+                            'stem':  word_seg['stem_conj'],
                             'root':ar.normalize_hamza(word_seg['noun_tuple'].get('root','')),
-                            'original':
-                            word_seg['noun_tuple']['vocalized'],  #original,
-                            'vocalized':
-                            vocalized,
-                            'semivocalized':
-                            semi_vocalized,
-                            'tags':
-                            u':'.join(voc_affix_case),
-                            'type':
-                            u':'.join(['Noun', word_seg['noun_tuple']['wordtype']]),
-                            'number':
-                            word_seg['noun_tuple']['number'],
-                            'gender':
-                            word_seg['noun_tuple']['gender'],
-                            'freq':
-                            'freqnoun',  # to note the frequency type
-                            'originaltags':
-                            u':'.join(original_tags),
-                            'syntax':
-                            '',
+                            'original': word_seg['noun_tuple']['vocalized'],  #original,
+                            'vocalized': vocalized,
+                            'semivocalized': semi_vocalized,
+                            'tags':  u':'.join(voc_affix_case),
+                            'type':  u':'.join(['Noun', word_seg['noun_tuple']['wordtype']]),
+                            'number': word_seg['noun_tuple']['number'],
+                            'gender':  word_seg['noun_tuple']['gender'],
+                            'freq': 'freqnoun',  # to note the frequency type
+                            'originaltags':  u':'.join(original_tags),
+                            'syntax': '',
                         }))
         if not detailed_result:
             self.set_error_code("Forms are not generated")
@@ -634,8 +615,10 @@ class NounStemmer:
         @return: vocalized word.
         @rtype: unicode.
         """
-        return self.generator.vocalize(noun, proclitic, suffix, enclitic)
-        
+        key = "-".join([noun, proclitic, suffix, enclitic])
+        if not key in self.noun_vocalize_cache:
+            self.noun_vocalize_cache[key] = self.generator.vocalize(noun, proclitic, suffix, enclitic)
+        return self.noun_vocalize_cache[key] 
         
         # proclitic have only an uniq vocalization in arabic
         proclitic_voc = SNC.COMP_PREFIX_LIST_TAGS[proclitic]["vocalized"][0]

@@ -12,8 +12,10 @@
 # Licence:     GPL
 #-------------------------------------------------------------------------------
 """Cache Module for analex"""
+from . import cache
+import pickle
 
-class Cache(object):
+class Cache(cache.Cache):
     """
         cache for word morphological analysis
     """
@@ -29,14 +31,35 @@ class Cache(object):
                 'stopword': {}
             },
         }
-        self.db = False
+        # open a file, where you stored the pickled data
+        if not dp_path:
+            dp_path = "qalsadi_cache.pickle"
+        self.dp_path = dp_path
+        try:
+            self.db = open(self.dp_path, 'rb')
+        except:
+            print(__file__, "Can't Open file to pickle", self.dp_path)
+        else:
+            # load information from that file
+            self.cache = pickle.load(self.db)
+            self.db.close
 
     def __del__(self):
         """
         Delete instance and clear cache
 
         """
-        self.cache = None
+
+        try:
+            self.db = open(self.dp_path, 'wb')
+        except:
+            print(__file__, "Can't Open file to pickle", self.dp_path)
+        else:
+            # dump information to that file
+            pickle.dump(self.cache, self.db)            
+            self.db.close        
+            self.cache = None
+       
 
 
     def is_already_checked(self, word):

@@ -50,8 +50,6 @@ teststop:
 
 testone:
 	cd tests;python3 test_analex.py -c test_one -f samples/words.txt -o output/words.csv > output/words.txt
-testone3:
-	cd tests;python3 test_analex.py -c test_one -f samples/words.txt -o output/words.csv > output/words.txt
 
 test1000:LIMIT= 10
 test1000:
@@ -65,3 +63,16 @@ test63:
 	wc -w tests/samples/text63.txt
 	cp  tests/output/profile.txt  tests/output/profile-$(date).txt
 	echo "Use cprofilev -f tests/output/profile.txt"
+test73c:LIMIT= 10000
+test73c:PROFILER=-m cProfile
+
+test73:LIMIT= 10000
+test73:PROFILER=-m pyinstrument
+test73 test73c:
+	cd tests;python3 $(PROFILER) -o  output/profile.txt test_analex.py -l $(LIMIT) -f samples/text63.txt -o output/text73.csv > output/text73.txt
+	echo ""
+	wc -w tests/samples/text63.txt
+	cp  tests/output/profile.txt  tests/output/profile-$(date).txt
+	# use pyinstrument to analyze profile
+	tail -n 3 tests/output/text73.txt | sed "s/\[options\]/-r html --show-all/g" | sed "s/pyinstrument/python3 -m pyinstrument/g"
+

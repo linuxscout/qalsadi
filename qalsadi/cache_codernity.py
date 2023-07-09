@@ -20,20 +20,7 @@ import os
 from codernitydb3.database import Database
 from codernitydb3.hash_index import HashIndex
     
-#~ class WithAIndex(HashIndex):
 
-    #~ def __init__(self, *args, **kwargs):
-        #~ kwargs['key_format'] = '32s'
-        #~ super(WithAIndex, self).__init__(*args, **kwargs)
-
-    #~ def make_key_value(self, data):
-        #~ a_val = data.get("a")
-        #~ if a_val is not None:
-            #~ return a_val, None
-        #~ return None
-
-    #~ def make_key(self, key):
-        #~ return key
 class WithAIndex(HashIndex):
     def __init__(self, *args, **kwargs):
         # kwargs['entry_line_format'] = '<32s32sIIcI'
@@ -93,7 +80,7 @@ class Cache(object):
                 self.db.open()
         except:
         #~ else:
-            print("Can't Open data base")
+            print(__file__," Error: Can't Open data base ", dp_path)
             self.db = None
     def __del__(self):
         """
