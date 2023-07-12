@@ -4,12 +4,13 @@ from io import open
 # to install type:
 # python setup.py install --root=/
 def readme():
-    with open('README.rst', encoding='utf8') as f:
+    with open('README.md', encoding='utf8') as f:
         return f.read()
 
-setup (name='qalsadi', version='0.4.8',
+setup (name='qalsadi', version='0.5',
       description='Qalsadi Arabic Morphological Analyzer and lemmatizer for Python',
-      long_description = readme(),      
+      long_description = readme(),  
+      long_description_content_type='text/markdown',
       author='Taha Zerrouki',
       author_email='taha.zerrouki@gmail .com',
       url='http://qalsadi.sourceforge.net/',
@@ -17,17 +18,17 @@ setup (name='qalsadi', version='0.4.8',
       package_dir={'qalsadi': 'qalsadi',},
       packages=['qalsadi'],
       include_package_data=True,
-      install_requires=[ "six>=1.10.0",
-                "future>=0.16.0",
-                "pickledb>=0.9.2",
-                "alyahmor>=0.1",
-                "libqutrub>=1.2.3",
-                "naftawayh>=0.3",
-                "pyarabic>=0.6.7",
-                "tashaphyne>=0.3.4.1",
-                "arramooz-pysqlite>=0.4.2",
-                "Arabic-Stopwords>=0.3",
-      ],         
+      install_requires=['Arabic-Stopwords>=0.4.2', 
+            'alyahmor>=0.2', 
+            'arramooz-pysqlite>=0.4.2', 
+            'codernitydb3', 
+            'libqutrub>=1.2.3', 
+            'mysam-tagmanager>=0.3.3', 
+            'naftawayh>=0.3', 
+            'pickledb>=0.9.2', 
+            'pyarabic>=0.6.7', 
+            'tashaphyne>=0.3.4.1',
+            ],
       package_data = {
         'qalsadi': ['doc/*.*','doc/html/*', 'data/*.*', 'qalsadi/data'],
         },

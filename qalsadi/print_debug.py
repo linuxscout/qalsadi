@@ -21,15 +21,9 @@
 #  MA 02110-1301, USA.
 #  
 # 
-from __future__ import (
-    absolute_import,
-    print_function,
-    unicode_literals,
-    #~ division,
-    )
 
 from builtins import str
-from future.utils import python_2_unicode_compatible
+# ~ from future.utils import python_2_unicode_compatible
 import sys
 
 
