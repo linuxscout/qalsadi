@@ -101,7 +101,7 @@ class qalsadilemmatizerTestCase(unittest.TestCase):
     
    
     # ~ @unittest.skip("Not yet ready")                    
-    def _test_many_lemmatization(self, words_lemmas, limit=10):
+    def _test_many_lemmatization(self, words_lemmas, vocalized = False, limit=10):
         """
         private method
         test word list lemmatization from dataset
@@ -109,11 +109,13 @@ class qalsadilemmatizerTestCase(unittest.TestCase):
         """
         wrong_lemmatization = []
         nb_diff = 0
-        
+        if vocalized:
+            self.lemmer.set_vocalized_lemma()
         for item in words_lemmas:
             token = item.get("token")
             expected_lemma = item.get("lemma")
-            expected_lemma = araby.strip_tashkeel(expected_lemma)
+            if not vocalized:
+                expected_lemma = araby.strip_tashkeel(expected_lemma)
             expected_wordtype = item.get("wordtype")
             # used to handle incorrect cases,
             # if the flag is False, the actual output is not correct according to the expected 
@@ -136,6 +138,8 @@ class qalsadilemmatizerTestCase(unittest.TestCase):
                     "expected_wordtype":expected_wordtype,
                     "flag":result_flag,
                     })
+        if vocalized:
+            self.lemmer.set_vocalized_lemma()
         return wrong_lemmatization
 
 
@@ -166,7 +170,19 @@ class qalsadilemmatizerTestCase(unittest.TestCase):
         based on dataset"""
 
         
-        result  = self._test_many_lemmatization(self.word_lemma_list, self.limit)
+        result  = self._test_many_lemmatization(self.word_lemma_list, limit=self.limit)
+        len_wrong_cases = len(result)
+        if(len_wrong_cases):
+            print("Wrong cases")
+            pprint.pprint(result)
+        self.assertEqual(len_wrong_cases, 0, "There are %d wrong cases "%len_wrong_cases)
+        
+    def test_lemmatization_vocalized_case(self, ):
+        """ test case
+        based on dataset"""
+
+        
+        result  = self._test_many_lemmatization(self.word_lemma_list, vocalized = True, limit= self.limit)
         len_wrong_cases = len(result)
         if(len_wrong_cases):
             print("Wrong cases")
