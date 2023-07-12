@@ -76,3 +76,5 @@ test73 test73c:
 	# use pyinstrument to analyze profile
 	tail -n 3 tests/output/text73.txt | sed "s/\[options\]/-r html --show-all/g" | sed "s/pyinstrument/python3 -m pyinstrument/g"
 
+test_unit:
+	cd tests; python3 -m pytest test_unit_lemmatizer.py

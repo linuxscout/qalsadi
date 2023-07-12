@@ -1,1 +1,4 @@
 console-progressbar>=1.1.2
+pytest
+tqdm
+pyinstrument
