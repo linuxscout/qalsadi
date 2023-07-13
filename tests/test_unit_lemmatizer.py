@@ -44,20 +44,7 @@ class qalsadilemmatizerTestCase(unittest.TestCase):
         self.word_lemma_list= lemmas_dataset.Lemmas_DataSet
         self.limit = 1000
 
-    def get_noun_features(self, lemma):
-        """
-        @param lemma: noun lemma
-        @return: dict of feature value
-        """
-        return self.noun_lemmas.get(lemma, [])
 
-    def get_expected_lemmas(self, word):
-        """
-        used to test new noun list
-        @param noun:
-        @return:
-        """
-        return  self.dataset.get(word, [])
 
     def test_text_cases(self, ):
         """ test text case"""
