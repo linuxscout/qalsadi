@@ -78,4 +78,6 @@ test73 test73c:
 
 test_unit:
 #~ 	cd tests; python3 -m pytest test_unit_lemmatizer.py
-	cd tests; python3 -m pytest test_unit_analex.py
+#~ 	cd tests; python3 -m pytest test_unit_analex.py
+	cd tests; python3 -m pytest test_unit_cache.py
+	cd tests; python3 -m pytest test_unit_tagmaker.py
