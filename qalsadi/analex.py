@@ -25,10 +25,10 @@
 if __name__ == "__main__":
     import sys
     sys.path.append('..')
-try:
-    unicode
-except NameError:
-    from six import text_type as unicode
+# try:
+#     unicode
+# except NameError:
+#     from six import text_type as unicode
 import re
 import pyarabic.araby as araby 
 from pyarabic.arabrepr import arepr

@@ -40,6 +40,7 @@ import qalsadi.cache
 import qalsadi.cache_pickle
 import qalsadi.cache_pickledb
 import qalsadi.cache_codernity
+import qalsadi.cache_factory
 
 from qalsadi.stemnode import StemNode
 
@@ -208,7 +209,20 @@ class qalsadiAnalyzerCacheTestCase(unittest.TestCase):
         self.test_text_cases()
         # remove cacher
         self.analyzer.set_cacher()
-        self.analyzer.disable_allow_cache_use()         
+        self.analyzer.disable_allow_cache_use()
+
+    def test_cache_factory(self, ):
+        """ test Cache case"""
+        path = os.path.join(os.path.dirname(__file__), 'cache')
+        for name in qalsadi.cache_factory.Cache_Factory.list():
+            cacher = qalsadi.cache_factory.Cache_Factory.factory(name, path)
+            # attach cacher to analyzer
+            self.analyzer.set_cacher(cacher)
+            self.analyzer.enable_allow_cache_use()
+            self.test_text_cases()
+            # remove cacher
+            self.analyzer.set_cacher()
+            self.analyzer.disable_allow_cache_use()
      
  
 if __name__ == '__main__':
