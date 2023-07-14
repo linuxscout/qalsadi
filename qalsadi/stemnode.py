@@ -18,6 +18,8 @@ from collections import Counter
 
 
 import pyarabic.araby as araby
+from .wordcase import  WordCase 
+from .stemmedword import StemmedWord
 
 def ispunct(word):
     return word in u'!"#$%&\'()*+,-./:;<=>?@[\\]^_`{|}~،؟'
@@ -43,6 +45,16 @@ class StemNode:
         # option to handle vocalized lemmas
         self.vocalized_lemma = vocalized_lemma
         self.case_count = len(case_list)
+        
+        # convert the case list into StemmedSynword
+        tmp_case_list = []
+        for case in case_list:
+            if isinstance(case, WordCase):
+                tmp_case_list.append(StemmedWord(case))
+            else:
+                tmp_case_list.append(case)
+        case_list = tmp_case_list
+                
         #~""" the number of syntaxtical cases """
         #~ print("case_list", len(case_list))
         self.word = ''
@@ -56,6 +68,12 @@ class StemNode:
             self.vocalizeds = [case.get_vocalized() for case in case_list]
             self.vocalizeds = list(set(self.vocalizeds))
             self.vocalizeds.sort()
+            
+        self.tags = []
+        if case_list:        
+            self.tags = [case.get_tags()+":"+case.get_type() for case in case_list]
+            self.tags = list(set(self.tags))
+            self.tags.sort()
             
         # the  affixs  list
         self.affixes = []
@@ -414,7 +432,15 @@ class StemNode:
         @return: the given vocalizeds.
         @rtype: list of unicode string
         """
-        return self.vocalizeds        
+        return self.vocalizeds 
+               
+    def get_tags(self, ):
+        """
+        Get the tags of the input word
+        @return: the tags list.
+        @rtype: list of unicode string
+        """
+        return self.tags      
 
     def get_chosen_indexes(self, ):
         """
