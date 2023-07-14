@@ -54,7 +54,7 @@ class Cache(object):
         """
         Create Analex Cache
         """
-        DB_PATH = os.path.join(os.path.expanduser('~'), '.qalsadiCache')
+        DB_PATH_DEFAULT = os.path.join(os.path.expanduser('~'), '.qalsadiCache')
         self.cache = {
             'checkedWords': {},
             'FreqWords': {
@@ -64,7 +64,7 @@ class Cache(object):
             },
         }
         if not dp_path:
-            dp_path = self.DB_PATH
+            dp_path = DB_PATH_DEFAULT
         else:
             dp_path = os.path.join(os.path.dirname(dp_path), '.qalsadiCache')
         #~ sys.stderr.write("Tahahahah\n"+" "+ dp_path +" "+str(type(dp_path)))
@@ -88,8 +88,9 @@ class Cache(object):
 
         """
         self.cache = None
-        if self.db:
-            self.db.close()
+        if hasattr(self, "db"):
+            if self.db:
+                self.db.close()
 
     def is_already_checked(self, word):
         """ return if ``word`` is already cached"""
