@@ -83,7 +83,7 @@ pip install -r requirements.txt
 ## Usage
 
 ### Example 
-* Lemmatization
+#### Lemmatization
 ```python
 >>> import qalsadi.lemmatizer 
 >>> text = u"""هل تحتاج إلى ترجمة كي تفهم خطاب الملك؟ اللغة "الكلاسيكية" (الفصحى) موجودة في كل اللغات وكذلك اللغة "الدارجة" .. الفرنسية التي ندرس في المدرسة ليست الفرنسية التي يستخدمها الناس في شوارع باريس .. وملكة بريطانيا لا تخطب بلغة شوارع لندن .. لكل مقام مقال"""
@@ -113,7 +113,7 @@ pip install -r requirements.txt
 >>> 
 ```
 
-* Morphology analysis
+#### Morphology analysis
 ``` python
 filename="samples/text.txt"
 import qalsadi.analex as qa
@@ -178,3 +178,88 @@ syntax     | noun       | tag_added            |0                a|خاصية ن
 syntax     | all        | need                 |                 a|الكلمة تحتاج إلى كلمة أخرى (المتعدي، العوامل) غير منجزة
 syntax     | tool       | action               |                 a|العمل
 syntax     | tool       | object_type          |                 a|نوع المعمول، بالنسبة للعامل، مثلا اسم لحرف الجر
+
+#### Unsing Cache
+Qalsadi can use Cache to speed up the process, there are 4 kinds of cache,
+
+* Memory cache
+* Pickle cache
+* Pickledb cache
+* CodernityDB cache.
+
+To use one of it, you can see the followng examples:
+* Using a factory method
+```python
+>>> import qalsadi.analex
+>>> from qalsadi.cache_factory import Cache_Factory
+>>> analyzer = qalsadi.analex.Analex()
+>>> # list available cache names
+>>> Cache_Factory.list()
+['', 'memory', 'pickle', 'pickledb', 'codernity']
+>>> # configure cacher
+>>> # configure path used to store the cache
+>>> path = 'cache/qalsasicache.pickledb'
+>>> cacher = Cache_Factory.factory("pickledb", path)
+>>> analyzer.set_cacher(cacher)
+>>> # to enable the use of cacher
+>>> analyzer.enable_allow_cache_use()
+```
+* Memory cache
+
+```python
+>>> import qalsadi.analex
+>>> analyzer = qalsadi.analex.Analex()
+>>> # configure cacher
+>>> import qalsadi.cache
+>>> cacher = qalsadi.cache.Cache()
+>>> analyzer.set_cacher(cacher)
+>>> # to enable the use of cacher
+>>> analyzer.enable_allow_cache_use()
+>>> # to disable the use of cacher
+>>> analyzer.disable_allow_cache_use()
+```
+* Pickle cache
+
+```python
+>>> import qalsadi.analex
+>>> from qalsadi.cache_pickle import Cache
+>>> analyzer = qalsadi.analex.Analex()
+>>> # configure cacher
+>>> # configure path used to store the cache
+>>> path = 'cache/qalsadiCache.pickle'
+>>> cacher = Cache(path)
+>>> analyzer.set_cacher(cacher)
+>>> # to enable the use of cacher
+>>> analyzer.enable_allow_cache_use()
+
+```
+* Pickledb cache
+
+```python
+>>> import qalsadi.analex
+>>> from qalsadi.cache_pickledb import Cache
+>>> analyzer = qalsadi.analex.Analex()
+>>> # configure cacher
+>>> # configure path used to store the cache
+>>> path = 'cache/qalsadiCache.pickledb'
+>>> cacher = Cache(path)
+>>> analyzer.set_cacher(cacher)
+>>> # to enable the use of cacher
+>>> analyzer.enable_allow_cache_use()
+
+```
+* CodernityDB cache
+
+
+```python
+>>> import qalsadi.analex
+>>> from qalsadi.cache_codernity import Cache
+>>> analyzer = qalsadi.analex.Analex()
+>>> # configure cacher
+>>> # configure path used to store the cache
+>>> path = 'cache'
+>>> cacher = Cache(path)
+>>> analyzer.set_cacher(cacher)
+>>> # to enable the use of cacher
+>>> analyzer.enable_allow_cache_use()
+```

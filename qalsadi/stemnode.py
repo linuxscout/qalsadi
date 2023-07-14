@@ -18,6 +18,8 @@ from collections import Counter
 
 
 import pyarabic.araby as araby
+from .wordcase import  WordCase 
+from .stemmedword import StemmedWord
 
 def ispunct(word):
     return word in u'!"#$%&\'()*+,-./:;<=>?@[\\]^_`{|}~،؟'
@@ -43,6 +45,16 @@ class StemNode:
         # option to handle vocalized lemmas
         self.vocalized_lemma = vocalized_lemma
         self.case_count = len(case_list)
+        
+        # convert the case list into StemmedSynword
+        tmp_case_list = []
+        for case in case_list:
+            if isinstance(case, WordCase):
+                tmp_case_list.append(StemmedWord(case))
+            else:
+                tmp_case_list.append(case)
+        case_list = tmp_case_list
+                
         #~""" the number of syntaxtical cases """
         #~ print("case_list", len(case_list))
         self.word = ''
@@ -56,6 +68,12 @@ class StemNode:
             self.vocalizeds = [case.get_vocalized() for case in case_list]
             self.vocalizeds = list(set(self.vocalizeds))
             self.vocalizeds.sort()
+            
+        self.tags = []
+        if case_list:        
+            self.tags = [case.get_tags()+":"+case.get_type() for case in case_list]
+            self.tags = list(set(self.tags))
+            self.tags.sort()
             
         # the  affixs  list
         self.affixes = []
@@ -346,7 +364,7 @@ class StemNode:
         lemmas = list(set(lemmas))
         return lemmas
 
-    def get_lemma(self,  pos ="", return_pos=False):
+    def get_lemma(self,  pos = "", return_pos=False):
         """
         Get a lemma of the input word, you can select a POS tag (n,v,s)
         @return: the given lemmas list.
@@ -356,33 +374,39 @@ class StemNode:
         # if one return it
         # if it's a punct return it directly
 
+        lemma = ""
+        lemma_type = ""
         if self.lemmas.get("pounct", []):
-            return most_frequent(self.lemmas["pounct"])
-        # strategy to select lemmas
-        word_type_strategy = ["stopword", "noun", "verb", "all"]
-        
-        if pos:
-            pos = pos.lower()
-            if pos in ("s", "stop_words", "stop_word"):
-                pos = "stopword"
-            elif pos in ("n",):
-                pos = "noun"
-            elif pos in ("p", "punct",):
-                pos = "pounct"
-            elif pos in ("v", ):
-                pos = "verb"
-            else:
-                pos = "all"            
-            word_type_strategy = [pos,]
-        # select according to defined strategy
-        for  word_type in word_type_strategy:
-            if self.lemmas.get(word_type, []):
-                if not return_pos:
-                    return most_frequent(self.lemmas[word_type])
+                lemma  = most_frequent(self.lemmas["pounct"])
+                lemma_type = "pounct"
+        else:
+            # strategy to select lemmas
+            word_type_strategy = ["stopword", "noun", "verb", "all"]
+            
+            if pos:
+                pos = pos.lower()
+                if pos in ("s", "stop_words", "stop_word"):
+                    pos = "stopword"
+                elif pos in ("n",):
+                    pos = "noun"
+                elif pos in ("p", "punct",):
+                    pos = "pounct"
+                elif pos in ("v", ):
+                    pos = "verb"
                 else:
-                    # return lemma and its POS
-                    return (most_frequent(self.lemmas[word_type]), word_type)
-        return ""
+                    pos = "all"
+
+                word_type_strategy = [pos,]
+            # select according to defined strategy
+            for  word_type in word_type_strategy:
+                if self.lemmas.get(word_type, []):
+                     lemma =  most_frequent(self.lemmas[word_type])
+                     lemma_type = word_type
+                     break
+        if not return_pos:
+            return lemma
+        else:
+            return (lemma,lemma_type)
         
     
     def get_affixes(self, ):
@@ -408,7 +432,15 @@ class StemNode:
         @return: the given vocalizeds.
         @rtype: list of unicode string
         """
-        return self.vocalizeds        
+        return self.vocalizeds 
+               
+    def get_tags(self, ):
+        """
+        Get the tags of the input word
+        @return: the tags list.
+        @rtype: list of unicode string
+        """
+        return self.tags      
 
     def get_chosen_indexes(self, ):
         """
@@ -594,19 +626,6 @@ class StemNode:
         #~ return not self.syn_previous and not self.sem_previous #or self.get_break_type() == "break"
         return self.get_break_type() in ("break", "mostBreak")
 
-    #~ def is_next_break(self,):
-        #~ """
-        #~ The syn node is next break, if it hasn't any syntaxique or semantique 
-        #~ relation with the next word
-        #~ """
-        #~ if not(self.syn_nexts or self.sem_nexts):
-            #~ return True
-        #~ else:
-        #~ # or only the relation is tanwin
-            #~ for key in self.syn_nexts:
-                #~ if self.syn_nexts[k] != syn_const.TanwinRelation:
-                    #~ return False
-        #~ return False
                 
     def __repr__(self):
         text = u"\n'%s':%s, [%s-%s]{V:%d, N:%d, S:%d} " % (
