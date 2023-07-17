@@ -8,7 +8,7 @@
 Features  |   value
 ----------|---------------------------------------------------------------------------------
 Authors   | [Authors.md](https://github.com/linuxscout/qalsadi/master/AUTHORS.md)
-Release   | 0.4.6
+Release   | 0.5 
 License   |[GPL](https://github.com/linuxscout/qalsadi/master/LICENSE)
 Tracker   |[linuxscout/qalsadi/Issues](https://github.com/linuxscout/qalsadi/issues)
 Website   |[https://pypi.python.org/pypi/qalsadi](https://pypi.python.org/pypi/qalsadi)
