@@ -1,6 +1,12 @@
 # Qalsadi Arabic Morphological Analyzer and Lemmatizer for Python
 
+المكتبة البرمجية [القلصادي](https://github.com/linuxscout/qalsadi)  أداة متخصصة في التحليل الصرفي للنصوص العربية. تعتمد على قاعدة بيانات معجمية لتحليل النصوص سواء كانت مشكولة جزئياً أو كلياً. تقدم هذه المكتبة تشكيل الكلمات وتحليلها الصرفي، بالإضافة إلى تقييم درجة شيوع الكلمة في اللغة العربية المعاصرة.
 
+متوفرة للتجربة على موقع [مشكال](http://tahadz.com/mishkal)، قسم  أدوات/تحليل
+
+[Qalsadi](https://github.com/linuxscout/qalsadi) library is a specialized tool for morphological analysis of Arabic texts. It uses a lexical database to analyze fully or partially vocalized texts, providing both morphological analysis and diacritics. Additionally, it evaluates the frequency of word usage in contemporary Arabic and uses the "Qutrub" tool for verb conjugation.
+
+The demo is available on [Mishkal](http://Tahadz.com/mishkal/ >Tools/َAnalysis
 
   Developpers:  Taha Zerrouki: http://tahadz.com
     taha dot zerrouki at gmail dot com
