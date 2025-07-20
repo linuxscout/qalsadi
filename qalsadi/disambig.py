@@ -166,7 +166,7 @@ class Disambiguator:
 
 def mainly():
     """
-    MAin test
+    Main test
     """
     text = u"   السلام أن العبادي كان أعلن فتح المنطقة أن السلام مفيد أن يركبوا"
     # tokenize the text

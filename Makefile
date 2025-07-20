@@ -1,5 +1,5 @@
 #/usr/bin/sh
-# Build pyArabic package
+# Build Qalsadi package
 date=$(shell date +'%y.%m.%d-%H:%M')
 default: all
 # Clean build files
