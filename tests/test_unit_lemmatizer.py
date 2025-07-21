@@ -29,10 +29,10 @@ import sys
 import pprint
 import pyarabic.araby as araby
 
-sys.path.append("../")
+
 import qalsadi.lemmatizer
 
-from fixtures import lemmas_dataset
+from tests.fixtures import lemmas_dataset
 
 
 class qalsadilemmatizerTestCase(unittest.TestCase):

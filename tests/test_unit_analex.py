@@ -34,16 +34,16 @@ import collections
 import pyarabic.araby as araby
 
 
-sys.path.append("../")
+# sys.path.append("../")
 import qalsadi.analex
 from qalsadi.stemnode import StemNode
 
-from fixtures import analex_dataset
-from fixtures import verb_dataset
-from fixtures import noun_dataset
-from fixtures import stopword_dataset
-from fixtures import unknown_dataset
-from fixtures import pounct_dataset
+from tests.fixtures import analex_dataset
+from tests.fixtures import verb_dataset
+from tests.fixtures import noun_dataset
+from tests.fixtures import stopword_dataset
+from tests.fixtures import unknown_dataset
+from tests.fixtures import pounct_dataset
 
 
 class qalsadiAnalyzerTestCase(unittest.TestCase):
