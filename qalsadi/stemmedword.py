@@ -1,6 +1,6 @@
 ﻿#!/usr/bin/python
 # -*- coding=utf-8 -*-
-#-------------------------------------------------------------------------------
+# -------------------------------------------------------------------------------
 # Name:        stemmed_word
 # Purpose:     representat data analyzed given by morphoanalyzer Qalsadi
 #
@@ -9,13 +9,15 @@
 # Created:     19-09-2012
 # Copyright:   (c) Taha Zerrouki 2012
 # Licence:     GPL
-#-------------------------------------------------------------------------------
+# -------------------------------------------------------------------------------
 """
 stemmed_word represents the data resulted from the morpholocigal analysis
 """
 import pyarabic.araby as araby
 from . import stemmedaffix
+
 GLOBAL_AFFIXES = {}
+
 
 class StemmedWord:
     """
@@ -24,58 +26,59 @@ class StemmedWord:
 
     def __init__(self, resultdict=None):
         # given word attributes
-        self.word = u"",
-        #~"""input word"""
-        self.vocalized = u"",
-        #~"""vocalized form of the input word """
-        self.unvocalized = u""
+        self.word = ("",)
+        # ~"""input word"""
+        self.vocalized = ("",)
+        # ~"""vocalized form of the input word """
+        self.unvocalized = ""
 
-        #~"""semivocalized form of the input word without inflection mark"""
-        self.semivocalized = u""
+        # ~"""semivocalized form of the input word without inflection mark"""
+        self.semivocalized = ""
 
-        self.tags = u"",
-        #~"""tags of affixes and tags extracted form lexical dictionary"""
-        self.affix_key = u'-'
-        affix_tags = u""
-        #~"""tags of affixes"""
+        self.tags = ("",)
+        # ~"""tags of affixes and tags extracted form lexical dictionary"""
+        self.affix_key = "-"
+        affix_tags = ""
+        # ~"""tags of affixes"""
 
         # stemmed word attributes
-        self.stem = u"",
-        #~"""the word stem"""
+        self.stem = ("",)
+        # ~"""the word stem"""
 
         # _original word attributes from dictionary.
-        self.original_tags = u"",
-        #~""" tags extracted form lexical dictionary"""
-        self.freq = 0,  # the word frequency from _word _frequency database
-        self.type = u"",  # the word type
-        self.original = u""  #original word from lexical dictionary
-        self.tag_regular = True  # the stemmed word is regular or irregular سالم أو تكسير
+        self.original_tags = ("",)
+        # ~""" tags extracted form lexical dictionary"""
+        self.freq = (0,)  # the word frequency from _word _frequency database
+        self.type = ("",)  # the word type
+        self.original = ""  # original word from lexical dictionary
+        self.tag_regular = (
+            True  # the stemmed word is regular or irregular سالم أو تكسير
+        )
         # تستعمل في الجمع
         if resultdict:
 
-            self.word = resultdict.get('word', u'')
-            self.vocalized = resultdict.get('vocalized', u'')
-            self.semivocalized = resultdict.get('semivocalized', u'')
-            self.stem = resultdict.get('stem', u'')
-            self.root = resultdict.get('root', u'')
-            self.affix = u'-'.join(resultdict.get('affix', []))
+            self.word = resultdict.get("word", "")
+            self.vocalized = resultdict.get("vocalized", "")
+            self.semivocalized = resultdict.get("semivocalized", "")
+            self.stem = resultdict.get("stem", "")
+            self.root = resultdict.get("root", "")
+            self.affix = "-".join(resultdict.get("affix", []))
 
-            affix_tags = resultdict.get('tags', u'')
-            self.tags = u':'.join([
-                resultdict.get('tags', u''),
-                resultdict.get('originaltags', u'')
-            ])
-            self.freq = resultdict.get('freq', u'')
-            self.type = resultdict.get('type', u'')
-            self.original = resultdict.get('original', u'')
+            affix_tags = resultdict.get("tags", "")
+            self.tags = ":".join(
+                [resultdict.get("tags", ""), resultdict.get("originaltags", "")]
+            )
+            self.freq = resultdict.get("freq", "")
+            self.type = resultdict.get("type", "")
+            self.original = resultdict.get("original", "")
             # tags of stop word
             # action: the word role
-            self.action = resultdict.get('action', u'')
+            self.action = resultdict.get("action", "")
             # object_type: the next word type if is submitted to the action
             # the type of next word needed by the actual stop word
-            self.object_type = resultdict.get('object_type', u'')
-            self.need = resultdict.get('need', u'')
-            self.tag_type = self.__get_type(resultdict.get('type', u''))
+            self.object_type = resultdict.get("object_type", "")
+            self.need = resultdict.get("need", "")
+            self.tag_type = self.__get_type(resultdict.get("type", ""))
 
         self.affix_key = self.affix
 
@@ -90,53 +93,52 @@ class StemmedWord:
         self.tag_confirmed = False
         self.tag_pronoun = False
         self.tag_transitive = False
-        self.tag_person = self.__get_person(resultdict.get('person', None))
-        #~ x = resultdict.get('gender', None)
-        #~ if x : print x.encode('utf8'), self.word.encode('utf8')
-        self.tag_original_number = resultdict.get('number', None)
-        self.tag_original_gender = resultdict.get('gender', None)
+        self.tag_person = self.__get_person(resultdict.get("person", None))
+        # ~ x = resultdict.get('gender', None)
+        # ~ if x : print x.encode('utf8'), self.word.encode('utf8')
+        self.tag_original_number = resultdict.get("number", None)
+        self.tag_original_gender = resultdict.get("gender", None)
         self.tag_number = self.__get_number()
         self.tag_gender = self.__get_gender()
         if self.is_noun():
             self.tag_added = self._is_added()
             self.tag_mamnou3 = self._is_mamnou3()
             # grouped attributes
-            self.affix_key = u'|'.join([self.affix_key, self.word])
+            self.affix_key = "|".join([self.affix_key, self.word])
         if self.is_verb():
-            self.tag_tense = resultdict.get('tense', u'')
-            self.tag_voice = resultdict.get('voice', u'')
-            self.tag_mood = resultdict.get('mood', u'')
-            self.tag_confirmed = resultdict.get('confirmed', u'')
-            self.tag_pronoun = resultdict.get('pronoun', u'')
-            self.tag_transitive = resultdict.get('transitive', False)
-            #print ("stemmedword", self.tag_transitive)
+            self.tag_tense = resultdict.get("tense", "")
+            self.tag_voice = resultdict.get("voice", "")
+            self.tag_mood = resultdict.get("mood", "")
+            self.tag_confirmed = resultdict.get("confirmed", "")
+            self.tag_pronoun = resultdict.get("pronoun", "")
+            self.tag_transitive = resultdict.get("transitive", False)
+            # print ("stemmedword", self.tag_transitive)
 
             # #if the word is verb: we must add the tense and pronoun
             # to the affixkay.
             # #because for verbs, same affixes don't give same tags
-            self.affix_key = u'|'.join([self.affix_key, affix_tags])
+            self.affix_key = "|".join([self.affix_key, affix_tags])
         if self.is_stopword():
             # #if the word is a stop word: we must add the word
             # to the affixkay.
             # #because for stopwords, same affixes don't give same tags
-            self.affix_key = u'|'.join([self.affix_key, self.word])
+            self.affix_key = "|".join([self.affix_key, self.word])
         if self.affix_key not in GLOBAL_AFFIXES:
-            GLOBAL_AFFIXES[self.affix_key] = stemmedaffix.StemmedAffix(
-                resultdict)
-            #~ self.tag_transitive     ='y' in self.get_tags()
+            GLOBAL_AFFIXES[self.affix_key] = stemmedaffix.StemmedAffix(resultdict)
+            # ~ self.tag_transitive     ='y' in self.get_tags()
         if self.is_stopword():
             self.tag_transparent = self._is_transparent()
         self.tag_initial = self._is_initial()
 
-        #redandente
+        # redandente
         self.tag_break = self._is_break()
 
     #  tags extracted from word dictionary
-    #--------------------------
+    # --------------------------
     def _is_initial(self):
         """Return True if the word mark the begin of next sentence."""
         word = self.get_word()
-        return word == u"" or word[0] in (u'.', u'?', u'', u':')
+        return word == "" or word[0] in (".", "?", "", ":")
 
     def __get_number(self):
         """
@@ -160,20 +162,22 @@ class StemmedWord:
         self.tag_number = 0
         # إذا لم يكن في الزوائد ما يدل على الجمع
         if not self._affix_is_plural() and not self._affix_is_dual():
-            if u'مفرد' in self.get_tags() or (
-                    u'مفرد' in self.tag_original_number):
+            if "مفرد" in self.get_tags() or ("مفرد" in self.tag_original_number):
                 self.tag_number += 1
         if not self._affix_is_plural():
-            if u'مثنى' in self.get_tags():
+            if "مثنى" in self.get_tags():
                 self.tag_number += 2
-        if self._affix_is_plural() or u'جمع' in self.get_tags() or (
-                u'جمع' in self.tag_original_number):
+        if (
+            self._affix_is_plural()
+            or "جمع" in self.get_tags()
+            or ("جمع" in self.tag_original_number)
+        ):
             self.tag_number += 4
-            if u'جمع مذكر سالم' in self.get_tags():
+            if "جمع مذكر سالم" in self.get_tags():
                 self.tag_number += 8
-            if u'جمع مؤنث سالم' in self.get_tags():
+            if "جمع مؤنث سالم" in self.get_tags():
                 self.tag_number += 16
-            if u'جمع تكسير' in self.tag_original_number:
+            if "جمع تكسير" in self.tag_original_number:
                 self.tag_number += 32
         # if all previous case not used
         if self.tag_number == 0:
@@ -192,25 +196,30 @@ class StemmedWord:
         @rtype: int
         """
         self.tag_person = 0
-        #~ print self.get_tags().encode('utf8')
-        if u'متكلم' in self.get_tags() or (given_person_tag
-                                           and u'متكلم' in given_person_tag):
+        # ~ print self.get_tags().encode('utf8')
+        if "متكلم" in self.get_tags() or (
+            given_person_tag and "متكلم" in given_person_tag
+        ):
             self.tag_person += 1
-        if u'مخاطب' in self.get_tags() or (given_person_tag
-                                           and u'مخاطب' in given_person_tag):
+        if "مخاطب" in self.get_tags() or (
+            given_person_tag and "مخاطب" in given_person_tag
+        ):
             self.tag_person += 2
-        if u'غائب' in self.get_tags() or (given_person_tag
-                                          and u'غائب' in given_person_tag):
+        if "غائب" in self.get_tags() or (
+            given_person_tag and "غائب" in given_person_tag
+        ):
             self.tag_person += 4
         if not self.tag_person:
-            self.tag_person = 4 
-        #~ print self.tag_person
-        #tempdislay
-        #~ print self.word.encode('utf8'), self.get_tags().encode('utf8'), self.tag_person
-        #~ if given_person_tag: print "--",given_person_tag.encode('utf8')
+            self.tag_person = 4
+        # ~ print self.tag_person
+        # tempdislay
+        # ~ print self.word.encode('utf8'), self.get_tags().encode('utf8'), self.tag_person
+        # ~ if given_person_tag: print "--",given_person_tag.encode('utf8')
         return self.tag_person
 
-    def __get_regular(self, ):
+    def __get_regular(
+        self,
+    ):
         """
         Return the int code of the regular state.
         the regular cases are coded in binary like
@@ -221,7 +230,7 @@ class StemmedWord:
         """
         # غير محدد
         self.tag_regular = True
-        if u'جمع تكسير' in self.tag_original_number:
+        if "جمع تكسير" in self.tag_original_number:
             self.tag_regular = False
 
         return self.tag_regular
@@ -245,32 +254,37 @@ class StemmedWord:
         self.tag_type = 0
         if not input_type:
             return 0
-        if u'STOPWORD' in input_type:
+        if "STOPWORD" in input_type:
             self.tag_type += 1
-        if u'Verb' in input_type:
+        if "Verb" in input_type:
             self.tag_type += 2
-        if (u'Noun' in input_type or u'اسم' in input_type
-                or u'مصدر' in input_type):
+        if "Noun" in input_type or "اسم" in input_type or "مصدر" in input_type:
             self.tag_type += 4
-        if u'مصدر' in input_type:
+        if "مصدر" in input_type:
             self.tag_type += 8
         # adjective
-        #~ print "tags", self.get_word().encode('utf8'), self.get_tags().encode('utf8')
-        if (u'صفة' in input_type or u'اسم مفعول' in input_type
-                or u'اسم فاعل' in input_type or u'صيغة مبالغة' in input_type
-                or u'فاعل' in input_type or u'اسم تفضيل' in input_type
-                or u'منسوب' in self.get_tags()
-                #~ or u'منسوب' in self.get_affix_tags()
-                or u'منسوب' in input_type or "adj" in input_type):
+        # ~ print "tags", self.get_word().encode('utf8'), self.get_tags().encode('utf8')
+        if (
+            "صفة" in input_type
+            or "اسم مفعول" in input_type
+            or "اسم فاعل" in input_type
+            or "صيغة مبالغة" in input_type
+            or "فاعل" in input_type
+            or "اسم تفضيل" in input_type
+            or "منسوب" in self.get_tags()
+            # ~ or u'منسوب' in self.get_affix_tags()
+            or "منسوب" in input_type
+            or "adj" in input_type
+        ):
             self.tag_type += 16
-            #~ print "is adj", self.get_word().encode('utf8')
-        if u'noun_prop' in input_type:
+            # ~ print "is adj", self.get_word().encode('utf8')
+        if "noun_prop" in input_type:
             self.tag_type += 32
-        if u'POUNCT' in input_type:
+        if "POUNCT" in input_type:
             self.tag_type += 64
-        if u'NUMBER' in input_type:
+        if "NUMBER" in input_type:
             self.tag_type += 128
-        #~ print self.tag_type
+        # ~ print self.tag_type
         return self.tag_type
 
     def __get_gender(self, input_gender=""):
@@ -288,19 +302,23 @@ class StemmedWord:
         self.tag_gender = 0
         # إذا كان الاسم مذكرا وغير  متصل بما يؤنثه
         if not self._affix_is_feminin():
-            if u'مذكر' in self.tag_original_gender:
+            if "مذكر" in self.tag_original_gender:
                 self.tag_gender = 1
-            elif (u'اسم فاعل' in self.get_type()
-                  or u'اسم مفعول' in self.get_type()
-                  or u'صفة مشبهة' in self.get_type()):
+            elif (
+                "اسم فاعل" in self.get_type()
+                or "اسم مفعول" in self.get_type()
+                or "صفة مشبهة" in self.get_type()
+            ):
                 self.tag_gender = 1
             # يكون المصدر مذكرا إذا لم يحتوي على تاء مربوطة و لم يكن جمع تكسير
-            elif (u'مصدر' in self.get_type()
-                  and araby.TEH_MARBUTA not  in self.get_original()
-                  and u'جمع' not in self.tag_original_number):
+            elif (
+                "مصدر" in self.get_type()
+                and araby.TEH_MARBUTA not in self.get_original()
+                and "جمع" not in self.tag_original_number
+            ):
                 self.tag_gender = 1
 
-        #يتحدد المؤنث
+        # يتحدد المؤنث
         # بزيادة التاء المربوطة
         # جمع مؤنث سالم
         # ما كات اصله تاء مربوطة
@@ -309,24 +327,26 @@ class StemmedWord:
         ##print "stemmedword", self.get_original(), (araby.TEH_MARBUTA in self.get_original())
         if araby.TEH_MARBUTA in self.get_original():
             self.tag_gender += 2
-        elif u'مؤنث' in self.tag_original_gender or u'مؤنث' in self.get_tags():
+        elif "مؤنث" in self.tag_original_gender or "مؤنث" in self.get_tags():
             self.tag_gender += 2
-        elif u'جمع مؤنث سالم' in self.get_tags():
+        elif "جمع مؤنث سالم" in self.get_tags():
             self.tag_gender += 2
         elif self._affix_is_feminin():  # إذا كان متصلا بمايؤنثه
             self.tag_gender += 2
         # الحالات غير المثبتة والتي نحاول استخلاصها بقاعدة
-        elif (u'مصدر' in self.get_type()
-              and (araby.TEH_MARBUTA in self.get_original()
-                   or u'جمع' in self.tag_original_number)):
-            self.tag_gender += 2
-            
-        # جمع التكسير للمصادر والجوامد مؤنث
-        elif u'جمع' in self.tag_original_number and (
-                u"جامد" in self.get_type() or u"مصدر" in self.get_type()):
+        elif "مصدر" in self.get_type() and (
+            araby.TEH_MARBUTA in self.get_original()
+            or "جمع" in self.tag_original_number
+        ):
             self.tag_gender += 2
 
-        #~ print "gender", self.word.encode('utf8'), self.tag_gender
+        # جمع التكسير للمصادر والجوامد مؤنث
+        elif "جمع" in self.tag_original_number and (
+            "جامد" in self.get_type() or "مصدر" in self.get_type()
+        ):
+            self.tag_gender += 2
+
+        # ~ print "gender", self.word.encode('utf8'), self.tag_gender
         return self.tag_gender
 
     def _is_transparent(self):
@@ -336,15 +356,15 @@ class StemmedWord:
         @return: has the state transparent.
         @rtype: True/False
         """
-        #temporary,
+        # temporary,
         # the transparent word are stopwords like هذا وذلك
         # the stopword tags have اسم إشارة,
         # a pounctuation can has the transparent tag like quotes.,
         # which havent any gramatical effect.
         # Todo
         # حالة بذلك الرجل
-        #return  (u'شفاف' in self.get_tags() or u'إشارة'in self.get_tags()  ) and self.has_jar()
-        return u'شفاف' in self.get_tags()
+        # return  (u'شفاف' in self.get_tags() or u'إشارة'in self.get_tags()  ) and self.has_jar()
+        return "شفاف" in self.get_tags()
 
     def _is_mamnou3(self):
         """
@@ -352,72 +372,90 @@ class StemmedWord:
         @return: is mamnou3 min sarf.
         @rtype: True/False
         """
-        return u'ممنوع من الصرف' in self.get_tags() or "noun_prop" in self.get_type()
+        return "ممنوع من الصرف" in self.get_tags() or "noun_prop" in self.get_type()
 
-    def get_procletic(self, ):
+    def get_procletic(
+        self,
+    ):
         """Get the procletic"""
         # return self.procletic
         if self.affix_key in GLOBAL_AFFIXES:
             return GLOBAL_AFFIXES[self.affix_key].get_procletic()
-        return u""
+        return ""
 
-    def has_jonction(self, ):
+    def has_jonction(
+        self,
+    ):
         """return if the word has jonction"""
         if self.affix_key in GLOBAL_AFFIXES:
             return GLOBAL_AFFIXES[self.affix_key].is_3tf()
-        return u""
+        return ""
 
-    def has_procletic(self, ):
+    def has_procletic(
+        self,
+    ):
         """return True if has procletic"""
         # return self.procletic! = u''
         if self.affix_key in GLOBAL_AFFIXES:
             return GLOBAL_AFFIXES[self.affix_key].has_procletic()
         return False
 
-    def is_transitive(self, ):
+    def is_transitive(
+        self,
+    ):
         """return True if the verb is transitive"""
         return self.tag_transitive
 
-    def is_indirect_transitive(self, ):
+    def is_indirect_transitive(
+        self,
+    ):
         """return True if the verb is indirect transitive  متعدي بحرف"""
         return self.tag_transitive
 
-    def get_prefix(self, ):
+    def get_prefix(
+        self,
+    ):
         """Get the prefix"""
         # return self.prefix
         if self.affix_key in GLOBAL_AFFIXES:
             return GLOBAL_AFFIXES[self.affix_key].get_prefix()
-        return u""
+        return ""
 
-    def get_suffix(self, ):
+    def get_suffix(
+        self,
+    ):
         """Get the suffix"""
         if self.affix_key in GLOBAL_AFFIXES:
             return GLOBAL_AFFIXES[self.affix_key].get_suffix()
-        return u""
+        return ""
 
-    def get_encletic(self, ):
+    def get_encletic(
+        self,
+    ):
         """Get the encletic"""
         if self.affix_key in GLOBAL_AFFIXES:
             return GLOBAL_AFFIXES[self.affix_key].get_encletic()
-        return u""
+        return ""
 
-    def has_encletic(self, ):
+    def has_encletic(
+        self,
+    ):
         """return True if has encletic"""
         if self.affix_key in GLOBAL_AFFIXES:
             return GLOBAL_AFFIXES[self.affix_key].has_encletic()
         return False
 
     # Mixed affix and dictionary attrrubutes
-    #---------------------------------------
+    # ---------------------------------------
     def _affix_is_added(self):
-        """ Return True if the word has the state added مضاف."""
+        """Return True if the word has the state added مضاف."""
         if self.affix_key in GLOBAL_AFFIXES:
             return GLOBAL_AFFIXES[self.affix_key].is_added()
         return False
 
     def _is_added(self):
         """Return True if the word has the state added مضاف."""
-        #~ return self._affix_is_added() or u'اسم إضافة' in self.get_tags()
+        # ~ return self._affix_is_added() or u'اسم إضافة' in self.get_tags()
         return self._affix_is_added()
 
     def _affix_is_feminin(self):
@@ -440,19 +478,19 @@ class StemmedWord:
 
     def _is_break(self):
         """Return True if the word has break."""
-        #تكون الكلمة فاصلة إذا كانت منفصلة عمّا قبلها.
+        # تكون الكلمة فاصلة إذا كانت منفصلة عمّا قبلها.
         # الحالات التي تقطع
         # - حرف جر متصل
         # فاصلة أو نقطة
         result = False
-        if self.is_pounct() and 'break' in self.get_tags():
+        if self.is_pounct() and "break" in self.get_tags():
             result = True
-        elif self.is_stopword(
-        ) and not self.is_noun() and not self.is_transparent():
+        elif self.is_stopword() and not self.is_noun() and not self.is_transparent():
             result = True
-        elif self.affix_key in GLOBAL_AFFIXES and GLOBAL_AFFIXES[self.
-                                                                 affix_key].is_break(
-                                                                 ):
+        elif (
+            self.affix_key in GLOBAL_AFFIXES
+            and GLOBAL_AFFIXES[self.affix_key].is_break()
+        ):
             result = True
         elif self.has_procletic():
             if self.has_jar() or self.has_istfham():
@@ -460,9 +498,11 @@ class StemmedWord:
         return result
 
     ######################################################################
-    #{ Attribut Functions
+    # { Attribut Functions
     ######################################################################
-    def get_word(self, ):
+    def get_word(
+        self,
+    ):
         """Get the input word given by user"""
         return self.word
 
@@ -470,39 +510,52 @@ class StemmedWord:
         """Set the input word given by user"""
         self.word = newword
 
-    def get_vocalized(self, ):
+    def get_vocalized(
+        self,
+    ):
         """Get the vocalized form of the input word"""
         return self.vocalized
 
     def set_vocalized(self, newvocalized):
-        """Set the vocalized word """
+        """Set the vocalized word"""
         self.vocalized = newvocalized
         self.unvocalized = araby.strip_tashkeel(newvocalized)
 
-    def get_semivocalized(self, ):
+    def get_semivocalized(
+        self,
+    ):
         """
         Get the semi vocalized form of the input word
         """
         return self.semivocalized
 
-    def get_stem(self, ):
+    def get_stem(
+        self,
+    ):
         """
         Get the stem form of the input word
         """
         return self.stem
 
-    def get_tags(self, ):
+    def get_tags(
+        self,
+    ):
         """
         Get the tags form of the input word
         """
         return self.tags
 
-    def get_tags_to_display(self, ):
+    def get_tags_to_display(
+        self,
+    ):
         """
         Get the tags form of the input word
         """
-        return self.tags + u"T%dG%dN%d" % (self.tag_type, self.tag_gender,
-                                           self.tag_number)
+        return self.tags + "T%dG%dN%d" % (
+            self.tag_type,
+            self.tag_gender,
+            self.tag_number,
+        )
 
     def set_tags(self, newtags):
         """
@@ -510,39 +563,51 @@ class StemmedWord:
         """
         self.tags = newtags
 
-    def get_affix_tags(self, ):
+    def get_affix_tags(
+        self,
+    ):
         """
         Get the affix tags form of the input word
         """
         if self.affix_key in GLOBAL_AFFIXES:
             return GLOBAL_AFFIXES[self.affix_key].get_tags()
-        return u""
+        return ""
 
-    def get_affix(self, ):
+    def get_affix(
+        self,
+    ):
         """
         Get the affix  form of the input word
         """
         return self.affix
 
-    def get_action(self, ):
+    def get_action(
+        self,
+    ):
         """
         Get the action form of the input word
         """
         return self.action
 
-    def get_object_type(self, ):
+    def get_object_type(
+        self,
+    ):
         """
         Get the object_type form of the input word
         """
         return self.object_type
 
-    def get_need(self, ):
+    def get_need(
+        self,
+    ):
         """
         Get the need form of the input word
         """
         return self.need
 
-    def get_freq(self, ):
+    def get_freq(
+        self,
+    ):
         """
         Get the freq form of the input word
         """
@@ -554,7 +619,9 @@ class StemmedWord:
         """
         self.freq = newfreq
 
-    def get_type(self, ):
+    def get_type(
+        self,
+    ):
         """
         Get the type form of the input word
         """
@@ -566,52 +633,62 @@ class StemmedWord:
         """
         self.type = newtype
 
-    def get_original(self, ):
+    def get_original(
+        self,
+    ):
         """
         Get the original form of the input word
         """
         return self.original
-    def get_root(self, ):
+
+    def get_root(
+        self,
+    ):
         """
         Get the root form of the input word
         """
         return self.root
 
-    def get_tense(self, ):
+    def get_tense(
+        self,
+    ):
         """
         Get the tense of the input verb
         """
         return self.tag_tense
 
-    def get_pronoun(self, ):
+    def get_pronoun(
+        self,
+    ):
         """
         Get the tense of the input verb
         """
         return self.tag_pronoun
 
-    def get_attached_pronoun(self, ):
+    def get_attached_pronoun(
+        self,
+    ):
         """
         Get the tense of the input verb
         """
         return self.tag_pronoun
-
 
     def set_original(self, neworiginal):
         """Set the original word"""
         self.original = neworiginal
 
     ######################################################################
-    #{ _tags  Functions
+    # { _tags  Functions
     ######################################################################
     def is_initial(self):
         """Return True if the word mark the begin of next sentence."""
         return self.tag_initial
 
     #  حالة المضاف إليه
-    #--------------------------
+    # --------------------------
     def is_unknown(self):
         """Return True if the word is unknown."""
-        return u'unknown' in self.get_type()
+        return "unknown" in self.get_type()
 
     def is_stopword(self):
         """Return True if the word is a stop word."""
@@ -619,9 +696,7 @@ class StemmedWord:
 
     def is_indirect_transitive_stopword(self):
         """Return True if the word is a stop word."""
-        return self.is_stopword() and self.get_original() in (u'فِي', u'عَنْ',
-                                                              u'إِلَى',
-                                                              u'عَلَى')
+        return self.is_stopword() and self.get_original() in ("فِي", "عَنْ", "إِلَى", "عَلَى")
 
     def is_verb(self):
         """Return True if the word is a verb."""
@@ -655,7 +730,7 @@ class StemmedWord:
         """Return True if the word has the state transparent,
         which can trasnpose the effect of the previous factor.
         """
-        #temporary,
+        # temporary,
         # the transparent word are stopwords like هذا وذلك
         # the stopword tags have اسم إشارة,
         # a pounctuation can has the transparent tag like quotes.,
@@ -664,14 +739,14 @@ class StemmedWord:
         # حالة بذلك الرجل
         return self.tag_transparent
 
-        #----------------------------
+        # ----------------------------
         # affixes boolean attributes
-        #----------------------------
+        # ----------------------------
 
     def is_majrour(self):
         """Return True if the word has the state majrour."""
         # Like بهذه بتلك
-        #~ print "maj",self.get_word().encode('utf8'), self.has_jar()
+        # ~ print "maj",self.get_word().encode('utf8'), self.has_jar()
 
         if self.is_mabni() or self.has_jar():
             return True
@@ -682,13 +757,13 @@ class StemmedWord:
 
     def is_mansoub(self):
         """Return True if the word has the state mansoub."""
-        #~ print "mansoub",self.get_word().encode('utf8'), self.has_jar()
+        # ~ print "mansoub",self.get_word().encode('utf8'), self.has_jar()
         if self.is_mabni():
             if self.has_jar():
                 return False
             else:
                 return True
-        if u"منصوب" in self.get_tags() and self.is_feminin_plural():
+        if "منصوب" in self.get_tags() and self.is_feminin_plural():
             return True
         if self.affix_key in GLOBAL_AFFIXES:
             return GLOBAL_AFFIXES[self.affix_key].is_mansoub()
@@ -696,7 +771,7 @@ class StemmedWord:
 
     def is_marfou3(self):
         """Return True if the word has the state marfou3."""
-        #~ print "marf3",self.get_word().encode('utf8'), self.has_jar()
+        # ~ print "marf3",self.get_word().encode('utf8'), self.has_jar()
 
         if self.is_mabni():
             if self.has_jar():
@@ -708,14 +783,14 @@ class StemmedWord:
         return False
 
     def is_majzoum(self):
-        """Return True if the word has the state majrour. """
+        """Return True if the word has the state majrour."""
         if self.affix_key in GLOBAL_AFFIXES:
             return GLOBAL_AFFIXES[self.affix_key].is_majzoum()
         return False
 
     def is_mabni(self):
         """Return True if the word has the state mabni."""
-        if u"مبني" in self.get_tags():
+        if "مبني" in self.get_tags():
             return True
         if self.affix_key in GLOBAL_AFFIXES:
             return GLOBAL_AFFIXES[self.affix_key].is_mabni()
@@ -723,17 +798,17 @@ class StemmedWord:
 
     def is_defined(self):
         """Return True if the word has the state definde."""
-        #~ المعرفة: ما يقصد منه معيّن: والمعرفة سبعة أقسام هي:
-        #~ الضمير، العلم، اسم الإشارة، الاسم الموصول، المحلَّى بأل، المضاف إلى معرفة، المنادى.
+        # ~ المعرفة: ما يقصد منه معيّن: والمعرفة سبعة أقسام هي:
+        # ~ الضمير، العلم، اسم الإشارة، الاسم الموصول، المحلَّى بأل، المضاف إلى معرفة، المنادى.
         if self.affix_key in GLOBAL_AFFIXES:
             return GLOBAL_AFFIXES[self.affix_key].is_defined()
-        elif u"ضمير" in self.get_tags():
+        elif "ضمير" in self.get_tags():
             return True
-        elif u"اسم إشارة" in self.get_tags():
+        elif "اسم إشارة" in self.get_tags():
             return True
-        elif u"اسم موصول" in self.get_tags():
+        elif "اسم موصول" in self.get_tags():
             return True
-        elif u"noun_prop" in self.get_tags():
+        elif "noun_prop" in self.get_tags():
             return True
         return False
 
@@ -778,28 +853,29 @@ class StemmedWord:
 
     def is3rdperson(self):
         """Return True if the word has the 3rd person."""
-        #~ print "tag_person", self.tag_person, self.word.encode('utf8')
+        # ~ print "tag_person", self.tag_person, self.word.encode('utf8')
         return bool(self.tag_person // 4 % 2) and self.is_single()
 
     def is3rdperson_feminin(self):
         """Return True if the word has the 3rd person."""
-        return bool(self.tag_person // 4 %
-                    2) and self.is_single() and self.is_feminin()
+        return bool(self.tag_person // 4 % 2) and self.is_single() and self.is_feminin()
 
     def is3rdperson_masculin(self):
         """Return True if the word has the 3rd person."""
-        return bool(self.tag_person // 4 %
-                    2) and self.is_single() and self.is_masculin()
-        #~
-        #~ if self.affix_key in GLOBAL_AFFIXES:
-        #~ return GLOBAL_AFFIXES[self.affix_key].is3rdperson_masculin()
-        #~ return False
+        return (
+            bool(self.tag_person // 4 % 2) and self.is_single() and self.is_masculin()
+        )
+        # ~
+        # ~ if self.affix_key in GLOBAL_AFFIXES:
+        # ~ return GLOBAL_AFFIXES[self.affix_key].is3rdperson_masculin()
+        # ~ return False
+
     def has_imperative_pronoun(self):
         """Return True if the word has the 3rd person."""
         return bool(self.tag_person // 2 % 2)
-        #~ return (u':أنت:' in self.get_tags() or u':أنتِ:' in self.get_tags()) \
-        #~ and u'أنتما' in self.get_tags() and  u':أنتما مؤ:' in self.get_tags() \
-        #~ and u':أنتم:' in self.get_tags() and  u':أنتن:' in self.get_tags()
+        # ~ return (u':أنت:' in self.get_tags() or u':أنتِ:' in self.get_tags()) \
+        # ~ and u'أنتما' in self.get_tags() and  u':أنتما مؤ:' in self.get_tags() \
+        # ~ and u':أنتم:' in self.get_tags() and  u':أنتن:' in self.get_tags()
 
     def is_tanwin(self):
         """Return True if the word has tanwin."""
@@ -821,7 +897,7 @@ class StemmedWord:
 
     def is_break(self):
         """Return True if the word has break."""
-        #تكون الكلمة فاصلة إذا كانت منفصلة عمّا قبلها.
+        # تكون الكلمة فاصلة إذا كانت منفصلة عمّا قبلها.
         # الحالات التي تقطع
         # - حرف جر متصل
         # فاصلة أو نقطة
@@ -845,9 +921,9 @@ class StemmedWord:
             return GLOBAL_AFFIXES[self.affix_key].is_feminin_plural()
         return False
 
-    #-----------------------------
+    # -----------------------------
     # Mixed extraction attributes tests
-    #-----------------------------
+    # -----------------------------
 
     def is_masculin(self):
         """Return True if the word is masculin."""
@@ -878,9 +954,11 @@ class StemmedWord:
         return self.tag_added
 
     ######################################################################
-    #{ Display Functions
+    # { Display Functions
     ######################################################################
-    def get_dict(self, ):
+    def get_dict(
+        self,
+    ):
         """getdictionary function"""
         return self.__dict__
 
@@ -890,24 +968,24 @@ class StemmedWord:
 
     def __str__(self):
         """Display objects result from analysis"""
-        text = u"{"
+        text = "{"
         stmword = self.__dict__
-        stmword['affix'] = 'Taha'
+        stmword["affix"] = "Taha"
         for key in stmword.keys():
-            text += u"\n\t\tu'%s' = u'%s', " % (key, stmword[key])
-        text += u'\n\t\t}'
-        return text #.encode('utf8')
-        
-    #~ def __dict__(self):
-        #~ """get dict objects result from analysis"""
-        #~ return self.__dict__
-        #~ text = u"{"
-        #~ stmword = self.__dict__
-        #~ stmword['affix'] = 'Taha'
-        #~ for key in stmword.keys():
-            #~ text += u"\n\t\tu'%s' = u'%s', " % (key, stmword[key])
-        #~ text += u'\n\t\t}'
-        #~ return text.encode('utf8')
+            text += "\n\t\tu'%s' = u'%s', " % (key, stmword[key])
+        text += "\n\t\t}"
+        return text  # .encode('utf8')
+
+    # ~ def __dict__(self):
+    # ~ """get dict objects result from analysis"""
+    # ~ return self.__dict__
+    # ~ text = u"{"
+    # ~ stmword = self.__dict__
+    # ~ stmword['affix'] = 'Taha'
+    # ~ for key in stmword.keys():
+    # ~ text += u"\n\t\tu'%s' = u'%s', " % (key, stmword[key])
+    # ~ text += u'\n\t\t}'
+    # ~ return text.encode('utf8')
 
 
 if __name__ == "__main__":
@@ -927,9 +1005,9 @@ if __name__ == "__main__":
         "root": "",  # the word root not yet used
         "template": "",  # the template وزن
         "type": "Noun:مصدر",  # the word type
-        "original": "حَيَاةٌ",  #original word from lexical dictionary
+        "original": "حَيَاةٌ",  # original word from lexical dictionary
         "syntax": "",  # used for syntaxique analysis porpos
-        u'semantic': '',
+        "semantic": "",
     }
     stmwrd = StemmedWord(RDICT)
     print(stmwrd.get_dict())

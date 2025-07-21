@@ -7,12 +7,10 @@ import sys
 import pprint
 from io import open
 
-import pyarabic.araby as araby
-
 # sys.path.append('../')
 import qalsadi.analex as qanalex
-import qalsadi.cache_codernity
-import qalsadi.cache_pickle
+from qalsadi.cachemanager import cache_codernity
+from qalsadi.cachemanager import cache_pickle
 import mysam.tagmaker
 from console_progressbar import ProgressBar
 
@@ -76,9 +74,9 @@ class Tester:
         analyzer = qanalex.Analex(cache_path="cache/")
         if use_codernity:
             db_path = os.path.join(os.path.dirname(__file__), "cache", ".qalsadiCache")
-            cacher = qalsadi.cache_codernity.Cache(db_path)
+            cacher = cache_codernity.Cache(db_path)
         else:
-            cacher = qalsadi.cache_pickle.Cache("IMPORTANT")
+            cacher = cache_pickle.Cache("IMPORTANT")
 
         analyzer.set_cacher(cacher)
         analyzer.enable_allow_cache_use()

@@ -1,32 +1,35 @@
 #!/usr/bin/python
 # -*- coding=utf-8 -*-
-#-------------------------------------------------------------------------------
+# -------------------------------------------------------------------------------
 # Name:        analex
-# Purpose:     Arabic lexical analyser, provides feature to stem arabic 
-#words as noun, verb, stopword
+# Purpose:     Arabic lexical analyser, provides feature to stem arabic
+# words as noun, verb, stopword
 #
 # Author:      Taha Zerrouki (taha.zerrouki[at]gmail.com)
 #
 # Created:     31-10-2011
 # Copyright:   (c) Taha Zerrouki 2011
 # Licence:     GPL
-#-------------------------------------------------------------------------------
+# -------------------------------------------------------------------------------
 """Cache Module for analex"""
 
-from . import cache
-from . import cache_pickle
-from . import cache_pickledb
-from . import cache_codernity
+from qalsadi.cachemanager import cache
+from qalsadi.cachemanager import cache_codernity, cache_pickle, cache_pickledb
+
 
 class Cache_Factory(object):
     """
-        cache for word morphological analysis
+    cache for word morphological analysis
     """
-    def __init__(self,):
+
+    def __init__(
+        self,
+    ):
         """
         Create Analex Cache
         """
         pass
+
     @staticmethod
     def factory(name, path):
         """
@@ -43,17 +46,19 @@ class Cache_Factory(object):
             return cache_codernity.Cache(path)
         else:
             return cache.Cache()
+
     @staticmethod
     def list():
         """
         list available cache names
         """
-        return [ "", "memory",
+        return [
+            "",
+            "memory",
             "pickle",
             "pickledb",
             "codernity",
         ]
-
 
 
 def mainly():

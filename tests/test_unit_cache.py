@@ -37,11 +37,8 @@ import pyarabic.araby as araby
 
 sys.path.append("../")
 import qalsadi.analex
-import qalsadi.cache
-import qalsadi.cache_pickle
-import qalsadi.cache_pickledb
-import qalsadi.cache_codernity
-import qalsadi.cache_factory
+from qalsadi.cachemanager import cache
+from qalsadi.cachemanager import cache_pickle, cache_pickledb, cache_codernity, cache_factory
 
 from qalsadi.stemnode import StemNode
 
@@ -222,7 +219,7 @@ class qalsadiAnalyzerCacheTestCase(unittest.TestCase):
     ):
         """test Cache case"""
 
-        cacher = qalsadi.cache.Cache()
+        cacher = cache.Cache()
         # attach cacher to analyzer
         self.analyzer.set_cacher(cacher)
         self.analyzer.enable_allow_cache_use()
@@ -236,7 +233,7 @@ class qalsadiAnalyzerCacheTestCase(unittest.TestCase):
     ):
         """test Cache case"""
         path = os.path.join(os.path.dirname(__file__), "cache/qalsadiCache.pickle")
-        cacher = qalsadi.cache_pickle.Cache(path)
+        cacher = cache_pickle.Cache(path)
         # attach cacher to analyzer
         self.analyzer.set_cacher(cacher)
         self.analyzer.enable_allow_cache_use()
@@ -250,7 +247,7 @@ class qalsadiAnalyzerCacheTestCase(unittest.TestCase):
     ):
         """test Cache case"""
         path = os.path.join(os.path.dirname(__file__), "cache/qalsadiCache.pickledb")
-        cacher = qalsadi.cache_pickledb.Cache(path)
+        cacher = cache_pickledb.Cache(path)
         # attach cacher to analyzer
         self.analyzer.set_cacher(cacher)
         self.analyzer.enable_allow_cache_use()
@@ -264,7 +261,7 @@ class qalsadiAnalyzerCacheTestCase(unittest.TestCase):
     ):
         """test Cache case"""
         path = os.path.join(os.path.dirname(__file__), "cache")
-        cacher = qalsadi.cache_codernity.Cache(path)
+        cacher = cache_codernity.Cache(path)
         # attach cacher to analyzer
         self.analyzer.set_cacher(cacher)
         self.analyzer.enable_allow_cache_use()
@@ -278,8 +275,8 @@ class qalsadiAnalyzerCacheTestCase(unittest.TestCase):
     ):
         """test Cache case"""
         path = os.path.join(os.path.dirname(__file__), "cache")
-        for name in qalsadi.cache_factory.Cache_Factory.list():
-            cacher = qalsadi.cache_factory.Cache_Factory.factory(name, path)
+        for name in cache_factory.Cache_Factory.list():
+            cacher = cache_factory.Cache_Factory.factory(name, path)
             # attach cacher to analyzer
             self.analyzer.set_cacher(cacher)
             self.analyzer.enable_allow_cache_use()

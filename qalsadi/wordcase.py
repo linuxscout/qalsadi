@@ -1,6 +1,6 @@
 ﻿#!/usr/bin/python
 # -*- coding = utf-8 -*-
-#-------------------------------------------------------------------------------
+# -------------------------------------------------------------------------------
 # Name:        wordCase
 # Purpose:     representat data analyzed given by morphoanalyzer Qalsadi
 #
@@ -9,18 +9,20 @@
 # Created:     18-05-2014
 # Copyright:   (c) Taha Zerrouki 2014
 # Licence:     GPL
-#-------------------------------------------------------------------------------
+# -------------------------------------------------------------------------------
 """
 wordCase represents the data resulted from the morpholocigal analysis
 """
 if __name__ == "__main__":
     import sys
-    sys.path.append('..')
+
+    sys.path.append("..")
 import pyarabic.araby as araby
 import pyarabic.arabrepr as arabrepr
+
 arabicRepr = arabrepr.ArabicRepr()
 
-#~import analex_const
+# ~import analex_const
 
 
 class WordCase:
@@ -29,71 +31,70 @@ class WordCase:
     """
 
     def __init__(self, result_dict=None):
-        self.word = u"",
-        #~"""input word"""
-        self.word_nm = u"",
-        #~"""input word with marks"""
-        self.vocalized = u"",
-        #~"""vocalized form of the input word """
-        self.semivocalized = u"",
-        #~"""vocalized form without inflection mark """
-        self.unvocalized = u"",
-        #~"""unvocalized form"""
-        self.tags = u"",
-        #~"""tags of affixes and tags extracted form lexical dictionary"""
-        self.affix_key = u'-'
-        #~affixTags = u""
-        #~"""tags of affixes"""
+        self.word = ("",)
+        # ~"""input word"""
+        self.word_nm = ("",)
+        # ~"""input word with marks"""
+        self.vocalized = ("",)
+        # ~"""vocalized form of the input word """
+        self.semivocalized = ("",)
+        # ~"""vocalized form without inflection mark """
+        self.unvocalized = ("",)
+        # ~"""unvocalized form"""
+        self.tags = ("",)
+        # ~"""tags of affixes and tags extracted form lexical dictionary"""
+        self.affix_key = "-"
+        # ~affixTags = u""
+        # ~"""tags of affixes"""
         # stemmed word attributes
-        self.stem = u"",
-        #~"""the word stem"""
+        self.stem = ("",)
+        # ~"""the word stem"""
         # Original word attributes from dictionary.
-        self.original_tags = u"",
-        #~""" tags extracted form lexical dictionary"""
-        self.freq = 0,
-        #~"""the word frequency from Word Frequency database """
-        self.type = u"",
-        #~""" the word type  """
-        self.original = u""
-        #~""" original word from lexical dictionary"""
+        self.original_tags = ("",)
+        # ~""" tags extracted form lexical dictionary"""
+        self.freq = (0,)
+        # ~"""the word frequency from Word Frequency database """
+        self.type = ("",)
+        # ~""" the word type  """
+        self.original = ""
+        # ~""" original word from lexical dictionary"""
         if result_dict:
-            self.word = result_dict.get('word', u'')
-            self.vocalized = result_dict.get('vocalized', u'')
+            self.word = result_dict.get("word", "")
+            self.vocalized = result_dict.get("vocalized", "")
             if not self.vocalized:
-                self.vocalized = result_dict.get('word', u'T')
-            self.semivocalized = result_dict.get('semivocalized', u'')
-            self.stem = result_dict.get('stem', u'')
-            self.root = result_dict.get('root', u'')
-            self.affix = result_dict.get('affix', [])
-            self.tags = u':'.join([
-                result_dict.get('tags', u''),
-                result_dict.get('originaltags', u'')
-            ])
+                self.vocalized = result_dict.get("word", "T")
+            self.semivocalized = result_dict.get("semivocalized", "")
+            self.stem = result_dict.get("stem", "")
+            self.root = result_dict.get("root", "")
+            self.affix = result_dict.get("affix", [])
+            self.tags = ":".join(
+                [result_dict.get("tags", ""), result_dict.get("originaltags", "")]
+            )
 
-            self.freq = result_dict.get('freq', u'')
-            self.type = result_dict.get('type', u'')
-            self.original = result_dict.get('original', u'')
-            self.tense = result_dict.get('tense', u'')
-            self.pronoun = result_dict.get('pronoun', u'')
-            self.action = result_dict.get('action', u'')
+            self.freq = result_dict.get("freq", "")
+            self.type = result_dict.get("type", "")
+            self.original = result_dict.get("original", "")
+            self.tense = result_dict.get("tense", "")
+            self.pronoun = result_dict.get("pronoun", "")
+            self.action = result_dict.get("action", "")
 
-            self.object_type = result_dict.get('object_type', u'')
-            self.need = result_dict.get('need', u'')
-            self.number = result_dict.get('number', u'')
-            self.gender = result_dict.get('gender', u'')
-            self.person = result_dict.get('person', u'')
-            self.voice = result_dict.get('voice', u'')
-            self.mood = result_dict.get('mood', u'')
-            self.transitive = result_dict.get('transitive', False)
-            
+            self.object_type = result_dict.get("object_type", "")
+            self.need = result_dict.get("need", "")
+            self.number = result_dict.get("number", "")
+            self.gender = result_dict.get("gender", "")
+            self.person = result_dict.get("person", "")
+            self.voice = result_dict.get("voice", "")
+            self.mood = result_dict.get("mood", "")
+            self.transitive = result_dict.get("transitive", False)
+
             # calculated attributes
             self.unvocalized = araby.strip_tashkeel(self.vocalized)
             # ~ self.word_nm = araby.strip_tashkeel(self.word)
 
     ######################################################################
-    #{ Attribut Functions
+    # { Attribut Functions
     ######################################################################
-    def get(self, key, default=u''):
+    def get(self, key, default=""):
         """
         get item by []
         """
@@ -103,7 +104,7 @@ class WordCase:
         """
         get item by key
         """
-        return self.__dict__.get(key, '')
+        return self.__dict__.get(key, "")
 
     def __setitem__(self, key, value):
         """
@@ -117,7 +118,9 @@ class WordCase:
         """
         return item in self.__dict__
 
-    def get_word(self, ):
+    def get_word(
+        self,
+    ):
         """
         Get the input word given by user
         @return: the given word.
@@ -133,7 +136,9 @@ class WordCase:
         """
         self.word = newword
 
-    def get_vocalized(self, ):
+    def get_vocalized(
+        self,
+    ):
         """
         Get the vocalized form of the input word
         @return: the given vocalized.
@@ -141,7 +146,9 @@ class WordCase:
         """
         return self.vocalized
 
-    def get_semivocalized(self, ):
+    def get_semivocalized(
+        self,
+    ):
         """
         Get the semi vocalized form of the input word with out inflection mark
         @return: the given vocalized.
@@ -149,7 +156,9 @@ class WordCase:
         """
         return self.semivocalized
 
-    def is_unknown(self, ):
+    def is_unknown(
+        self,
+    ):
         """
         Get the vocalized form of the input word
         @return: the given vocalized.
@@ -165,7 +174,9 @@ class WordCase:
         """
         self.vocalized = newvocalized
 
-    def get_stem(self, ):
+    def get_stem(
+        self,
+    ):
         """
         Get the stem form of the input word
         @return: the given stem.
@@ -183,7 +194,9 @@ class WordCase:
         """
         self.stem = stem
 
-    def get_tags(self, ):
+    def get_tags(
+        self,
+    ):
         """
         Get the tags form of the input word
         @return: the given tags.
@@ -199,7 +212,9 @@ class WordCase:
         """
         self.tags = newtags
 
-    def get_affix(self, ):
+    def get_affix(
+        self,
+    ):
         """
         Get the affix  form of the input word
         @return: the given affix.
@@ -207,7 +222,9 @@ class WordCase:
         """
         return self.affix
 
-    def get_freq(self, ):
+    def get_freq(
+        self,
+    ):
         """
         Get the freq form of the input word
         @return: the given freq.
@@ -223,7 +240,9 @@ class WordCase:
         """
         self.freq = newfreq
 
-    def get_type(self, ):
+    def get_type(
+        self,
+    ):
         """
         Get the type form of the input word
         @return: the given type.
@@ -239,7 +258,9 @@ class WordCase:
         """
         self.type = newtype
 
-    def get_original(self, ):
+    def get_original(
+        self,
+    ):
         """
         Get the original form of the input word
         @return: the given original.
@@ -256,10 +277,10 @@ class WordCase:
         self.original = neworiginal
 
     ######################################################################
-    #{ Display Functions
+    # { Display Functions
     ######################################################################
-    #~ def __dict__(self, ):
-        #~ return self.__dict__
+    # ~ def __dict__(self, ):
+    # ~ return self.__dict__
 
     def __repr__(self):
         """
@@ -269,7 +290,9 @@ class WordCase:
         """
         return arabicRepr.repr(self.__dict__)
 
-    def dump(self, ):
+    def dump(
+        self,
+    ):
         """
         Dump the word case as a simple list
         """
@@ -285,22 +308,22 @@ class WordCase:
 if __name__ == "__main__":
     print("test")
     RDICT = {
-        "word": u"الحياة",  # input word
-        "vocalized": u"الْحَيَاةُ",  # vocalized form of the input word
-        "procletic": u"ال",  # the syntaxic pprefix called procletic
-        "prefix": u"",  # the conjugation or inflection prefix
-        "stem": u"حياة",  # the word stem
-        "suffix": u"ُ",  # the conjugation suffix of the word
-        "encletic": u"",  # the syntaxic suffix
-        "tags": u"تعريف::مرفوع*",
+        "word": "الحياة",  # input word
+        "vocalized": "الْحَيَاةُ",  # vocalized form of the input word
+        "procletic": "ال",  # the syntaxic pprefix called procletic
+        "prefix": "",  # the conjugation or inflection prefix
+        "stem": "حياة",  # the word stem
+        "suffix": "ُ",  # the conjugation suffix of the word
+        "encletic": "",  # the syntaxic suffix
+        "tags": "تعريف::مرفوع*",
         # tags of affixes and tags extracted form lexical dictionary
         "freq": 0,  # the word frequency from Word Frequency database
-        "root": u"",  # the word root not yet used
-        "template": u"",  # the template وزن
-        "type": u"Noun:مصدر",  # the word type
-        "original": u"حَيَاةٌ",  #original word from lexical dictionary
-        "syntax": u"",  # used for syntaxique analysis porpos
-        u'semantic': u'',
+        "root": "",  # the word root not yet used
+        "template": "",  # the template وزن
+        "type": "Noun:مصدر",  # the word type
+        "original": "حَيَاةٌ",  # original word from lexical dictionary
+        "syntax": "",  # used for syntaxique analysis porpos
+        "semantic": "",
     }
     stmwrd = WordCase(RDICT)
     print(stmwrd.__dict__)

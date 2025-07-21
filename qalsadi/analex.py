@@ -1,6 +1,6 @@
 #!/usr/bin/python
 # -*- coding=utf-8 -*-
-#-----------------------------------------------------------------------
+# -----------------------------------------------------------------------
 # Name:        analex
 # Purpose:     Arabic lexical analyser, provides feature to stem arabic
 # words as noun, verb, stopword
@@ -10,41 +10,42 @@
 # Created:     31-10-2011
 # Copyright:   (c) Taha Zerrouki 2011
 # Licence:     GPL
-#-----------------------------------------------------------------------
+# -----------------------------------------------------------------------
 """
-    Arabic text morphological analyzer.
-    Provides routins  to alanyze text.
-    Can treat text as verbs or as nouns.
+Arabic text morphological analyzer.
+Provides routins  to alanyze text.
+Can treat text as verbs or as nouns.
 """
 # ~ from __future__ import (
-    # ~ absolute_import,
-    # ~ print_function,
-    # ~ unicode_literals,
-    # ~ #~ division,
-    # ~ )
+# ~ absolute_import,
+# ~ print_function,
+# ~ unicode_literals,
+# ~ #~ division,
+# ~ )
 if __name__ == "__main__":
     import sys
-    sys.path.append('..')
+
+    sys.path.append("..")
 # try:
 #     unicode
 # except NameError:
 #     from six import text_type as unicode
 import re
-import pyarabic.araby as araby 
-from pyarabic.arabrepr import arepr
-#~ import qalsadi.analex_const as analex_const  # special constant for analex
-#~ import qalsadi.stem_noun as stem_noun  # noun stemming
-#~ import qalsadi.stem_verb as stem_verb  # verb stemming
-#~ import qalsadi.stem_unknown as stem_unknown  # unknown word stemming
-#~ #~import qalsadi.stem_stopwords as  stem_stopwords     # stopwords word stemming
-#~ import qalsadi.stem_stop as stem_stopwords  # stopwords word stemming
-#~ import qalsadi.stem_pounct_const as stem_pounct_const  # pounctaution constants
-#~ import naftawayh.wordtag  # word tagger
-#~ import arramooz.wordfreqdictionaryclass as wordfreqdictionaryclass
-#~ import qalsadi.disambig as disambig  # disambiguation const
-#~ import qalsadi.wordcase as wordcase
-#~ import qalsadi.stemmedword as stemmedword  # the result object for stemming
-#~ import qalsadi.cache as cache
+import pyarabic.araby as araby
+
+# ~ import qalsadi.analex_const as analex_const  # special constant for analex
+# ~ import qalsadi.stem_noun as stem_noun  # noun stemming
+# ~ import qalsadi.stem_verb as stem_verb  # verb stemming
+# ~ import qalsadi.stem_unknown as stem_unknown  # unknown word stemming
+# ~ #~import qalsadi.stem_stopwords as  stem_stopwords     # stopwords word stemming
+# ~ import qalsadi.stem_stop as stem_stopwords  # stopwords word stemming
+# ~ import qalsadi.stem_pounct_const as stem_pounct_const  # pounctaution constants
+# ~ import naftawayh.wordtag  # word tagger
+# ~ import arramooz.wordfreqdictionaryclass as wordfreqdictionaryclass
+# ~ import qalsadi.disambig as disambig  # disambiguation const
+# ~ import qalsadi.wordcase as wordcase
+# ~ import qalsadi.stemmedword as stemmedword  # the result object for stemming
+# ~ import qalsadi.cache as cache
 
 import arramooz.wordfreqdictionaryclass as wordfreqdictionaryclass
 import naftawayh.wordtag  # word tagger
@@ -58,17 +59,20 @@ from . import stem_pounct_const  # pounctaution constants
 from . import disambig  # disambiguation const
 from . import wordcase
 from . import stemmedword  # the result object for stemming
-from . import cache
-from . import cache_pickledb as cache
+from . cachemanager import cache
+from qalsadi.cachemanager import cache_pickledb as cache
+
 
 class Analex:
     """
-        Arabic text morphological analyzer.
-        Provides routins  to alanyze text.
-        Can treat text as verbs or as nouns.
+    Arabic text morphological analyzer.
+    Provides routins  to alanyze text.
+    Can treat text as verbs or as nouns.
     """
 
-    def __init__(self, cache_path=False ,allow_tag_guessing=False, allow_disambiguation=True):
+    def __init__(
+        self, cache_path=False, allow_tag_guessing=False, allow_disambiguation=True
+    ):
         """
         Create Analex instance.
         """
@@ -81,7 +85,7 @@ class Analex:
         # to stem stopwords
 
         self.allow_tag_guessing = allow_tag_guessing
-        #~ self.allow_tag_guessing = False
+        # ~ self.allow_tag_guessing = False
         # allow gueesing tags by naftawayh before analyis
         # if taggin is disabled, the disambiguation is also disabled
         self.allow_disambiguation = allow_disambiguation and allow_tag_guessing
@@ -98,38 +102,40 @@ class Analex:
         # the words contain arabic letters and harakat.
         # the unicode considers arabic harakats as marks not letters,
         # then we add harakat to the regluar expression to tokenize
-        marks = u"".join(araby.TASHKEEL)
+        marks = "".join(araby.TASHKEEL)
         # contains [FATHA, DAMMA, KASRA, SUKUN, DAMMATAN, KASRATAN,
         #  FATHATAN, SHADDA])
         # used to tokenize arabic text
-        #decprecated, we use araby.tokenize
-        #~ self.token_pat = re.compile(ur"([\w%s]+)" % marks, re.UNICODE)
-        #used to split text into clauses
+        # decprecated, we use araby.tokenize
+        # ~ self.token_pat = re.compile(ur"([\w%s]+)" % marks, re.UNICODE)
+        # used to split text into clauses
         self.clause_pattern = re.compile(
-            "([\w%s\s]+)" % (u"".join(araby.TASHKEEL), ), re.UNICODE)
+            r"([\w%s\s]+)" % ("".join(araby.TASHKEEL),), re.UNICODE
+        )
 
         # allow partial vocalization support,
-        #~The text is analyzed as partial or fully vocalized.
+        # ~The text is analyzed as partial or fully vocalized.
         self.partial_vocalization_support = True
 
-        #word frequency dictionary
+        # word frequency dictionary
         self.wordfreq = wordfreqdictionaryclass.WordFreqDictionary(
-            'wordfreq', wordfreqdictionaryclass.WORDFREQ_DICTIONARY_INDEX)
+            "wordfreq", wordfreqdictionaryclass.WORDFREQ_DICTIONARY_INDEX
+        )
 
         # added to avoid duplicated search in the word frequency database
         # used as cache to reduce database access
-        #added as a global variable to avoid duplucated search
-        #in mutliple call of analex
+        # added as a global variable to avoid duplucated search
+        # in mutliple call of analex
         # cache used to avoid duplicata
-        #~ self.allow_cache_use = True
+        # ~ self.allow_cache_use = True
         self.allow_cache_use = False
-        #~ self.cache = cache.Cache(cache_path)
+        # ~ self.cache = cache.Cache(cache_path)
         self.cache_path = cache_path
         if cache_path:
             self.cache = cache.Cache(cache_path)
         else:
-            self.cache = None        
-        # In case of training and vocalized text analysis, 
+            self.cache = None
+        # In case of training and vocalized text analysis,
         # we propose to respect Shadda in the given word
         self.fully_vocalized_input = False
         self.error_code = ""
@@ -146,13 +152,17 @@ class Analex:
         self.stopwordsstemmer = None
         self.tagger = None
         self.disambiguator = None
-    def count_word(self, ):
-        """ count input words. Used just for profiling and tests.
+
+    def count_word(
+        self,
+    ):
+        """count input words. Used just for profiling and tests.
         @return: counter.
         @rtype: integer.
         """
         self.wordcounter += 1
         return self.wordcounter
+
     def get_freq(self, word, wordtype):
         """
         Return word_frequency
@@ -160,16 +170,22 @@ class Analex:
         if word in self.wordfreq_cache:
             return self.wordfreq_cache[word]
         else:
-            freq  = self.wordfreq.get_freq(word, wordtype)
+            freq = self.wordfreq.get_freq(word, wordtype)
             self.wordfreq_cache[word] = freq
-            return  freq 
+            return freq
 
-    def get_error_code(self,):
+    def get_error_code(
+        self,
+    ):
         """
         Return error code when word is not recognized
         """
-        return "N%s-V%s"%(self.nounstemmer.get_error_code(),self.verbstemmer.get_error_code(), )
-    def tokenize(self, text=u""):
+        return "N%s-V%s" % (
+            self.nounstemmer.get_error_code(),
+            self.verbstemmer.get_error_code(),
+        )
+
+    def tokenize(self, text=""):
         """
         Tokenize text into words
         @param text: the input text.
@@ -194,8 +210,8 @@ class Analex:
                 newlist = []
                 for phr in list_phrase:
                     if not self.clause_pattern.match(phr):
-                        #is pounctuation or symboles
-                        #print 'not match', ph.encode('utf8')
+                        # is pounctuation or symboles
+                        # print 'not match', ph.encode('utf8')
                         if j < 0:
                             # the symbols are in the begining
                             newlist.append(phr)
@@ -219,11 +235,11 @@ class Analex:
         @return: list of words.
         @rtype: list.
         """
-        #~text = self.text_treat(text)
+        # ~text = self.text_treat(text)
         list_word = self.tokenize(text)
         # avoid null values
         list_word = [word for word in list_word if word]
-        #print "text_tokenize", u" ".join(list_word).encode('utf8')
+        # print "text_tokenize", u" ".join(list_word).encode('utf8')
         return list_word
 
     def set_debug(self, debug):
@@ -245,7 +261,7 @@ class Analex:
         # to allow syntax last mark on noun stemming
         self.verbstemmer.enable_syntax_lastmark()
         # to allow syntax last mark  on verb stemming
-        
+
     def enable_fully_vocalized_input(self):
         """
         Enable fully vocalized  input in case of vocalized text analysis.
@@ -272,7 +288,7 @@ class Analex:
 
     def set_cacher(self, cacher=None):
         """
-        Use a cache system to qalsadi to be used 
+        Use a cache system to qalsadi to be used
         """
         self.cache = cacher
 
@@ -282,7 +298,7 @@ class Analex:
         """
         self.allow_cache_use = True
         if not self.cache:
-            self.cache = cache.Cache(self.cache_path)        
+            self.cache = cachemanager.Cache(self.cache_path)
 
     def disable_allow_cache_use(self):
         """
@@ -290,7 +306,7 @@ class Analex:
         """
         self.allow_cache_use = False
 
-    def check_text(self, text, mode='all'):
+    def check_text(self, text, mode="all"):
         """
         Analyze text morphologically.
         @param text: the input text.
@@ -300,61 +316,64 @@ class Analex:
         @return: list of dictionaries of analyzed words with tags.
         @rtype: list.
         """
-        #print "ok", text.encode('utf8')
+        # print "ok", text.encode('utf8')
         list_word = self.text_tokenize(text)
-        #print "ok", u"\t".join(list_word).encode('utf8')
-        list_guessed_tag = [""]* len(list_word)
+        # print "ok", u"\t".join(list_word).encode('utf8')
+        list_guessed_tag = [""] * len(list_word)
         if self.allow_tag_guessing:
             list_guessed_tag = self.tagger.word_tagging(list_word)
             # avoid errors
             if len(list_guessed_tag) != len(list_word):
-                #if the two lists have'nt the same length,
+                # if the two lists have'nt the same length,
                 # we construct a empty list for tags with the same length
                 # print "error on guess tags"
                 # sys.exit()
-                list_guessed_tag = ['nv'] * len(list_word)
+                list_guessed_tag = ["nv"] * len(list_word)
         # disambiguate  some words to speed up the analysis
         if self.allow_disambiguation:
             newwordlist = self.disambiguator.disambiguate_words(
-                list_word, list_guessed_tag)
+                list_word, list_guessed_tag
+            )
             # avoid the incomplete list
             if len(newwordlist) == len(list_word):
                 list_word = newwordlist
                 # print u" ".join(list_word).encode('utf8')
                 # print u" ".join(list_guessed_tag).encode('utf8')
 
-        #~ resulted_text = u""
+        # ~ resulted_text = u""
         resulted_data = []
 
-        #checkedWords = {} #global
-        if mode == 'all':
+        # checkedWords = {} #global
+        if mode == "all":
 
-            for i in list(range(len(list_word[:self.limit]))):
+            for i in list(range(len(list_word[: self.limit]))):
                 word = list_word[i]
-                self.count_word(
-                )  # a ghost function to count words check function calls
+                self.count_word()  # a ghost function to count words check function calls
                 guessedtag = list_guessed_tag[i]
                 one_data_list = self.check_word(word, guessedtag)
                 stemmed_one_data_list = [
                     stemmedword.StemmedWord(w) for w in one_data_list
                 ]
                 resulted_data.append(stemmed_one_data_list)
-        elif mode == 'nouns':
+        elif mode == "nouns":
 
-            for word in list_word[:self.limit]:
+            for word in list_word[: self.limit]:
                 one_data_list = self.check_word_as_noun(word)
-                stemmed_one_data_list = [stemmedword.StemmedWord(w) \
-                for w in one_data_list]
+                stemmed_one_data_list = [
+                    stemmedword.StemmedWord(w) for w in one_data_list
+                ]
                 resulted_data.append(stemmed_one_data_list)
-                #~ resulted_data.append(one_data_list)
-        elif mode == 'verbs':
-            for word in list_word[:self.limit]:
+                # ~ resulted_data.append(one_data_list)
+        elif mode == "verbs":
+            for word in list_word[: self.limit]:
                 one_data_list = self.check_word_as_verb(word)
-                stemmed_one_data_list = [stemmedword.StemmedWord(w) \
-                for w in one_data_list]
+                stemmed_one_data_list = [
+                    stemmedword.StemmedWord(w) for w in one_data_list
+                ]
                 resulted_data.append(stemmed_one_data_list)
-                #~ resulted_data.append(one_data_list)
+                # ~ resulted_data.append(one_data_list)
         return resulted_data
+
     def light_tag(self, word):
         """
         tag words as verbs or nouns according to some features
@@ -363,11 +382,12 @@ class Analex:
         if stopwords.is_stop(word):
             return "stop"
         for c in word:
-            if c in u"إة":
+            if c in "إة":
                 return "nonverb"
             if c in araby.TANWIN:
                 return "nonverb"
         return ""
+
     def light_tag2(self, word):
         """
         tag words as verbs or nouns according to some features
@@ -376,12 +396,12 @@ class Analex:
         if stopwords.is_stop(word):
             return "stop"
         for c in word:
-            if c in u"إة":
+            if c in "إة":
                 return "nonverb"
             if c in araby.TANWIN:
                 return "nonverb"
         return ""
-        
+
     def check_word(self, word, guessedtag=""):
         """
         Analyze one word morphologically as verbs
@@ -397,7 +417,7 @@ class Analex:
         word_nm_shadda = araby.strip_harakat(word)
         # get analysed details from cache if used
         if self.allow_cache_use and self.cache.is_already_checked(word_nm):
-            #~ print (u"'%s'"%word).encode('utf8'), 'found'
+            # ~ print (u"'%s'"%word).encode('utf8'), 'found'
             resulted_data = self.cache.get_checked(word_nm)
         else:
             resulted_data = []
@@ -408,41 +428,45 @@ class Analex:
             # we must consider it in future works
             # if word is stopword allow stop words analysis
             if araby.is_arabicword(word_nm):
-                if self.light_tag(word) == "stop":                
+                if self.light_tag(word) == "stop":
                     resulted_data += self.check_word_as_stopword(word_nm)
                 if self.allow_tag_guessing:
                     # 2nd method
-                    #if word is a possible verb or just a stop word
+                    # if word is a possible verb or just a stop word
                     # مشكلة بعض الكلمات المستبعدة تعتبر أفعلا أو اسماء
-                    if  self.tagger.has_verb_tag(guessedtag) or \
-                    self.tagger.is_stopword_tag(guessedtag):
+                    if self.tagger.has_verb_tag(
+                        guessedtag
+                    ) or self.tagger.is_stopword_tag(guessedtag):
                         resulted_data += self.check_word_as_verb(word_nm)
-                    #if word is noun
-                    if self.tagger.has_noun_tag(guessedtag) or \
-                    self.tagger.is_stopword_tag(guessedtag):
+                    # if word is noun
+                    if self.tagger.has_noun_tag(
+                        guessedtag
+                    ) or self.tagger.is_stopword_tag(guessedtag):
                         resulted_data += self.check_word_as_noun(word_nm)
                 else:
-                    #if word is verb
+                    # if word is verb
                     if self.light_tag(word) != "nonverb":
                         resulted_data += self.check_word_as_verb(word_nm)
-                    #if word is noun
-                    if self.light_tag(word) != "nonnoun":                
+                    # if word is noun
+                    if self.light_tag(word) != "nonnoun":
                         resulted_data += self.check_word_as_noun(word_nm)
 
             if len(resulted_data) == 0:
-                #print (u"1 _unknown %s-%s"%(word, word_nm)).encode('utf8')
-                #check the word as unkonwn
+                # print (u"1 _unknown %s-%s"%(word, word_nm)).encode('utf8')
+                # check the word as unkonwn
                 resulted_data += self.check_word_as_unknown(word_nm)
-            
-            # ------- Filters used to reduce cases 
+
+            # ------- Filters used to reduce cases
             # 1- with normalized letters
             # 2- with given Shadda
             # 3- vocalized like
-            #check if the word is nomralized and solution are equivalent
+            # check if the word is nomralized and solution are equivalent
             resulted_data = self.check_normalized(word_nm, resulted_data)
-            #check if the word is shadda like
-            
-            resulted_data = self.check_shadda(word_nm_shadda, resulted_data, self.fully_vocalized_input)
+            # check if the word is shadda like
+
+            resulted_data = self.check_shadda(
+                word_nm_shadda, resulted_data, self.fully_vocalized_input
+            )
 
             # add word frequency information in tags
             resulted_data = self.add_word_frequency(resulted_data)
@@ -452,39 +476,30 @@ class Analex:
             if self.allow_cache_use:
                 self.cache.add_checked(word_nm, data_list_to_serialize)
 
-        #check if the word is vocalized like results
+        # check if the word is vocalized like results
         if self.partial_vocalization_support:
-            resulted_data = self.check_partial_vocalized(word_vocalised,
-                                                    resulted_data)
+            resulted_data = self.check_partial_vocalized(word_vocalised, resulted_data)
 
         if len(resulted_data) == 0:
             error_code = self.get_error_code()
             resulted_data.append(
-                wordcase.WordCase({
-                    'word':
-                    word,
-                    'affix': ('', '', '', ''),
-                    'stem':
-                    word,
-                    'original':
-                    word,
-                    'vocalized':
-                    word,
-                    'semivocalized':
-                    word,
-                    'tags':
-                    u'%s'%error_code,
-                    'type':
-                    'unknown',
-                    'root':
-                    '',
-                    'template':
-                    '',
-                    'freq':
-                    self.get_freq(word, 'unknown'),
-                    'syntax':
-                    '',
-                }))
+                wordcase.WordCase(
+                    {
+                        "word": word,
+                        "affix": ("", "", "", ""),
+                        "stem": word,
+                        "original": word,
+                        "vocalized": word,
+                        "semivocalized": word,
+                        "tags": "%s" % error_code,
+                        "type": "unknown",
+                        "root": "",
+                        "template": "",
+                        "freq": self.get_freq(word, "unknown"),
+                        "syntax": "",
+                    }
+                )
+            )
         return resulted_data
 
     def check_text_as_nouns(self, text):
@@ -523,47 +538,48 @@ class Analex:
         """
         # added to avoid duplicated search in the word frequency database
         # used as cache to reduce database access
-        #added as a global variable to avoid duplucated search
-        #in mutliple call of analex
-        #checkedFreqWords = {'noun':{}, 'verb':{}} # global
+        # added as a global variable to avoid duplucated search
+        # in mutliple call of analex
+        # checkedFreqWords = {'noun':{}, 'verb':{}} # global
         for i, item in enumerate(resulted_data):
             # get the original word of dictionary,
-            #~ item = resulted_data[i]
+            # ~ item = resulted_data[i]
             # search for the original (lexique entry)
-            #~ original = item.get('original', '')
-            #~ original = item.__dict__.get('original', '')
+            # ~ original = item.get('original', '')
+            # ~ original = item.__dict__.get('original', '')
             original = item.original
             # in the freq attribute we found 'freqverb, or freqnoun,
             #  or a frequency for stopwords or unkown
             # the freqtype is used to note the wordtype,
             # this type is passed by stem_noun , or stem_verb modules
             freqtype = item.freq
-            #~ freqtype = item.get('freq', '')
-            if freqtype == 'freqverb':
-                wordtype = 'verb'
-            elif freqtype == 'freqnoun':
-                wordtype = 'noun'
-            elif freqtype == 'freqstopword':
-                wordtype = 'stopword'
+            # ~ freqtype = item.get('freq', '')
+            if freqtype == "freqverb":
+                wordtype = "verb"
+            elif freqtype == "freqnoun":
+                wordtype = "noun"
+            elif freqtype == "freqstopword":
+                wordtype = "stopword"
             else:
-                wordtype = ''
+                wordtype = ""
             if wordtype:
                 # if frequency is already get from database,
                 #  don't access to database
                 if self.allow_cache_use and self.cache.exists_cache_freq(
-                        original, wordtype):
+                    original, wordtype
+                ):
                     item.freq = self.cache.get_freq(original, wordtype)
 
                 else:
                     freq = self.get_freq(original, wordtype)
-                    #~print freq, wordtype, original.encode('utf8')
-                    #store the freq in the cache
+                    # ~print freq, wordtype, original.encode('utf8')
+                    # store the freq in the cache
                     if self.allow_cache_use:
-                        #~ self.cache['FreqWords'][wordtype][original] = freq
+                        # ~ self.cache['FreqWords'][wordtype][original] = freq
                         self.cache.add_freq(original, wordtype, freq)
 
-                    #~ item.__dict__['freq'] = freq
-                    #~ item.__dict__['freq'] = freq
+                    # ~ item.__dict__['freq'] = freq
+                    # ~ item.__dict__['freq'] = freq
                     item.freq = freq
             resulted_data[i] = item
         return resulted_data
@@ -592,18 +608,21 @@ class Analex:
         # ToDo : fix it to isdigit, by moatz saad
         if word.isnumeric():
             detailed_result.append(
-                wordcase.WordCase({
-                    'word': word,
-                    'affix': ('', '', '', ''),
-                    'stem': '',
-                    'original': word,
-                    'vocalized': word,
-                    'tags': u"عدد",
-                    'type': 'NUMBER',
-                    'freq': 0,
-                    'syntax': '',
-                    'root':'',
-                }))
+                wordcase.WordCase(
+                    {
+                        "word": word,
+                        "affix": ("", "", "", ""),
+                        "stem": "",
+                        "original": word,
+                        "vocalized": word,
+                        "tags": "عدد",
+                        "type": "NUMBER",
+                        "freq": 0,
+                        "syntax": "",
+                        "root": "",
+                    }
+                )
+            )
         # test if all chars in word are punctuation
         for char in word:
             # if one char is not a pounct, break
@@ -612,26 +631,21 @@ class Analex:
         else:
             # if all chars are pounct, the word take tags of the first char
             detailed_result.append(
-                wordcase.WordCase({
-                    'word':
-                    word,
-                    'affix': ('', '', '', ''),
-                    'stem':
-                    '',
-                    'original':
-                    word,
-                    'vocalized':
-                    word,
-                    'tags':
-                    stem_pounct_const.POUNCTUATION[word[0]]['tags'],
-                    'type':
-                    'POUNCT',
-                    'freq':
-                    0,
-                    'syntax':
-                    '',
-                    'root':'',
-                }))
+                wordcase.WordCase(
+                    {
+                        "word": word,
+                        "affix": ("", "", "", ""),
+                        "stem": "",
+                        "original": word,
+                        "vocalized": word,
+                        "tags": stem_pounct_const.POUNCTUATION[word[0]]["tags"],
+                        "type": "POUNCT",
+                        "freq": 0,
+                        "syntax": "",
+                        "root": "",
+                    }
+                )
+            )
 
         return detailed_result
 
@@ -685,14 +699,20 @@ class Analex:
             # strip harakat keep shadda
             # input word can be vocalized
             # The output word vocalized
-            return [x for x in resulted_data 
-                    if araby.strip_harakat(word_nm_shadda) == araby.strip_harakat(x.vocalized)]
+            return [
+                x
+                for x in resulted_data
+                if araby.strip_harakat(word_nm_shadda)
+                == araby.strip_harakat(x.vocalized)
+            ]
         else:
-            return [x for x in resulted_data
-            if araby.shaddalike(word_nm_shadda, x.vocalized)]
-        
+            return [
+                x
+                for x in resulted_data
+                if araby.shaddalike(word_nm_shadda, x.vocalized)
+            ]
 
-    #~ @staticmethod
+    # ~ @staticmethod
     def check_normalized(self, word_nm, resulted_data):
         """
         If the entred word is like the found word in dictionary,
@@ -712,13 +732,13 @@ class Analex:
         @rtype: list.
         """
         return [d for d in resulted_data if d.unvocalized == word_nm]
-        #print word_vocalised.encode('utf8')
+        # print word_vocalised.encode('utf8')
         # ~ filtred_data = []
         # ~ for item in resulted_data:
-            # ~ outputword = item.unvocalized
-            # ~ inputword = item.word_nm
-            # ~ if inputword == outputword:
-                # ~ filtred_data.append(item)
+        # ~ outputword = item.unvocalized
+        # ~ inputword = item.word_nm
+        # ~ if inputword == outputword:
+        # ~ filtred_data.append(item)
         # ~ return filtred_data
 
     @staticmethod
@@ -738,19 +758,23 @@ class Analex:
         if not araby.is_vocalized(word_vocalised):
             return resulted_data
         else:
-            #compare the vocalized output with the vocalized input
-            #print ' is vocalized'
+            # compare the vocalized output with the vocalized input
+            # print ' is vocalized'
             for item in resulted_data:
-                if 'vocalized' in item:
-                    output = item['vocalized']
-                    is_verb = "Verb" in item['type']
+                if "vocalized" in item:
+                    output = item["vocalized"]
+                    is_verb = "Verb" in item["type"]
                     if araby.vocalizedlike(word_vocalised, output):
-                        item['tags'] += ':' + analex_const.PARTIAL_VOCALIZED_TAG
+                        item["tags"] += ":" + analex_const.PARTIAL_VOCALIZED_TAG
                         filtred_data.append(item)
                         # حالة التقا الساكنين، مع نص مشكول مسبقا، والفعل في آخره كسرة بدل السكون
-                    elif is_verb and  word_vocalised.endswith(araby.KASRA) and output.endswith(araby.SUKUN):
+                    elif (
+                        is_verb
+                        and word_vocalised.endswith(araby.KASRA)
+                        and output.endswith(araby.SUKUN)
+                    ):
                         if araby.vocalizedlike(word_vocalised[:-1], output[:-1]):
-                            item['tags'] += ':' + analex_const.PARTIAL_VOCALIZED_TAG
+                            item["tags"] += ":" + analex_const.PARTIAL_VOCALIZED_TAG
                             filtred_data.append(item)
-                    
+
         return filtred_data

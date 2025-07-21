@@ -1,20 +1,20 @@
 ﻿#!/usr/bin/python
 # -*- coding=utf-8 -*-
-#-------------------------------------------------------------------------
+# -------------------------------------------------------------------------
 # Name:        stop_affixer
 # Purpose:     Arabic lexical analyser, provides feature for
-#~stemming arabic word as stop
+# ~stemming arabic word as stop
 #
 # Author:      Taha Zerrouki (taha.zerrouki[at]gmail.com)
 #
 # Created:     31-10-2011
 # Copyright:   (c) Taha Zerrouki 2011
 # Licence:     GPL
-#-------------------------------------------------------------------------
+# -------------------------------------------------------------------------
 """
-    Arabic stop stemmer
+Arabic stop stemmer
 """
-#~ import re
+# ~ import re
 import pyarabic.araby as araby
 import tashaphyne.stemming
 import tashaphyne.normalize
@@ -22,18 +22,17 @@ import arramooz.stopwordsdictionaryclass as stopwordsdictionaryclass
 from . import stem_stopwords_const as SSC
 
 
-
-
-
 class stopword_affixer:
     """
-        Arabic stop stemmer
+    Arabic stop stemmer
     """
-    def __init__(self,):
-        """
-        """
+
+    def __init__(
+        self,
+    ):
+        """ """
         self.procletics_tags = SSC.COMP_PREFIX_LIST_TAGS
-        #~ # get prefixes
+        # ~ # get prefixes
         self.prefixes = []
         # ~ # get suffixes
         self.suffixes_tags = SSC.CONJ_SUFFIX_LIST_TAGS
@@ -42,7 +41,7 @@ class stopword_affixer:
         # ~ self.enclitics = SSC.COMP_SUFFIX_LIST
         # ~ self.affixes = SSC.STOPWORDS_CONJUGATION_AFFIX
         # ~ self.clitics = SSC.COMP_stopword_AFFIXES
-        # adjustement table 
+        # adjustement table
         self.ajustment_table = SSC.AJUSTMENT
 
     @staticmethod
@@ -58,21 +57,25 @@ class stopword_affixer:
         @return: list of stem variants.
         @rtype: list of unicode.
         """
-        #some cases must have some correction
-        #determinate the  suffix types
-        #~suffix = suffix_nm
+        # some cases must have some correction
+        # determinate the  suffix types
+        # ~suffix = suffix_nm
 
-        possible_stop_list = set([
-            stem,
-        ])
-        if not suffix_nm or suffix_nm in (araby.YEH + araby.NOON,
-                                          araby.WAW + araby.NOON):
+        possible_stop_list = set(
+            [
+                stem,
+            ]
+        )
+        if not suffix_nm or suffix_nm in (
+            araby.YEH + araby.NOON,
+            araby.WAW + araby.NOON,
+        ):
             possible_stop = stem + araby.YEH
             possible_stop_list.add(possible_stop)
         if stem.endswith(araby.YEH):
             possible_stop = stem[:-1] + araby.ALEF_MAKSURA
             possible_stop_list.add(possible_stop)
-        #to be validated
+        # to be validated
         validated_list = possible_stop_list
         return validated_list
 
@@ -92,17 +95,19 @@ class stopword_affixer:
         @rtype: (unicode, unicode)
         """
         enclitic_nm = araby.strip_tashkeel(enclitic)
-        newsuffix = suffix  #default value
-        #if the word ends by a haraka
-        if not enclitic_nm and word[-1:] in (
-                araby.ALEF_MAKSURA, araby.YEH,
-                araby.ALEF) and araby.is_haraka(suffix):
-            newsuffix = u""
+        newsuffix = suffix  # default value
+        # if the word ends by a haraka
+        if (
+            not enclitic_nm
+            and word[-1:] in (araby.ALEF_MAKSURA, araby.YEH, araby.ALEF)
+            and araby.is_haraka(suffix)
+        ):
+            newsuffix = ""
 
-        #gererate the suffix without I'rab short mark
+        # gererate the suffix without I'rab short mark
         # here we lookup with given suffix because the new suffix is
         # changed and can be not found in table
-        if u'متحرك' in self.suffixes_tags[suffix]['tags']:
+        if "متحرك" in self.suffixes_tags[suffix]["tags"]:
             suffix_non_irab_mark = araby.strip_lastharaka(newsuffix)
         else:
             suffix_non_irab_mark = newsuffix
@@ -123,17 +128,16 @@ class stopword_affixer:
         suffix without I'rab short mark).
         @rtype: (unicode, unicode)
         """
-        #enclitic_nm = araby.strip_tashkeel(enclitic)
-        #newsuffix = suffix #default value
-        #if the word ends by a haraka
+        # enclitic_nm = araby.strip_tashkeel(enclitic)
+        # newsuffix = suffix #default value
+        # if the word ends by a haraka
         # الإدغام في النون والياء في مثل فيّ، إليّ، عنّا ، منّا
         if enclitic.startswith(araby.NOON) and word.endswith(araby.NOON):
             enclitic = enclitic[1:] + araby.SHADDA
-            #~ print "xxxxxxxxxxx--1"
-        if enclitic.startswith(araby.KASRA + araby.YEH) and word.endswith(
-                araby.YEH):
+            # ~ print "xxxxxxxxxxx--1"
+        if enclitic.startswith(araby.KASRA + araby.YEH) and word.endswith(araby.YEH):
             enclitic = enclitic[1:] + araby.SHADDA
-            #~ print "xxxxxxxxxxx--2"
+            # ~ print "xxxxxxxxxxx--2"
 
         return enclitic
 
@@ -154,7 +158,7 @@ class stopword_affixer:
 
         # تحويل الألف المقصورة إلى ياء في مثل إلى => إليك
         if word_stem.endswith(araby.ALEF_MAKSURA) and suffix_nm:
-            if word_stem == u"سِوَى":
+            if word_stem == "سِوَى":
                 word_stem = word_stem[:-1] + araby.ALEF
             else:
                 word_stem = word_stem[:-1] + araby.YEH + araby.SUKUN
@@ -166,16 +170,16 @@ class stopword_affixer:
                 word_stem = word_stem[:-1] + araby.YEH_HAMZA
 
         # this option is not used with stop words, because most of them are not inflected مبني
-        #if the word ends by a haraka strip the haraka if the suffix is not null
+        # if the word ends by a haraka strip the haraka if the suffix is not null
         if suffix and suffix[0] in araby.HARAKAT:
             word_stem = araby.strip_lastharaka(word_stem)
 
         # الإدغام في النون والياء في مثل فيّ، إليّ، عنّا ، منّا
-        if suffix.startswith(
-                araby.NOON) and word.endswith(araby.NOON + araby.SUKUN):
+        if suffix.startswith(araby.NOON) and word.endswith(araby.NOON + araby.SUKUN):
             word_stem = araby.strip_lastharaka(word_stem)
         elif suffix.startswith(araby.KASRA + araby.YEH) and word.endswith(
-                araby.YEH + araby.SUKUN):
+            araby.YEH + araby.SUKUN
+        ):
             word_stem = araby.strip_lastharaka(word_stem)
 
         return word_stem
@@ -202,11 +206,11 @@ class stopword_affixer:
         # in this stage we consider only one,
         # the second situation is ajusted by vocalize_ajust
         enclitic_voc = self.enclitics_tags[enclitic]["vocalized"][0]
-        suffix_voc = suffix  #CONJ_SUFFIX_LIST_TAGS[suffix]["vocalized"][0]
+        suffix_voc = suffix  # CONJ_SUFFIX_LIST_TAGS[suffix]["vocalized"][0]
 
         # generate the word variant for some words witch ends by special
-        #letters like Alef_maksura, or hamza,
-        #the variant is influed by the suffix harakat,
+        # letters like Alef_maksura, or hamza,
+        # the variant is influed by the suffix harakat,
         # for example إلي +ك = إلى+ك
         stop = self.get_word_variant(stop, suffix + enclitic)
 
@@ -214,7 +218,8 @@ class stopword_affixer:
         # Alef Maqsura and Yeh
         # for example
         suffix_voc, suffix_non_irab_mark = self.get_suffix_variants(
-            stop, suffix_voc, enclitic_voc)
+            stop, suffix_voc, enclitic_voc
+        )
 
         # generate the suffix variant. if the suffix is Yeh or Noon for geminating
         # for example عنّي = عن+ني
@@ -223,14 +228,14 @@ class stopword_affixer:
         # generate the non vacalized end word: the vocalized word
         # without the I3rab Mark
         # if the suffix is a short haraka
-        word_non_irab_mark = ''.join(
-            [proclitic_voc, stop, suffix_non_irab_mark, enclitic_voc])
+        word_non_irab_mark = "".join(
+            [proclitic_voc, stop, suffix_non_irab_mark, enclitic_voc]
+        )
 
+        word_vocalized = "".join([proclitic_voc, stop, suffix_voc, enclitic_voc])
 
-        word_vocalized = ''.join([proclitic_voc, stop, suffix_voc, enclitic_voc])
-        
         # adjust vocalization
-        word_non_irab_mark  = self.ajust_vocalization(word_non_irab_mark)            
+        word_non_irab_mark = self.ajust_vocalization(word_non_irab_mark)
         word_vocalized = self.ajust_vocalization(word_vocalized)
         return word_vocalized, word_non_irab_mark
 
@@ -247,8 +252,7 @@ class stopword_affixer:
         @rtype: list of pairs.
         """
         return [
-            s for s in list_seg
-            if '-'.join([word[:s[0]], word[s[1]:]]) in affix_list
+            s for s in list_seg if "-".join([word[: s[0]], word[s[1] :]]) in affix_list
         ]
 
     @staticmethod
@@ -267,50 +271,55 @@ class stopword_affixer:
         @rtype: Boolean.
         """
         procletic = araby.strip_tashkeel(procletic)
-        #~ encletic = encletic_nm
-        #~ suffix = suffix_nm
+        # ~ encletic = encletic_nm
+        # ~ suffix = suffix_nm
 
-        if u"تعريف" in affix_tags and not stop_tuple['definition']:
+        if "تعريف" in affix_tags and not stop_tuple["definition"]:
             return False
-        if u"تعريف" in affix_tags and stop_tuple['defined']:
+        if "تعريف" in affix_tags and stop_tuple["defined"]:
             return False
-        #~preposition
-        if u'جر' in affix_tags and stop_tuple['is_inflected'] and not u"مجرور"  in affix_tags:
+        # ~preposition
+        if (
+            "جر" in affix_tags
+            and stop_tuple["is_inflected"]
+            and not "مجرور" in affix_tags
+        ):
             return False
-        if u'جر' in affix_tags and not stop_tuple['preposition']:
+        if "جر" in affix_tags and not stop_tuple["preposition"]:
             return False
-        if u"متحرك" in affix_tags and not stop_tuple['is_inflected']:
+        if "متحرك" in affix_tags and not stop_tuple["is_inflected"]:
             return False
 
-        if u"مضاف" in affix_tags and not stop_tuple['pronoun']:
+        if "مضاف" in affix_tags and not stop_tuple["pronoun"]:
             return False
-        if u"مضاف" in affix_tags and stop_tuple['defined']:
+        if "مضاف" in affix_tags and stop_tuple["defined"]:
             return False
         # حين تكون الأداة متحركة فهي تقبل الاتصال بياء المتكلم مباشرة
-        if encletic_nm == araby.YEH and not stop_tuple['is_inflected']:
+        if encletic_nm == araby.YEH and not stop_tuple["is_inflected"]:
             return False
         # noon wiqaya نون الوقاية
         # حين تكون الأداة غير متحركة فهي تلزم  الاتصال بنون الوقاية قبل ياء المتكلم مباشرة
-        if u"وقاية" in affix_tags and (stop_tuple['is_inflected']
-                                       or stop_tuple['word'].endswith(araby.YEH)):
+        if "وقاية" in affix_tags and (
+            stop_tuple["is_inflected"] or stop_tuple["word"].endswith(araby.YEH)
+        ):
             return False
-            #~interrog
-        if u"استفهام" in affix_tags and not stop_tuple['interrog']:
+            # ~interrog
+        if "استفهام" in affix_tags and not stop_tuple["interrog"]:
             return False
-            #~conjugation
-            #~qasam
+            # ~conjugation
+            # ~qasam
 
-        if u"قسم" in affix_tags and not stop_tuple['qasam']:
+        if "قسم" in affix_tags and not stop_tuple["qasam"]:
             return False
-            #~
-            #~defined
-            #~is_inflected
-            #~tanwin
-        if u"تنوين" in affix_tags and not stop_tuple['tanwin']:
+            # ~
+            # ~defined
+            # ~is_inflected
+            # ~tanwin
+        if "تنوين" in affix_tags and not stop_tuple["tanwin"]:
             return False
-            #~action
-            #~object_type
-            #~need
+            # ~action
+            # ~object_type
+            # ~need
         return True
 
     def ajust_vocalization(self, vocalized):

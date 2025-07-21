@@ -1,7 +1,7 @@
-﻿    #!/usr/bin/python
+﻿#!/usr/bin/python
 # -*- coding=utf-8 -*-
 
-#------------------------------------------------------------------------
+# ------------------------------------------------------------------------
 # Name:        dconst.py
 # Purpose:     Arabic lexical analyser constants used for disambiguation
 # before analysis
@@ -11,16 +11,17 @@
 # Created:     31-10-2011
 # Copyright:   (c) Taha Zerrouki 2011
 # Licence:     GPL
-#-----------------------------------------------------------------------
+# -----------------------------------------------------------------------
 """
 A class to remove ambiguation in text analysis
 """
 if __name__ == "__main__":
     import sys
-    sys.path.append('../')
-    sys.path.append('../support')
 
-#~ import qalsadi.disambig_const as dconst
+    sys.path.append("../")
+    sys.path.append("../support")
+
+# ~ import qalsadi.disambig_const as dconst
 from . import disambig_const as dconst
 import naftawayh.wordtag
 
@@ -30,7 +31,9 @@ class Disambiguator:
     A class to remove ambiguation in text analysis
     """
 
-    def __init__(self, ):
+    def __init__(
+        self,
+    ):
         self.tagger = naftawayh.wordtag.WordTagger()
 
     def disambiguate_words(self, word_list, tag_list):
@@ -48,7 +51,7 @@ class Disambiguator:
         # print u" ".join(tag_list).encode('utf8');
 
         if not word_list or len(word_list) != len(tag_list):
-            #print "error"
+            # print "error"
             return word_list
         else:
             newwordlist = []
@@ -64,29 +67,35 @@ class Disambiguator:
                         previousword = ""
                     # disambiguate the word according the previous  word
                     tmpword = self.get_disambiguated_by_prev_word(
-                        currentword, previousword)
+                        currentword, previousword
+                    )
                     if tmpword != currentword:
                         currentword = tmpword
                     elif i + 1 < len(wordtaglist):
-                        #print "*5"
+                        # print "*5"
                         nexttag = wordtaglist[i + 1][1]
-                        #~ nextword = wordtaglist[i + 1][0]
+                        # ~ nextword = wordtaglist[i + 1][0]
                         # if the next is similar to the expected tag,
                         # return vocalized word form
                         # test if expected tag is verb and
-                        if self.tagger.is_verb_tag(nexttag) and \
-                        self.is_disambiguated_by_next_verb(currentword):
-                            currentword = \
-                            self.get_disambiguated_by_next_verb(currentword)
-                        elif (self.tagger.is_noun_tag(nexttag) and
-                              self.is_disambiguated_by_next_noun(currentword)):
+                        if self.tagger.is_verb_tag(
+                            nexttag
+                        ) and self.is_disambiguated_by_next_verb(currentword):
+                            currentword = self.get_disambiguated_by_next_verb(
+                                currentword
+                            )
+                        elif self.tagger.is_noun_tag(
+                            nexttag
+                        ) and self.is_disambiguated_by_next_noun(currentword):
                             currentword = self.get_disambiguated_by_next_noun(
-                                currentword)
+                                currentword
+                            )
                 newwordlist.append(currentword)
             return newwordlist
+
     @staticmethod
     def is_ambiguous(word):
-        """ test if the word is an ambiguous case
+        """test if the word is an ambiguous case
         @param word: input word.
         @type word: unicode.
         @return : if word is ambiguous
@@ -96,19 +105,22 @@ class Disambiguator:
 
     @staticmethod
     def get_disambiguated_by_next_noun(word):
-        """ get The disambiguated form of the word by the next word is noun.
+        """get The disambiguated form of the word by the next word is noun.
         The disambiguated form can be fully or partially vocalized.
         @param word: input word.
         @type word: unicode.
         @return : if word is ambiguous
         @rtype: True/False.
         """
-        return dconst.DISAMBIGUATATION_TABLE.get(word, {}).get('noun', \
-         {}).get('vocalized', word)
+        return (
+            dconst.DISAMBIGUATATION_TABLE.get(word, {})
+            .get("noun", {})
+            .get("vocalized", word)
+        )
 
     @staticmethod
     def get_disambiguated_by_prev_word(word, previous):
-        """ get The disambiguated form of the word by the previous.
+        """get The disambiguated form of the word by the previous.
         The disambiguated form can be fully or partially vocalized.
         @param word: input word.
         @type word: unicode.
@@ -117,12 +129,15 @@ class Disambiguator:
         @return : if word is ambiguous
         @rtype: True/False.
         """
-        return dconst.DISAMBIGUATATION_TABLE.get(word, {}).get('previous', \
-         {}).get(previous, word)
+        return (
+            dconst.DISAMBIGUATATION_TABLE.get(word, {})
+            .get("previous", {})
+            .get(previous, word)
+        )
 
     @staticmethod
     def get_disambiguated_by_next_word(word, w_next):
-        """ get The disambiguated form of the word by the next.
+        """get The disambiguated form of the word by the next.
         The disambiguated form can be fully or partially vocalized.
         @param word: input word.
         @type word: unicode.
@@ -131,53 +146,62 @@ class Disambiguator:
         @return : if word is ambiguous
         @rtype: True/False.
         """
-        return dconst.DISAMBIGUATATION_TABLE.get(word, {}).get('next', \
-         {}).get(w_next, word)
+        return (
+            dconst.DISAMBIGUATATION_TABLE.get(word, {})
+            .get("next", {})
+            .get(w_next, word)
+        )
+
     @staticmethod
     def get_disambiguated_by_next_verb(word):
-        """ get The disambiguated form of the word by the next word is a verb.
+        """get The disambiguated form of the word by the next word is a verb.
         The disambiguated form can be fully or partially vocalized.
         @param word: input word.
         @type word: unicode.
         @return : if word is ambiguous
         @rtype: True/False.
         """
-        return dconst.DISAMBIGUATATION_TABLE.get(word, {}).get('verb', \
-        {}).get('vocalized', word)
+        return (
+            dconst.DISAMBIGUATATION_TABLE.get(word, {})
+            .get("verb", {})
+            .get("vocalized", word)
+        )
+
     @staticmethod
     def is_disambiguated_by_next_noun(word):
-        """ test if the word can be disambiguated if the next word is a noun
+        """test if the word can be disambiguated if the next word is a noun
         @param word: input word.
         @type word: unicode.
         @return : if word has an disambiguated.
         @rtype: True/False.
         """
-        return 'noun' in dconst.DISAMBIGUATATION_TABLE.get(word, {})#.has_key('noun')
+        return "noun" in dconst.DISAMBIGUATATION_TABLE.get(word, {})  # .has_key('noun')
+
     @staticmethod
     def is_disambiguated_by_next_verb(word):
-        """ test if the word can be disambiguated if the next word is a verb
+        """test if the word can be disambiguated if the next word is a verb
         @param word: input word.
         @type word: unicode.
         @return : if word has an disambiguated.
         @rtype: True/False.
         """
-        return 'verb' in dconst.DISAMBIGUATATION_TABLE.get(word, {})#.has_key('verb')
+        return "verb" in dconst.DISAMBIGUATATION_TABLE.get(word, {})  # .has_key('verb')
 
 
 def mainly():
     """
     Main test
     """
-    text = u"   السلام أن العبادي كان أعلن فتح المنطقة أن السلام مفيد أن يركبوا"
+    text = "   السلام أن العبادي كان أعلن فتح المنطقة أن السلام مفيد أن يركبوا"
     # tokenize the text
-    wordlist = text.split(' ')
+    wordlist = text.split(" ")
     # create the disambiguator instance
     disamb = Disambiguator()
     # tag the word list
     taglist = disamb.tagger.word_tagging(wordlist)
     print("\t".join(taglist))
     newwordlist = disamb.disambiguate_words(wordlist, taglist)
-    print(u" ".join(newwordlist).encode('utf8'))
+    print(" ".join(newwordlist).encode("utf8"))
 
 
 if __name__ == "__main__":

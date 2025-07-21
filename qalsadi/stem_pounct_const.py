@@ -5,95 +5,95 @@ Constants for pounctuation stemming
 """
 POUNCTUATION = {}
 
-POUNCTUATION[u'.'] = {
-    'word': u'.',
-    'tags': u'نقطة:break',
+POUNCTUATION["."] = {
+    "word": ".",
+    "tags": "نقطة:break",
 }
-POUNCTUATION[u'~'] = {
-    'word': u'~',
-    'tags': u'شفاف',
-}
-
-POUNCTUATION[u','] = {
-    'word': u',',
-    'tags': u'فاصلة:break',
-}
-POUNCTUATION[u'،'] = {
-    'word': u'،',
-    'tags': u'فاصلة:break',
-}
-#POUNCTUATION[u',']={'word':u',', 'tags':u'فاصلة:شفاف',}
-#POUNCTUATION[u'،']={'word':u'،', 'tags':u'فاصلة:شفاف',}
-
-POUNCTUATION[u'?'] = {
-    'word': u'?',
-    'tags': u'استفهام:break',
-}
-POUNCTUATION[u'؟'] = {
-    'word': u'؟',
-    'tags': u'استفهام:break',
-}
-POUNCTUATION[u'!'] = {
-    'word': u'!',
-    'tags': u'تعجب:break',
+POUNCTUATION["~"] = {
+    "word": "~",
+    "tags": "شفاف",
 }
 
-POUNCTUATION[u';'] = {
-    'word': u';',
-    'tags': u'نقطة فاصلة:break',
+POUNCTUATION[","] = {
+    "word": ",",
+    "tags": "فاصلة:break",
 }
-POUNCTUATION[u'-'] = {
-    'word': u'-',
-    'tags': u'مطة:break',
+POUNCTUATION["،"] = {
+    "word": "،",
+    "tags": "فاصلة:break",
+}
+# POUNCTUATION[u',']={'word':u',', 'tags':u'فاصلة:شفاف',}
+# POUNCTUATION[u'،']={'word':u'،', 'tags':u'فاصلة:شفاف',}
+
+POUNCTUATION["?"] = {
+    "word": "?",
+    "tags": "استفهام:break",
+}
+POUNCTUATION["؟"] = {
+    "word": "؟",
+    "tags": "استفهام:break",
+}
+POUNCTUATION["!"] = {
+    "word": "!",
+    "tags": "تعجب:break",
 }
 
-POUNCTUATION[u':'] = {
-    'word': u':',
-    'tags': u'نقطتان:break',
+POUNCTUATION[";"] = {
+    "word": ";",
+    "tags": "نقطة فاصلة:break",
+}
+POUNCTUATION["-"] = {
+    "word": "-",
+    "tags": "مطة:break",
 }
 
-POUNCTUATION[u"'"] = {
-    'word': u"'",
-    'tags': u'تنصيص مفرد:شفاف',
-}
-POUNCTUATION[u" "] = {
-    'word': u" ",
-    'tags': u'فراغ:شفاف',
+POUNCTUATION[":"] = {
+    "word": ":",
+    "tags": "نقطتان:break",
 }
 
-POUNCTUATION[u'"'] = {
-    'word': u'"',
-    'tags': u'تنصيص مزدوج:شفاف',
+POUNCTUATION["'"] = {
+    "word": "'",
+    "tags": "تنصيص مفرد:شفاف",
+}
+POUNCTUATION[" "] = {
+    "word": " ",
+    "tags": "فراغ:شفاف",
 }
 
-POUNCTUATION[u')'] = {
-    'word': u')',
-    'tags': u'قوس',
-}
-POUNCTUATION[u'('] = {
-    'word': u'(',
-    'tags': u'قوس',
+POUNCTUATION['"'] = {
+    "word": '"',
+    "tags": "تنصيص مزدوج:شفاف",
 }
 
-POUNCTUATION[u'['] = {
-    'word': u'[',
-    'tags': u'عارضة',
+POUNCTUATION[")"] = {
+    "word": ")",
+    "tags": "قوس",
 }
-POUNCTUATION[u']'] = {
-    'word': u']',
-    'tags': u'عارضة',
+POUNCTUATION["("] = {
+    "word": "(",
+    "tags": "قوس",
 }
 
-POUNCTUATION[u'{'] = {
-    'word': u'{',
-    'tags': u'حاضنة',
+POUNCTUATION["["] = {
+    "word": "[",
+    "tags": "عارضة",
 }
-POUNCTUATION[u'}'] = {
-    'word': u'}',
-    'tags': u'حاضنة:break',
+POUNCTUATION["]"] = {
+    "word": "]",
+    "tags": "عارضة",
 }
-#treat newline as pounct for now
-POUNCTUATION[u'\n'] = {
-    'word': u'\n',
-    'tags': u'سطر جديد:newline:break',
+
+POUNCTUATION["{"] = {
+    "word": "{",
+    "tags": "حاضنة",
+}
+POUNCTUATION["}"] = {
+    "word": "}",
+    "tags": "حاضنة:break",
+}
+# treat newline as pounct for now
+POUNCTUATION["\n"] = {
+    "word": "\n",
+    "tags": "سطر جديد:newline:break",
 }
