@@ -59,7 +59,7 @@ from . import stem_pounct_const  # pounctaution constants
 from . import disambig  # disambiguation const
 from . import wordcase
 from . import stemmedword  # the result object for stemming
-from . cachemanager import cache
+from .cachemanager import cache
 from qalsadi.cachemanager import cache_pickledb as cache
 
 

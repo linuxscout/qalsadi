@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "qalsadi"
-version = "0.5"
+version = "0.5.1"
 description = "Qalsadi Arabic Morphological Analyzer and lemmatizer for Python"
 readme = "README.md"
 requires-python = ">=3.6"
@@ -40,7 +40,7 @@ include-package-data = true
 
 [tool.setuptools.packages.find]
 where = ["."]
-include = ["qalsadi"]
+include = ["qalsadi*",]
 
 [tool.setuptools.package-data]
 qalsadi = ["doc/*.*", "doc/html/*", "data/*.*", "qalsadi/data"]
