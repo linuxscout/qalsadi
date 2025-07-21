@@ -1,0 +1,46 @@
+[build-system]
+requires = ["setuptools>=61", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "qalsadi"
+version = "0.5"
+description = "Qalsadi Arabic Morphological Analyzer and lemmatizer for Python"
+readme = "README.md"
+requires-python = ">=3.6"
+license = { text = "GPL" }
+authors = [
+  { name = "Taha Zerrouki", email = "taha.zerrouki@gmail.com" }
+]
+keywords = ["Arabic", "NLP", "morphological analysis", "lemmatizer"]
+classifiers = [
+  "Development Status :: 5 - Production/Stable",
+  "Natural Language :: Arabic",
+  "Intended Audience :: Developers",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python",
+  "Topic :: Text Processing :: Linguistic"
+]
+
+dependencies = [
+  "Arabic-Stopwords>=0.4.2",
+  "alyahmor>=0.2",
+  "arramooz-pysqlite>=0.4.2",
+  "codernitydb3",
+  "libqutrub>=1.2.3",
+  "mysam-tagmanager>=0.4.1",
+  "naftawayh>=0.3",
+  "pickledb>=0.9.2",
+  "pyarabic>=0.6.7",
+  "tashaphyne>=0.3.4.1"
+]
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["qalsadi"]
+
+[tool.setuptools.package-data]
+qalsadi = ["doc/*.*", "doc/html/*", "data/*.*", "qalsadi/data"]

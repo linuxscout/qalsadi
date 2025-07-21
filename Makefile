@@ -1,83 +1,128 @@
-#/usr/bin/sh
-# Build Qalsadi package
-date=$(shell date +'%y.%m.%d-%H:%M')
-default: all
-# Clean build files
-clean:
-	
-backup: 
-	
-#create all files 
-all: 
-# Publish to github
-publish:
-	git push origin master 
+# Makefile for building and testing the Qalsadi package
 
+DATE := $(shell date +'%y.%m.%d-%H:%M')
+LIMIT ?= 100
+PROFILER ?= -m cProfile
+PY := python3
+
+.PHONY: all clean backup publish \
+        md2rst md2html wheel install sdist upload \
+        doc testcase archive_profile test_all \
+        test2 testqrn teststop testone \
+        test1000 test63 test73 test73c \
+        test_unit dev
+
+# Default target
+default: all
+
+# Clean build artifacts
+clean:
+	rm -rf build dist *.egg-info
+
+# Backup target (optional)
+backup:
+	@echo "Backup logic goes here"
+
+# Build all outputs
+all: md2rst md2html wheel sdist
+
+# Publish code to GitHub
+publish:
+	git push origin master
+
+# Convert Markdown to reStructuredText
 md2rst:
 	pandoc -s -r markdown -w rst README.md -o README.rst
+
+# Convert Markdown to HTML
 md2html:
 	pandoc -s -r markdown -w html README.md -o README.html
 
+# Build wheel
 wheel:
-	sudo python3 setup.py bdist_wheel
+	$(PY) setup.py bdist_wheel
+
+# Install package
 install:
-	sudo python3 setup.py install
+	$(PY) setup.py install
 
+# Build source distribution
 sdist:
-	sudo python3 setup.py sdist
-upload:
-	echo "use twine upload dist/qalsadi.0.3-py2-none-any.whl"
+	$(PY) setup.py sdist
 
+# Upload instructions
+upload:
+	@echo "Use: twine upload dist/<package>.whl"
+
+# Build documentation
 doc:
 	epydoc -v --config epydoc.conf
-test2:
-	cd tests;python3 test_analex.py -f samples/text.txt -o output/text2.csv > output/text2.txt
-test3:
-	cd tests;python3 test_analex.py -f samples/text.txt -o output/text3.csv > output/text3.txt
-	echo " Test File samples/text.txt"
-	echo " Output File output/text3.csv"
-	echo " Log File output/text3.txt"
+
+# Run generic test case
+LOG := $(basename $(DATA_FILE)).log
+OUT := $(basename $(DATA_FILE)).csv
+
+testcase:
+	cd tests && PYTHONPATH=.. $(PY) $(PROFILER) $(PROFILE_OUT) test_analex.py $(TEST_MODE) -l $(LIMIT) -f samples/$(DATA_FILE) -o output/$(OUT) > output/$(LOG)
+	wc -w tests/samples/$(DATA_FILE)
+	@echo "Test File: samples/$(DATA_FILE)"
+	@echo "Output CSV: output/$(OUT)"
+	@echo "Log File: output/$(LOG)"
+
+# Archive profiling info
+archive_profile:
+	@echo "Profile file: output/profile.txt"
+ifeq ($(PROFILER),-m pyinstrument)
+	@echo "Use pyinstrument to analyze profile"
+	tail -n 3 tests/output/$(LOG) | sed "s/\[options\]/-r html --show-all/g" | sed "s/pyinstrument/$(PY) -m pyinstrument/g"
+else
+	@echo "Use: cprofilev -f output/profile.txt"
+endif
+	cp tests/output/profile.txt tests/output/profile-$(DATE).txt
+
+# Specific test configurations
+test2: DATA_FILE=text.txt
+test2: testcase
+
 testqrn:
-	cut -f2 tests/samples/klm.csv.unknown.csv  >/tmp/klm.txt
-	cd tests;python3 test_analex.py -c test_quran -f /tmp/klm.txt -o output/klm.csv > output/klm.txt
-teststop:
-	cd tests;python3 test_analex.py -f samples/stopwords.txt -o output/stopwords.csv > output/text.txt
-	cd tests;grep "unknown" output/stopwords.csv  > output/stopwords.unk.txt
-	# Test File samples/stopwords.txt
-	# Output File output/stopwords.csv
-	# Log File output/text.txt
-	# Unkown filter File output/output/stopwords.unk.txt
+	cut -f2 tests/samples/klm.csv.unknown.csv > tests/samples/quran_klm.txt
+	$(MAKE) testcase DATA_FILE=quran_klm.txt TEST_MODE=-c\ test_quran
 
-testone:
-	cd tests;python3 test_analex.py -c test_one -f samples/words.txt -o output/words.csv > output/words.txt
+teststop: DATA_FILE=stopwords.txt
+teststop: testcase
+#	cd tests && grep "unknown" output/$(OUT) > output/$(basename $(DATA_FILE)).unk.txt
 
-test1000:LIMIT= 10
-test1000:
-	cd tests;python3 -m cProfile -o  output/profile.txt test_analex.py -l ${LIMIT} -f samples/text1000.txt -o output/text1000.csv > output/text1000.txt
-	wc -w tests/samples/text1000.txt
-	echo "Use cprofilev -f tests/output/profile.txt"
+testone: DATA_FILE=words.txt
+testone: TEST_MODE=-c\ test_one
+testone: testcase
 
-test63:LIMIT= 10000
-test63:
-	cd tests;python3 -m cProfile -o  output/profile.txt test_analex.py -l $(LIMIT) -f samples/text63.txt -o output/text63.csv > output/text63.txt
-	wc -w tests/samples/text63.txt
-	cp  tests/output/profile.txt  tests/output/profile-$(date).txt
-	echo "Use cprofilev -f tests/output/profile.txt"
-test73c:LIMIT= 10000
-test73c:PROFILER=-m cProfile
+test1000: DATA_FILE=text1000.txt
+test1000: PROFILER=-m cProfile
+test1000: PROFILE_OUT=-o output/profile.txt
+test1000: testcase archive_profile
 
-test73:LIMIT= 10000
-test73:PROFILER=-m pyinstrument
-test73 test73c:
-	cd tests;python3 $(PROFILER) -o  output/profile.txt test_analex.py -l $(LIMIT) -f samples/text63.txt -o output/text73.csv > output/text73.txt
-	echo ""
-	wc -w tests/samples/text63.txt
-	cp  tests/output/profile.txt  tests/output/profile-$(date).txt
-	# use pyinstrument to analyze profile
-	tail -n 3 tests/output/text73.txt | sed "s/\[options\]/-r html --show-all/g" | sed "s/pyinstrument/python3 -m pyinstrument/g"
+test63: DATA_FILE=text63.txt
+test63: PROFILER=-m cProfile
+test63: PROFILE_OUT=-o output/profile.txt
+test63: testcase archive_profile
 
+test73 test73c: DATA_FILE=text63.txt
+test73: PROFILER=-m pyinstrument
+test73c: PROFILER=-m cProfile
+test73 test73c: PROFILE_OUT=-o output/profile.txt
+test73 test73c: testcase archive_profile
+
+# Unit tests
 test_unit:
-#~ 	cd tests; python3 -m pytest test_unit_lemmatizer.py
-#~ 	cd tests; python3 -m pytest test_unit_analex.py
-	cd tests; python3 -m pytest test_unit_cache.py
-	cd tests; python3 -m pytest test_unit_tagmaker.py
+	#cd tests && $(PY) -m pytest test_unit_cache.py
+	#cd tests && $(PY) -m pytest test_unit_tagmaker.py
+	$(PY) -m  pytest tests/test_unit_tagmaker.py
+	$(PY) -m pytest tests/test_unit_cache.py
+	#$(PY) -m unittest discover -s tests
+
+# Run all tests
+test_all: test2 testqrn teststop testone test1000 test63 test73 test73c
+
+# install active devvelopement qalsadi
+dev:
+	pip install -e .

@@ -6,5 +6,5 @@ tashaphyne>=0.3.4.1
 arramooz-pysqlite>=0.4.2
 Arabic-Stopwords>=0.4.2
 alyahmor>=0.2
-mysam-tagmanager>=0.4
+mysam-tagmanager>=0.4.1
 codernitydb3
