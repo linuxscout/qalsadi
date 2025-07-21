@@ -10,7 +10,7 @@ PY := python3
         doc testcase archive_profile test_all \
         test2 testqrn teststop testone \
         test1000 test63 test73 test73c \
-        test_unit dev
+        test_unit dev unittest
 
 # Default target
 default: all
@@ -114,11 +114,14 @@ test73 test73c: testcase archive_profile
 
 # Unit tests
 test_unit:
-	#cd tests && $(PY) -m pytest test_unit_cache.py
-	#cd tests && $(PY) -m pytest test_unit_tagmaker.py
 	$(PY) -m  pytest tests/test_unit_tagmaker.py
 	$(PY) -m pytest tests/test_unit_cache.py
-	#$(PY) -m unittest discover -s tests
+	$(PY) -m pytest tests/test_unit_lemmatizer.py
+	$(PY) -m pytest tests/test_unit_analex.py
+
+# Unit tests
+unittest:
+	$(PY) -m unittest discover -s tests
 
 # Run all tests
 test_all: test2 testqrn teststop testone test1000 test63 test73 test73c
