@@ -1,48 +1,26 @@
 ﻿import sys
 
-sys.path.append("../support")
-
 import pyarabic.araby as araby
 import tashaphyne.stem_const as tasha
 import qalsadi.stem_verb_const as vconst
 import qalsadi.stem_noun_const as nconst
 import qalsadi.stem_stopwords_const as sconst
-import repr as reprlib
 
-
-class ArabicRepr(reprlib.Repr):
-    """A redefinition of repr function.
-
-    Example:
-        >>> import pyarabic.arabrepr as arabrepr
-        >>> arepr = arabrepr.ArabicRepr()
-        >>> repr = arepr.repr
-        >>> word = u"السلام عليكم ورحمة الله"
-        >>> wordlist = word.split(" ")
-        >>> print(wordlist)
-        ['السلام', 'عليكم', 'ورحمة', 'الله']
-        >>> print(repr(wordlist))
-        [u'السلام', u'عليكم', u'ورحمة', u'الله']
-    """
-
-    def repr_unicode(self, obj, level):
-        # Python 3 strings are Unicode by default
-        return "u'%s'" % obj
-
-
-reprAr = ArabicRepr()
-repra = reprAr.repr
+from pprint import PrettyPrinter
 
 
 def myprint(wordlist):
     JOINER = ", "
+    pp = PrettyPrinter(depth=None, width=200, compact=False)
     l = set([araby.strip_tashkeel(x) for x in wordlist])
-    print(JOINER.join(sorted(l)))
+    text = JOINER.join(sorted(l))
+    pp.pprint(text)
 
 
 def print_automate(tree_dict):
+    pp = PrettyPrinter(depth=None, width=200, compact=False)
     # Use the custom repr for Unicode readability
-    print(repra(tree_dict))
+    pp.pprint(tree_dict)
 
 
 # --------------------------------------
