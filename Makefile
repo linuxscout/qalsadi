@@ -40,7 +40,7 @@ md2html:
 
 # Build wheel
 wheel:
-	$(PY) setup.py bdist_wheel
+	$(PY) -m build --wheel
 
 # Install package
 install:
