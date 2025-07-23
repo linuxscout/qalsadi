@@ -10,7 +10,7 @@ PY := python3
         doc testcase archive_profile test_all \
         test2 testqrn teststop testone \
         test1000 test63 test73 test73c \
-        test_unit dev unittest
+        test_unit dev unittest eval
 
 # Default target
 default: all
@@ -118,11 +118,16 @@ test_unit:
 	$(PY) -m pytest tests/test_unit_cache.py
 	$(PY) -m pytest tests/test_unit_lemmatizer.py
 	$(PY) -m pytest tests/test_unit_analex.py
+	$(PY) -m pytest tests/test_unit_qalsadi_eval.py
 
 # Unit tests
 unittest:
 	$(PY) -m unittest discover -s tests
 
+eval:
+	cd tests && $(PY) qalsadi_eval.py samples/Nemlar --csv output/results.csv --recursive --ignore-diacritics --limit 10
+eval_all:
+	cd tests && $(PY) qalsadi_eval.py samples/Nemlar --csv output/results.csv --recursive --ignore-diacritics
 # Run all tests
 test_all: test2 testqrn teststop testone test1000 test63 test73 test73c
 

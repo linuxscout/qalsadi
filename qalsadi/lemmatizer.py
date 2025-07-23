@@ -23,6 +23,8 @@ import pyarabic.araby as araby
 from . import analex
 from . import stemnode
 from . import stemmedword
+import functools
+import operator
 
 
 class Lemmatizer:
@@ -60,7 +62,7 @@ class Lemmatizer:
             stemnode_list.append(stemnode.StemNode(stemming_list, self.vocalized_lemma))
         return stemnode_list
 
-    def get_lemmas(self, stemnode_list, pos="", return_pos=False):
+    def get_lemmas(self, stemnode_list, pos="", return_pos=False, all=False):
         """
         Generate all lemmas from stemnode_list
 
@@ -68,7 +70,10 @@ class Lemmatizer:
         lemmas = []
         for stnd in stemnode_list:
             # ~ lemmas.append(stnd.get_lemmas())
-            lemmas.append(stnd.get_lemma(pos=pos, return_pos=return_pos))
+            if all:
+                lemmas.append(stnd.get_lemmas())
+            else:
+                lemmas.append(stnd.get_lemma(pos=pos, return_pos=return_pos))
             # ~ lemmas.append([stnd.get_lemma(), stnd.get_lemmas()])
 
         return lemmas
@@ -143,7 +148,7 @@ class Lemmatizer:
         """
         self.vocalized_lemma = False
 
-    def lemmatize_text(self, text, return_pos=False, pos=""):
+    def lemmatize_text(self, text, return_pos=False, pos="",all=False):
         """
         Lemmatize text
         @param text: input text
@@ -152,18 +157,23 @@ class Lemmatizer:
 
         result = self.analexer.check_text(text)
         stemnodelist = self.analyze(result)
-        lemmas = self.get_lemmas(stemnodelist, return_pos=return_pos, pos=pos)
+        lemmas = self.get_lemmas(stemnodelist, return_pos=return_pos, pos=pos, all=all)
         return lemmas
 
-    def lemmatize(self, word, return_pos=False, pos=""):
+    def lemmatize(self, word, return_pos=False, pos="", all=False):
         """
         Lemmatize text
         @param text: input text
         @type text: unicode
         """
-        lemmas = self.lemmatize_text(word, return_pos=return_pos, pos=pos)
-        if lemmas:
-            return lemmas[0]
+        lemmasListOfList = self.lemmatize_text(word, return_pos=return_pos, pos=pos, all=all)
+        # lemmas is a lis
+        if lemmasListOfList:
+            return lemmasListOfList[0]
+            # if not all:
+            #
+            # else:
+            #     return lemmas
         else:
             if return_pos:
                 return ()
