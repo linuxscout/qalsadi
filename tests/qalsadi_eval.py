@@ -51,8 +51,10 @@ class QalsadiEvaluator:
             sentence_id = sentence.get("id", "")
             for lexical in sentence.findall(".//ArabicLexical"):
                 word = lexical.get("word")
+
+                word_nm = strip_tashkeel(word)
                 gold_lemma = lexical.get("lemma")
-                predicted_lemmas = self.extract_lemma(word)
+                predicted_lemmas = self.extract_lemma(word_nm)
 
                 if self.match_lemma(gold_lemma, predicted_lemmas):
                     file_correct += 1
