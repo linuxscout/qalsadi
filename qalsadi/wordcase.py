@@ -58,6 +58,8 @@ class WordCase:
         # ~""" the word type  """
         self.original = ""
         # ~""" original word from lexical dictionary"""
+        self.lemma = ""
+        # ~""" lemma word from lexical dictionary"""
         if result_dict:
             self.word = result_dict.get("word", "")
             self.vocalized = result_dict.get("vocalized", "")
@@ -74,6 +76,7 @@ class WordCase:
             self.freq = result_dict.get("freq", "")
             self.type = result_dict.get("type", "")
             self.original = result_dict.get("original", "")
+            self.lemma = result_dict.get("lemma", "")
             self.tense = result_dict.get("tense", "")
             self.pronoun = result_dict.get("pronoun", "")
             self.action = result_dict.get("action", "")
@@ -276,6 +279,24 @@ class WordCase:
         """
         self.original = neworiginal
 
+    def get_lemma(
+        self,
+    ):
+        """
+        Get the lemma form of the input word
+        @return: the given lemma.
+        @rtype: unicode string
+        """
+        return self.lemma
+
+    def set_lemma(self, newlemma):
+        """
+        Set the lemma word
+        @param newlemma: the new given lemma.
+        @type newlemma: unicode string
+        """
+        self.lemma = newlemma
+
     ######################################################################
     # { Display Functions
     ######################################################################
@@ -322,6 +343,7 @@ if __name__ == "__main__":
         "template": "",  # the template وزن
         "type": "Noun:مصدر",  # the word type
         "original": "حَيَاةٌ",  # original word from lexical dictionary
+        "lemma": "حَيَاةٌ",  # original word from lexical dictionary
         "syntax": "",  # used for syntaxique analysis porpos
         "semantic": "",
     }

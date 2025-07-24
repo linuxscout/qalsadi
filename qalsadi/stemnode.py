@@ -166,18 +166,20 @@ class StemNode:
                     idx,
                 ]
             # indexing by word type
+            # in all cases
+            self.lemmas["all"].append(case.get_lemma())
             if case.is_verb():
                 self.word_type["verb"].append(idx)
-                self.lemmas["verb"].append(case.get_original())
+                self.lemmas["verb"].append(case.get_lemma())
             if case.is_noun():
                 self.word_type["noun"].append(idx)
-                self.lemmas["noun"].append(case.get_original())
+                self.lemmas["noun"].append(case.get_lemma())
             if case.is_stopword():
                 self.word_type["stopword"].append(idx)
-                self.lemmas["stopword"].append(case.get_original())
+                self.lemmas["stopword"].append(case.get_lemma())
             if case.is_pounct():
                 self.word_type["pounct"].append(idx)
-                self.lemmas["pounct"].append(case.get_original())
+                self.lemmas["pounct"].append(case.get_lemma())
             # indexing break and non break word cases
             if case.is_break():
                 self.breaks.append(idx)
@@ -222,7 +224,7 @@ class StemNode:
             "pounct": len(self.word_type["pounct"]),
         }
         # cleans lemmas
-        self.lemmas["all"] = self.originals.keys()
+        self.lemmas["all"] = list(set(self.lemmas["all"]))
         for type_key in self.lemmas:
             # remove duplicates
             self.lemmas[type_key] = list(set(self.lemmas[type_key]))
@@ -390,11 +392,9 @@ class StemNode:
         @rtype: unicode string
         """
         # print("stemnode 307", self.vocalized_lemma)
-        originals = set(list(self.originals.keys()))
-        if self.vocalized_lemma:
-            lemmas = [l for l in originals]
-        else:
-            lemmas = [araby.strip_tashkeel(l) for l in originals]
+        lemmas = list(set(self.lemmas["all"]))
+        if not self.vocalized_lemma:
+            lemmas = [araby.strip_tashkeel(l) for l in lemmas]
 
         lemmas = list(set(lemmas))
         return lemmas

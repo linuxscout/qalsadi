@@ -241,6 +241,7 @@ class UnknownStemmer:
                             "affix": (procletic, prefix_conj, suffix_conj, encletic),
                             "stem": stem_conj,
                             "original": infnoun,  # original,
+                            "lemma": infnoun,  # original,
                             "vocalized": vocalized,
                             "semivocalized": vocalized,
                             "tags": ":".join(

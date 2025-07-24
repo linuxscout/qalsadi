@@ -299,6 +299,8 @@ class NounStemmer:
                     voc_affix_case = word_seg["affix_tags"] + (case,)
                     # filter empty
                     voc_affix_case = [vac for vac in voc_affix_case if vac]
+                    # is same as original, but if the word is an irregular plrual it takes single form
+                    lemma = word_seg["noun_tuple"]["vocalized"]
                     detailed_result.append(
                         wordcase.WordCase(
                             {
@@ -316,6 +318,7 @@ class NounStemmer:
                                 "original": word_seg["noun_tuple"][
                                     "vocalized"
                                 ],  # original,
+                                "lemma":lemma, # is same as original, but if the word is an irregular plrual it takes single form
                                 "vocalized": vocalized,
                                 "semivocalized": semi_vocalized,
                                 "tags": ":".join(voc_affix_case),

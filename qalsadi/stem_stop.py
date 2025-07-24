@@ -232,6 +232,7 @@ class StopWordStemmer:
                                         ),
                                         "stem": stem_conj,
                                         "original": original,
+                                        "lemma": original,
                                         "vocalized": vocalized,
                                         "semivocalized": semi_vocalized,
                                         "tags": ":".join(affix_tags),

@@ -337,6 +337,7 @@ class VerbStemmer:
                             "stem": word_seg["stem_conj"],
                             "root": ar.normalize_hamza(word_seg.get("root", "")),
                             "original": conj["verb"],
+                            "lemma": conj["verb"],
                             "vocalized": vocalized,
                             "semivocalized": semivocalized,
                             "tags": tags,  # \

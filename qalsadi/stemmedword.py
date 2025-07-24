@@ -51,6 +51,7 @@ class StemmedWord:
         self.freq = (0,)  # the word frequency from _word _frequency database
         self.type = ("",)  # the word type
         self.original = ""  # original word from lexical dictionary
+        self.lemma = ""  # original word from lexical dictionary
         self.tag_regular = (
             True  # the stemmed word is regular or irregular سالم أو تكسير
         )
@@ -71,6 +72,8 @@ class StemmedWord:
             self.freq = resultdict.get("freq", "")
             self.type = resultdict.get("type", "")
             self.original = resultdict.get("original", "")
+            self.lemma = resultdict.get("lemma", "")
+            # self.lemma = resultdict.get("lemma", "")
             # tags of stop word
             # action: the word role
             self.action = resultdict.get("action", "")
@@ -640,6 +643,14 @@ class StemmedWord:
         Get the original form of the input word
         """
         return self.original
+
+    def get_lemma(
+        self,
+    ):
+        """
+        Get the original form of the input word
+        """
+        return self.lemma
 
     def get_root(
         self,

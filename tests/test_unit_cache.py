@@ -187,10 +187,14 @@ class qalsadiAnalyzerCacheTestCase(unittest.TestCase):
             "مقام",
             "مقال",
         ]
+
         wordcaselist_list = self.analyzer.check_text(text)
         for i, wordcases in enumerate(wordcaselist_list):
             stmnode = StemNode(wordcases)
             lemmas = stmnode.get_lemmas()
+            lemmas = [ araby.strip_tashkeel(l) for l in lemmas]
+            if expected_lemmas[i] not in lemmas:
+                print(f"{expected_lemmas[i]} not in {lemmas}")
             self.assertIn(expected_lemmas[i], lemmas)
 
     # cases
