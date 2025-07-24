@@ -384,7 +384,7 @@ class StemNode:
         return list(self.originals.keys())
 
     def get_lemmas(
-        self,
+        self, wordtype="",
     ):
         """
         Get all lemmas of the input word
@@ -392,10 +392,9 @@ class StemNode:
         @rtype: unicode string
         """
         # print("stemnode 307", self.vocalized_lemma)
-        lemmas = list(set(self.lemmas["all"]))
+        lemmas = self.lemmas.get(wordtype,self.lemmas.get("all",[]))
         if not self.vocalized_lemma:
             lemmas = [araby.strip_tashkeel(l) for l in lemmas]
-
         lemmas = list(set(lemmas))
         return lemmas
 

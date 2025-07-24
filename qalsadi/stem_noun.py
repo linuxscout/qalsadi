@@ -300,7 +300,16 @@ class NounStemmer:
                     # filter empty
                     voc_affix_case = [vac for vac in voc_affix_case if vac]
                     # is same as original, but if the word is an irregular plrual it takes single form
-                    lemma = word_seg["noun_tuple"]["vocalized"]
+                    number = word_seg["noun_tuple"]["number"]
+
+                    if number in ("جمع", "جمع تكسير"):
+                        single_form = word_seg["noun_tuple"]["single"]
+                        if single_form:
+                            lemma = word_seg["noun_tuple"]["single"]
+                        else:
+                            lemma = word_seg["noun_tuple"]["vocalized"]
+                    else:
+                        lemma = word_seg["noun_tuple"]["vocalized"]
                     detailed_result.append(
                         wordcase.WordCase(
                             {
@@ -315,9 +324,7 @@ class NounStemmer:
                                 "root": ar.normalize_hamza(
                                     word_seg["noun_tuple"].get("root", "")
                                 ),
-                                "original": word_seg["noun_tuple"][
-                                    "vocalized"
-                                ],  # original,
+                                "original": word_seg["noun_tuple"]["vocalized"],  # original,
                                 "lemma":lemma, # is same as original, but if the word is an irregular plrual it takes single form
                                 "vocalized": vocalized,
                                 "semivocalized": semi_vocalized,
@@ -325,7 +332,7 @@ class NounStemmer:
                                 "type": ":".join(
                                     ["Noun", word_seg["noun_tuple"]["wordtype"]]
                                 ),
-                                "number": word_seg["noun_tuple"]["number"],
+                                "number": number,
                                 "gender": word_seg["noun_tuple"]["gender"],
                                 "freq": "freqnoun",  # to note the frequency type
                                 "originaltags": ":".join(original_tags),
