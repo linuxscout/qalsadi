@@ -125,9 +125,9 @@ unittest:
 	$(PY) -m unittest discover -s tests
 
 eval:
-	cd tests && $(PY) qalsadi_eval.py samples/Nemlar --csv output/results.csv --recursive --ignore-diacritics --limit 10
+	cd tests && $(PY) qalsadi_eval.py samples/Nemlar --csv output/results.csv --recursive --limit 10
 eval_all:
-	cd tests && $(PY) qalsadi_eval.py samples/Nemlar --csv output/results.csv --recursive --ignore-diacritics
+	cd tests && $(PY) qalsadi_eval.py samples/Nemlar --csv output/results.csv --recursive
 # Run all tests
 test_all: test2 testqrn teststop testone test1000 test63 test73 test73c
 

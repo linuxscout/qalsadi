@@ -43,6 +43,7 @@ class TestQalsadiEvaluatorNoMock(unittest.TestCase):
         xml_content = '''<?xml version="1.0" encoding="UTF-8"?>
         <root>
           <sentence id="1">
+            <text> كتبت سيارات مشينا</text>
             <ArabicLexical word="كتبت" lemma="َكَتَبَ"/>
             <ArabicLexical word="سيارات" lemma="سَيَّارَةٌ"/>
             <ArabicLexical word="مشينا" lemma="مَشَى"/>
@@ -62,10 +63,12 @@ class TestQalsadiEvaluatorNoMock(unittest.TestCase):
 
     def test_evaluate_file_accuracy(self):
         evaluator = QalsadiEvaluator(folder=self.test_dir)
-        total, correct, mismatches = evaluator.evaluate_file(self.test_file)
+        total, correct, correct_vocalized, sentences, mismatches = evaluator.evaluate_file(self.test_file)
 
         self.assertEqual(total, 3)
         self.assertGreaterEqual(correct, 2)  # Allowing Qalsadi to miss one case
+        self.assertGreaterEqual(correct_vocalized, 2)  # Allowing Qalsadi to miss one case
+        self.assertEqual(sentences, 1)
         self.assertLessEqual(len(mismatches), 1)
 
     def test_ignore_diacritics_flag(self):
