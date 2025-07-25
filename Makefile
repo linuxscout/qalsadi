@@ -11,7 +11,7 @@ PY := python3
         test2 testqrn teststop testone \
         test1000 test63 test73 test73c \
         test_unit dev unittest eval eval_all\
-        clean_cache
+        clean_cache changelog
 
 # Default target
 default: all
@@ -62,6 +62,18 @@ upload:
 # Build documentation
 doc:
 	cd docs; make html
+changelog:CHANGFILE=docs/CHANGELOG.md
+changelog:
+	# detailed changelog
+	git log --pretty=format:"* %ad %h - %s (%an)" --date=short >docs/ChangeLog
+	@echo "# Changelog" > $(CHANGFILE)
+	@echo "" >>  $(CHANGFILE)
+	@git tag --sort=-creatordate | while read tag; do \
+		echo "## $$tag - $$(git log -1 --format=%ad --date=short $$tag)" >>  $(CHANGFILE); \
+		git log "$$tag^".."$$tag" --pretty="* %s" --no-merges >>  $(CHANGFILE); \
+		echo "" >>  $(CHANGFILE); \
+	done
+	@echo " $(CHANGFILE) generated from Git tags."
 
 # Run generic test case
 LOG := $(basename $(DATA_FILE)).log

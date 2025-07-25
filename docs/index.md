@@ -9,3 +9,4 @@ Current version: **{{ version }}**
 Readme
 CONTRIBUTING
 tagset
+CHANGELOG
