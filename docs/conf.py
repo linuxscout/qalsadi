@@ -18,6 +18,8 @@
 import sphinx_rtd_theme
 
 # -- Project information -----------------------------------------------------
+import sys
+sys.path.append("../")
 from qalsadi._version import __version__
 project = u'Qalsadi Arabic Morphological Analyzer and lemmatizer for Python'
 copyright = u'2021, Taha Zerrouki'
