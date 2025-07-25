@@ -61,7 +61,7 @@ upload:
 
 # Build documentation
 doc:
-	epydoc -v --config epydoc.conf
+	cd docs; make html
 
 # Run generic test case
 LOG := $(basename $(DATA_FILE)).log

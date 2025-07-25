@@ -2,9 +2,11 @@
 requires = ["setuptools>=61", "wheel"]
 build-backend = "setuptools.build_meta"
 
+[tool.setuptools.dynamic]
+version = {attr = "qalsadi._version.__version__"}
+
 [project]
 name = "qalsadi"
-version = "0.5.1"
 description = "Qalsadi Arabic Morphological Analyzer and lemmatizer for Python"
 readme = "README.md"
 requires-python = ">=3.6"

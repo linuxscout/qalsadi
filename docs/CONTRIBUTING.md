@@ -1,15 +1,7 @@
-Here’s a clean and practical example of a `CONTRIBUTING.md` file tailored to your **Qalsadi** Python project:
-
-------
-
-### 📄 `CONTRIBUTING.md`
-
-~~~markdown
 # Contributing to Qalsadi
 
 Thank you for considering contributing to **Qalsadi** – an open-source Arabic morphological analyzer and lemmatizer. Your contributions help make Arabic NLP better for everyone.
 
----
 
 ## 🛠️ Getting Started
 
@@ -17,8 +9,8 @@ Thank you for considering contributing to **Qalsadi** – an open-source Arabic 
 2. **Clone** your fork:
    ```bash
    git clone https://github.com/linuxscout/qalsadi.git
-   cd qalsadi
-~~~
+   cd qalsadi```
+
 
 1. (Optional) **Create and activate a virtual environment**:
 
@@ -112,8 +104,4 @@ Happy hacking!
 
 – Taha Zerrouki and the Qalsadi contributors
 
-```
----
-
-Let me know if you'd like the file saved or adapted to fit a particular structure or license (e.g., MIT, GPL notice, etc.).
 ```

@@ -1,13 +1,14 @@
 #! /usr/bin/python
 from setuptools import setup
 from io import open
+from qalsadi._version import __version__
 # to install type:
 # python setup.py install --root=/
 def readme():
     with open('README.md', encoding='utf8') as f:
         return f.read()
 
-setup (name='qalsadi', version='0.5.1',
+setup (name='qalsadi', version=f"{__version__}",
       description='Qalsadi Arabic Morphological Analyzer and lemmatizer for Python',
       long_description = readme(),  
       long_description_content_type='text/markdown',
