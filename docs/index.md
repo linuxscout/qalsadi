@@ -8,5 +8,6 @@ Current version: **{{ version }}**
 
 Readme
 CONTRIBUTING
+datadescription
 tagset
 CHANGELOG

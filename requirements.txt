@@ -8,3 +8,4 @@ Arabic-Stopwords>=0.4.2
 alyahmor>=0.2
 mysam-tagmanager>=0.4.1
 codernitydb3
+tabulate

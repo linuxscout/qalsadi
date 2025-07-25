@@ -110,76 +110,120 @@ The demo is available on [Tahadz.com](http://tahadz.com/mishkal) >Tools/َAnalys
 >>> lemmas = lemmer.lemmatize_text(text)
 >>> print(lemmas)
 ['هَلْ', 'اِحْتَاجَ', 'إِلَى', 'تَرْجَمَةٌ', 'كَيْ', 'تَفَهُّمٌ', 'خَطَّابٌ', 'مَلَكٌ', '؟', 'لُغَةٌ', '"', 'كِلاَسِيكِيٌّ', '"(', 'فُصْحَى', ')', 'مَوْجُودٌ', 'فِي', 'كُلَّ', 'لُغَةٌ', 'ذَلِكَ', 'لُغَةٌ', '"', 'دَارِجٌ', '"..', 'فَرَنْسِيّ', 'الَّتِي', 'دَرَسَ', 'فِي', 'مَدْرَسَةٌ', 'لَيْسَتْ', 'فَرَنْسِيّ', 'الَّتِي', 'اِسْتَخْدَمَ', 'نَاسٌ', 'فِي', 'شَوَارِعٌ', 'باريس', '..', 'مَلَكٌ', 'برِيطانِيا', 'لَا', 'خَطَبَ', 'بَلَغَةٌ', 'شَوَارِعٌ', 'أَدَانَ', '..', 'كُلَّ', 'مَقَامٌ', 'مَقَالٌ']
->>> 
+>>> # get all lemmas for each word text
+>>> lemmas = lemmer.lemmatize_text(text, all=True)
+>>> lemmas
+[['هل', 'وهل', 'هال'], ['احتاج'], ['إلى'], ['ترجمة'], ['كي'], ['تف', 'أفهم', 'فهم', 'تفهم'], ['خاطب', 'خطاب'], ['مالك', 'ملك'], ['؟'], ['لغة'], ['"'], ['كلاسيكي'], ['"('], ['فصحى'], [')'], ['موجود'], ['في'], ['أكل', 'كال', 'كل', 'وكل'], ['لغة'], ['كذلك', 'ذل'], ['لغة'], ['"'], ['دارج'], ['"..'], ['فرنسة', 'فرنسي'], ['التي'], ['درس'], ['في'], ['مدرس', 'مدرسة'], ['يس', 'ليست', 'لاس', 'ليس'], ['فرنسة', 'فرنسي'], ['التي'], ['استخدم'], ['ناس'], ['في'], ['شارع'], ['باريس'], ['..'], ['مالك', 'ملك', 'ملكة'], ['بريطانيا', 'بريطاني'], ['لا'], ['خطب'], ['بالغ', 'لغة', 'بلغة'], ['شارع'], ['دن', 'دنى', 'دان', 'ناد', 'دنو', 'أدنى', 'أدان', 'دنا', 'ودن'], ['..'], ['كل'], ['مقام'], ['مقالي', 'مقال']]
+
 ```
 
 #### Morphology analysis
 ``` python
-filename="samples/text.txt"
 import qalsadi.analex as qa
-try:
-    myfile=open(filename)
-    text=(myfile.read()).decode('utf8');
 
-    if text == None:
-        text=u"السلام عليكم"
-except:
-    text=u"أسلم"
-    print " given text"
-
-debug=False;
-limit=500
+text = "لا يحمل الحقد من تعلو به الرتب"
 analyzer = qa.Analex()
-analyzer.set_debug(debug);
-result = analyzer.check_text(text);
-print '----------------python format result-------'
-print result
-for i in range(len(result)):
-#       print "--------تحليل كلمة  ------------", word.encode('utf8');
-    print "-------------One word detailed case------";
-    for analyzed in  result[i]:
-        print "-------------one case for word------";
-        print repr(analyzed);
+result = analyzer.check_text(text)
+print(result)
 ```
 
+## Morphology analysis display
+
+* The morphology generate a lot of fields, to manage dispaly we use the resultFormatter class
+
+  ```python
+  import qalsadi.analex as qa
+  from qalsadi.resultformatter import ResultFormatter
+  
+  text = "لا يحمل الحقد من تعلو به الرتب"
+  analyzer = qa.Analex()
+  results = analyzer.check_text(text)
+  formatter = ResultFormatter(result)
+  
+  # Use main fields display
+  formatter.set_used_fields("main")
+  print(formatter.as_table())
+  
+  ```
+
+  * Other table formats:
+
+    ```python
+    # other table format
+    print(formatter.as_table(tablefmt="github") 
+    # tablefmt can  table all values from tabulate libray 
+    # "plain" (default), "grid", "pipe" (Markdown), "html", "latex", "tsv"
+    ```
+
+    
+
+  * Other display formats:
+
+    ```python
+    print(formatter.as_csv())
+    print(formatter.as_json())
+    print(formatter.as_xml())
+    ```
+
+  * Other display file formats saving:
+
+    ```python
+    formatter.as_csv("output/results.csv")
+    formatter.to_json("output/results.json")
+    formatter.to_xml("output/results.xml")
+    ```
+
+    
+
+  * Change fields to display:
+
+    ```python
+    profile  = "main" # other values: "all" "roots", "lemmas", "inflect"
+    formatter.set_used_fields(profile)
+    ```
+
+  * Add a customizable fields: 
+
+    * if the given field name is not valid, it's ignored.
+
+    ```python
+    profile  = "main" # other values: "roots", "lemmas", "inflect"
+    formatter.set_used_fields(profile, additional_fields=["root","INVALID"])
+    ```
+
+    
 
 
-#### Output description
-Category   | Applied on | feature              | example         a|شرح
------------|------------|----------------------|------------------|---
-affix      | all        | affix_key            | ال--َاتُ-       a|مفتاح الزوائد
-affix      | all        | affix                |                 a|الزوائد
-input      | all        | word                 | البيانات        a|الكلمة المدخلة
-input      | all        | unvocalized          |                 a|غير مشكول
-morphology | noun       | tag_mamnou3          |0                a|ممنوع من الصرف
-morphology | verb       | tag_confirmed        |0                a|خاصية الفعل المؤكد
-morphology | verb       | tag_mood             |0                a|حالة الفعل المضارع (منصوب، مجزوم، مرفوع)
-morphology | verb       | tag_pronoun          |0                a|الضمير
-morphology | verb       | tag_transitive       |0                a|التعدي اللزوم
-morphology | verb       | tag_voice            |0                a|البناء للمعلوم/ البناء للمجهول
-morphology | noun       | tag_regular          |1                a|قياسي/ سماعي
-morphology | noun/verb  | tag_gender           |3                a|النوع ( مؤنث مذكر)
-morphology | verb       | tag_person           |4                a|الشخص (المتكلم الغائب المخاطب)
-morphology | noun       | tag_number           |21               a|العدد(فرد/مثنى/جمع)
-original   | noun/verb  | freq                 |694644           a|درجة شيوع الكلمة
-original   | all        | original_tags        | (u              a|خصائص الكلمة الأصلية
-original   | all        | original             | بَيَانٌ         a|الكلمة الأصلية
-original   | all        | root                 | بين             a|الجذر
-original   | all        | tag_original_gender  | مذكر            a|جنس الكلمة الأصلية
-original   | noun       | tag_original_number  | مفرد            a|عدد الكلمة الأصلية
-output     | all        | type                 | Noun:مصدر       a|نوع الكلمة
-output     | all        | semivocalized        | الْبَيَانَات    a|الكلمة مشكولة بدون علامة الإعراب
-output     | all        | vocalized            | الْبَيَانَاتُ   a|الكلمةمشكولة
-output     | all        | stem                 | بيان            a|الجذع
-syntax     | all        | tag_break            |0                a|الكلمة منفصلة عمّا قبلها
-syntax     | all        | tag_initial          |0                a|خاصية نحوية، الكلمة في بداية الجملة
-syntax     | all        | tag_transparent      |0                a|البدل
-syntax     | noun       | tag_added            |0                a|خاصية نحوية، الكلمة مضاف
-syntax     | all        | need                 |                 a|الكلمة تحتاج إلى كلمة أخرى (المتعدي، العوامل) غير منجزة
-syntax     | tool       | action               |                 a|العمل
-syntax     | tool       | object_type          |                 a|نوع المعمول، بالنسبة للعامل، مثلا اسم لحرف الجر
 
-#### Unsing Cache
+
+
+#### Output description:
+
+* The result of morphology analysis is  a list of list of `StemmedWord` objects from `qalsadi.stemmedword` file.
+
+The `StemmedWord` is handled as a `dict`n it contains the following fields:
+
+
+Category   | Applied on | feature             | example         a |شرح
+-----------|------------|---------------------|-------------------|---
+affix      | all        | affix_key           | ال--َاتُ-       a |مفتاح الزوائد
+affix      | all        | affix               | a                 |الزوائد
+input      | all        | word                | البيانات        a |الكلمة المدخلة
+input      | all        | unvocalized         | a                 |غير مشكول
+original   | noun/verb  | freq                | 694644           a |درجة شيوع الكلمة
+original   | all        | original_tags       | (u              a |خصائص الكلمة الأصلية
+original   | all        | original            | بَيَانٌ         a |الكلمة الأصلية
+original   | all        | root                | بين             a |الجذر
+output     | all        | type                | Noun:مصدر       a |نوع الكلمة
+output     | all        | semivocalized       | الْبَيَانَات    a |الكلمة مشكولة بدون علامة الإعراب
+output     | all        | vocalized           | الْبَيَانَاتُ   a |الكلمة مشكولة
+output     | all        | stem                | بيان            a |الجذع
+output     | all        | lemma               | بيان        a |الأصل
+
+* For more details about fields in the output, see [DOCS/DataDescription](docs/datadescription.md)
+
+#### Using Cache
+
 Qalsadi can use Cache to speed up the process, there are 4 kinds of cache,
 
 * Memory cache
