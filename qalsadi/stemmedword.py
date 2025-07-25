@@ -973,6 +973,23 @@ class StemmedWord:
         """getdictionary function"""
         return self.__dict__
 
+
+    def __getitem__(self, key):
+        """Allow access like obj[3] or obj['key'] if data is a dict."""
+        return self.__dict__[key]
+
+    def get(self, key, default=None):
+        return self.__dict__.get(key, default)
+
+    def __iter__(self):
+        """Allow iteration over internal data."""
+        return iter(self.__dict__)
+
+    def __len__(self):
+        return len(self.__dict__)
+    def __name__(self):
+        return "StemmerWord"
+
     def __repr__(self):
         """Display objects result from analysis"""
         return self.__str__()
@@ -987,6 +1004,28 @@ class StemmedWord:
         text += "\n\t\t}"
         return text  # .encode('utf8')
 
+    def __setitem__(self, key, value):
+        self.__dict__[key] = value
+
+    def __delitem__(self, key):
+        del self.__dict__[key]
+
+    def __contains__(self, key):
+        return key in self.__dict__
+
+    def keys(self):
+        return self.__dict__.keys()
+
+    def values(self):
+        return self.__dict__.values()
+
+    def items(self):
+        return self.__dict__.items()
+
+    def to_dict(self, fields=None):
+        if fields is None:
+            return self.__dict__  # All fields
+        return {f: self.__dict__.get(f, "") for f in fields}
     # ~ def __dict__(self):
     # ~ """get dict objects result from analysis"""
     # ~ return self.__dict__
