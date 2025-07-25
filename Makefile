@@ -136,6 +136,7 @@ test_unit: clean_cache
 	$(PY) -m pytest tests/test_unit_lemmatizer.py
 	$(PY) -m pytest tests/test_unit_analex.py
 	$(PY) -m pytest tests/test_unit_qalsadi_eval.py
+	$(PY) -m pytest tests/test_unit_resultformatter.py
 
 # Unit tests
 unittest:
