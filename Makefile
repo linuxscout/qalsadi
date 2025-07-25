@@ -10,7 +10,8 @@ PY := python3
         doc testcase archive_profile test_all \
         test2 testqrn teststop testone \
         test1000 test63 test73 test73c \
-        test_unit dev unittest eval
+        test_unit dev unittest eval eval_all\
+        clean_cache
 
 # Default target
 default: all
@@ -18,6 +19,10 @@ default: all
 # Clean build artifacts
 clean:
 	rm -rf build dist *.egg-info
+# Clean cache
+clean_cache:
+	rm -rf tests/cache/*
+	rm -rf qalsadi/.qalsadiCache
 
 # Backup target (optional)
 backup:
@@ -62,7 +67,7 @@ doc:
 LOG := $(basename $(DATA_FILE)).log
 OUT := $(basename $(DATA_FILE)).csv
 
-testcase:
+testcase:clean_cache
 	cd tests && PYTHONPATH=.. $(PY) $(PROFILER) $(PROFILE_OUT) test_analex.py $(TEST_MODE) -l $(LIMIT) -f samples/$(DATA_FILE) -o output/$(OUT) > output/$(LOG)
 	wc -w tests/samples/$(DATA_FILE)
 	@echo "Test File: samples/$(DATA_FILE)"
@@ -113,7 +118,7 @@ test73 test73c: PROFILE_OUT=-o output/profile.txt
 test73 test73c: testcase archive_profile
 
 # Unit tests
-test_unit:
+test_unit: clean_cache
 	$(PY) -m  pytest tests/test_unit_tagmaker.py
 	$(PY) -m pytest tests/test_unit_cache.py
 	$(PY) -m pytest tests/test_unit_lemmatizer.py
@@ -124,9 +129,9 @@ test_unit:
 unittest:
 	$(PY) -m unittest discover -s tests
 
-eval:
+eval:clean_cache
 	cd tests && $(PY) qalsadi_eval.py samples/Nemlar --csv output/results.csv --recursive --limit 10
-eval_all:
+eval_all: clean_cache
 	cd tests && $(PY) qalsadi_eval.py samples/Nemlar --csv output/results.csv --recursive
 # Run all tests
 test_all: test2 testqrn teststop testone test1000 test63 test73 test73c
