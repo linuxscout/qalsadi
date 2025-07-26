@@ -15,12 +15,12 @@ class TestResultFormatterWithRealData(unittest.TestCase):
 
     def test_set_and_get_used_fields(self):
         self.formatter.set_used_fields("main")
-        expected = ["word", "vocalized", "stem", "affix", "lemma", "type", "tags"]
+        expected = ["id","word", "vocalized", "stem", "affix", "lemma", "type", "tags"]
         self.assertEqual(self.formatter.get_used_fields(), expected)
 
     def test_set_and_get_used_fields_add(self):
         self.formatter.set_used_fields("main", additional_fields=["NON_EXISTANT", "root"])
-        expected = ["word", "vocalized", "stem", "affix", "lemma", "type", "tags", "root"]
+        expected = ["id","word", "vocalized", "stem", "affix", "lemma", "type", "tags", "root"]
         self.assertEqual(self.formatter.get_used_fields(), expected)
 
     def test_as_table_output(self):
@@ -39,7 +39,7 @@ class TestResultFormatterWithRealData(unittest.TestCase):
     def test_as_csv_output(self):
         self.formatter.set_used_fields("main")
         output = self.formatter.as_csv()
-        self.assertTrue(output.startswith("word,vocalized,stem,affix"))
+        self.assertTrue(output.startswith("id,word,vocalized,stem,affix"))
         self.assertIn("الحقد", output)
 
     def test_as_xml_output(self):
@@ -52,7 +52,7 @@ class TestResultFormatterWithRealData(unittest.TestCase):
         self.formatter.set_used_fields("main")
         # Just test filter returns a ResultFormatter
         filtered = self.formatter.filter(type="Verb")
-        self.assertTrue(self.formatter.is_valid_result_type(filtered), msg=" The filtred data is not a valid list of list of stemmedword object")
+        self.assertTrue(self.formatter._is_valid_result_type(filtered), msg=" The filtred data is not a valid list of list of stemmedword object")
         self.assertLessEqual(len(filtered), len(self.result), msg="The filter does nt reduce the result size {len(filtered)}=={len(self.result)}")
 
     def test_group_by(self):

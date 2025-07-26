@@ -24,10 +24,22 @@
 <body>
     <h1>القلصادي - تحليل صرفي عربي</h1>
 
-    <form method="post">
+    <form method="post" enctype="multipart/form-data">
         <label>نص عربي:</label>
         <textarea name="text">{{ text }}</textarea>
+     <label>ّأو اختر ملفًا نصيَّا:</label>
+        <input type="file" name="textfile" accept=".txt"> <small>⚠️ الحد الأقصى لحجم الملف: 1 ميغابايت</small>
+        <label>
+            <input type="checkbox" name="allow_tag_guessing"
+                   {% if request.form.get('allow_tag_guessing') %}checked{% endif %}>
+           تخمين تصنيف الكلمات
+        </label><br>
 
+        <label>
+            <input type="checkbox" name="allow_disambiguation"
+                   {% if request.form.get('allow_disambiguation', 'on') %}checked{% endif %}>
+            تفعيل إزالة الالتباس
+        </label><br>
         <label>صيغة الإخراج:</label>
         <select name="format">
             <option value="html" {% if format == "html" %}selected{% endif %}>html</option>
@@ -36,7 +48,8 @@
             <option value="csv" {% if format == "csv" %}selected{% endif %}>CSV</option>
             <option value="xml" {% if format == "xml" %}selected{% endif %}>XML</option>
         </select>
-<label>الملف الشخصي (Profile):</label>
+
+<label>حقول المخارج (Profile):</label>
 <select name="profile">
 <option value="main" {% if selected_profile == "main" %}selected{% endif %}>
     أساسي (main)</option>
@@ -49,7 +62,20 @@
     <option value="inflect"{% if selected_profile == "inflect" %}selected{% endif %}>
             الإعراب (Inflect)</option>
 </select>
+<label>الإجراء (Action):</label>
+<select name="action">
+    <option value="analyze" {% if action == "analyze" %}selected{% endif %}>تحليل صرفي</option>
+    <option value="lemmatize" {% if action == "lemmatize" %}selected{% endif %}>تأصيل Lemmatization</option>
+    <option value="stemming" {% if action == "stemming" %}selected{% endif %}>تجذيع Stemming</option>    
+    <option value="tokenize" {% if action == "tokenize" %}selected{% endif %}>تفريق Tokenization</option>
+    <option value="sort" {% if action == "sort" %}selected{% endif %}>فرز الكلمات</option>
+    <option value="strip_tashkeel" {% if action == "strip_tashkeel" %}selected{% endif %}>حذف التشكيل</option>
+    <option value="random_arabic" {% if action == "random_arabic" %}selected{% endif %}>نص عربي عشوائي</option>
+    <option value="random_arabic_vocalized" {% if action == "random_arabic_vocalized" %}selected{% endif %}>نص عربي عشوائي مشكول</option>
+</select>
+
         <button type="submit">تحليل</button>
+
     </form>
 
     {% if output %}
@@ -63,7 +89,7 @@
 
         {% else %}
             <h2>النتائج ({{ format }})</h2>
-            <pre>{{ output }}</pre>
+            <pre>{{ output | e }}</pre>
         {% endif %}
     {% endif %}
 <script>
