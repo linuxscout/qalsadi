@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>محلل صرفي - القلصادي</title>
+    <style>
+        body { font-family: "Cairo", sans-serif; padding: 20px; max-width: 900px; margin: auto; }
+        textarea, select, button { font-size: 1rem; width: 100%; padding: 8px; margin: 8px 0; }
+        .btn { display: inline-block; padding: 8px 12px; background: #007BFF; color: white; text-decoration: none; border-radius: 4px; margin: 4px 4px 4px 0; }
+        .btn:hover { background: #0056b3; }
+        pre { background: #f8f8f8; padding: 12px; overflow-x: auto; }
+    </style>
+    <!-- DataTables CSS -->
+<link rel="stylesheet" type="text/css"
+      href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css"/>
+
+<!-- jQuery -->
+<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+
+<!-- DataTables JS -->
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+
+</head>
+<body>
+    <h1>القلصادي - تحليل صرفي عربي</h1>
+
+    <form method="post">
+        <label>نص عربي:</label>
+        <textarea name="text">{{ text }}</textarea>
+
+        <label>صيغة الإخراج:</label>
+        <select name="format">
+            <option value="html" {% if format == "html" %}selected{% endif %}>html</option>
+            <option value="table" {% if format == "table" %}selected{% endif %}>table</option>
+            <option value="json" {% if format == "json" %}selected{% endif %}>JSON</option>
+            <option value="csv" {% if format == "csv" %}selected{% endif %}>CSV</option>
+            <option value="xml" {% if format == "xml" %}selected{% endif %}>XML</option>
+        </select>
+<label>الملف الشخصي (Profile):</label>
+<select name="profile">
+<option value="main" {% if selected_profile == "main" %}selected{% endif %}>
+    أساسي (main)</option>
+    <option value="all" {% if selected_profile == "all" %}selected{% endif %}>
+    كامل (All)</option>
+    <option value="roots"{% if selected_profile == "roots" %}selected{% endif %}>
+            الجذور (Roots)</option>
+    <option value="lemmas" {% if selected_profile == "lemmas" %}selected{% endif %}>
+            الأصول (Lemmas)</option>
+    <option value="inflect"{% if selected_profile == "inflect" %}selected{% endif %}>
+            الإعراب (Inflect)</option>
+</select>
+        <button type="submit">تحليل</button>
+    </form>
+
+    {% if output %}
+       <h3>تحميل النتائج</h3>
+        <a href="{{ url_for('download', fmt='csv') }}" class="btn">⬇️ تحميل CSV</a>
+        <a href="{{ url_for('download', fmt='json') }}" class="btn">⬇️ تحميل JSON</a>
+        <a href="{{ url_for('download', fmt='xml') }}" class="btn">⬇️ تحميل XML</a>
+        {% if format == "html" %}
+            <h2>النتائج (جدول تفاعلي)</h2>
+                {{ output | safe }}
+
+        {% else %}
+            <h2>النتائج ({{ format }})</h2>
+            <pre>{{ output }}</pre>
+        {% endif %}
+    {% endif %}
+<script>
+    $(document).ready(function () {
+    $('#datatable').DataTable({
+        language: {
+            url: 'https://cdn.datatables.net/plug-ins/1.13.6/i18n/ar.json'
+        }
+    });
+});
+</script>
+</body>
+</html>

@@ -1,6 +1,8 @@
 #! /usr/bin/python
 from setuptools import setup
 from io import open
+import sys
+sys.path.append(".")
 from qalsadi._version import __version__
 # to install type:
 # python setup.py install --root=/
