@@ -1,0 +1,60 @@
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap');
+
+body {
+    font-family: "Cairo", sans-serif;
+    padding: 20px;
+    max-width: 900px;
+    margin: auto;
+    background-color: #fafafa;
+}
+.dark-mode {
+            --bs-body-bg: #121212;
+            --bs-body-color: #e4e4e4;
+        }
+
+h1, h2, h3 {
+    color: #333;
+}
+
+textarea, select, input[type="file"], button {
+    font-size: 1rem;
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    box-sizing: border-box;
+}
+
+.btn {
+    display: inline-block;
+    padding: 10px 16px;
+    background-color: #007BFF;
+    color: white;
+    text-decoration: none;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin: 5px 5px 5px 0;
+}
+
+.btn:hover {
+    background-color: #0056b3;
+}
+
+pre {
+    background: #f0f0f0;
+    padding: 12px;
+    overflow-x: auto;
+    direction: ltr;
+}
+
+small {
+    color: #666;
+}
+
+fieldset {
+    border: 1px solid #ddd;
+    padding: 15px;
+    margin-bottom: 20px;
+}
+
+legend {

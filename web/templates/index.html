@@ -3,103 +3,157 @@
 <head>
     <meta charset="UTF-8">
     <title>محلل صرفي - القلصادي</title>
-    <style>
-        body { font-family: "Cairo", sans-serif; padding: 20px; max-width: 900px; margin: auto; }
-        textarea, select, button { font-size: 1rem; width: 100%; padding: 8px; margin: 8px 0; }
-        .btn { display: inline-block; padding: 8px 12px; background: #007BFF; color: white; text-decoration: none; border-radius: 4px; margin: 4px 4px 4px 0; }
-        .btn:hover { background: #0056b3; }
-        pre { background: #f8f8f8; padding: 12px; overflow-x: auto; }
-    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+       <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.rtl.min.css" rel="stylesheet">
+
+       <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+<!-- Google Font: Cairo -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+
     <!-- DataTables CSS -->
-<link rel="stylesheet" type="text/css"
-      href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css"/>
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
 
-<!-- jQuery -->
-<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
 
-<!-- DataTables JS -->
-<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-
+    <!-- DataTables JS -->
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    darkMode: 'class',
+    theme: {
+      extend: {
+        fontFamily: {
+          cairo: ['Cairo', 'sans-serif']
+        }
+      }
+    }
+  }
+</script>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
 </head>
-<body>
-    <h1>القلصادي - تحليل صرفي عربي</h1>
+<body dir="rtl" class="bg-white text-black dark:bg-gray-900 dark:text-white font-cairo max-w-3xl mx-auto p-4">
 
-    <form method="post" enctype="multipart/form-data">
-        <label>نص عربي:</label>
-        <textarea name="text">{{ text }}</textarea>
-     <label>ّأو اختر ملفًا نصيَّا:</label>
-        <input type="file" name="textfile" accept=".txt"> <small>⚠️ الحد الأقصى لحجم الملف: 1 ميغابايت</small>
-        <label>
-            <input type="checkbox" name="allow_tag_guessing"
-                   {% if request.form.get('allow_tag_guessing') %}checked{% endif %}>
-           تخمين تصنيف الكلمات
-        </label><br>
+    <div class="flex justify-between items-center mb-6">
+        <h1 class="text-xl font-bold">القلصادي - التحليل الصرفي</h1>
+        <button onclick="toggleDark()" class="text-sm bg-gray-200 dark:bg-gray-700 px-3 py-1 rounded hover:bg-gray-300 dark:hover:bg-gray-600">
+            🌓 الوضع الليلي
+        </button>
+    </div>
 
-        <label>
-            <input type="checkbox" name="allow_disambiguation"
-                   {% if request.form.get('allow_disambiguation', 'on') %}checked{% endif %}>
-            تفعيل إزالة الالتباس
-        </label><br>
-        <label>صيغة الإخراج:</label>
-        <select name="format">
-            <option value="html" {% if format == "html" %}selected{% endif %}>html</option>
-            <option value="table" {% if format == "table" %}selected{% endif %}>table</option>
-            <option value="json" {% if format == "json" %}selected{% endif %}>JSON</option>
-            <option value="csv" {% if format == "csv" %}selected{% endif %}>CSV</option>
-            <option value="xml" {% if format == "xml" %}selected{% endif %}>XML</option>
-        </select>
+    <form method="post" enctype="multipart/form-data" class="space-y-4">
+        <label class="block">
+            نص عربي:
+            <textarea name="text" rows="5" class="mt-1 block w-full p-2 border rounded bg-white text-black dark:bg-gray-800 dark:text-white">{{ text }}</textarea>
+        </label>
 
-<label>حقول المخارج (Profile):</label>
-<select name="profile">
-<option value="main" {% if selected_profile == "main" %}selected{% endif %}>
-    أساسي (main)</option>
-    <option value="all" {% if selected_profile == "all" %}selected{% endif %}>
-    كامل (All)</option>
-    <option value="roots"{% if selected_profile == "roots" %}selected{% endif %}>
-            الجذور (Roots)</option>
-    <option value="lemmas" {% if selected_profile == "lemmas" %}selected{% endif %}>
-            الأصول (Lemmas)</option>
-    <option value="inflect"{% if selected_profile == "inflect" %}selected{% endif %}>
-            الإعراب (Inflect)</option>
-</select>
-<label>الإجراء (Action):</label>
-<select name="action">
-    <option value="analyze" {% if action == "analyze" %}selected{% endif %}>تحليل صرفي</option>
-    <option value="lemmatize" {% if action == "lemmatize" %}selected{% endif %}>تأصيل Lemmatization</option>
-    <option value="stemming" {% if action == "stemming" %}selected{% endif %}>تجذيع Stemming</option>    
-    <option value="tokenize" {% if action == "tokenize" %}selected{% endif %}>تفريق Tokenization</option>
-    <option value="sort" {% if action == "sort" %}selected{% endif %}>فرز الكلمات</option>
-    <option value="strip_tashkeel" {% if action == "strip_tashkeel" %}selected{% endif %}>حذف التشكيل</option>
-    <option value="random_arabic" {% if action == "random_arabic" %}selected{% endif %}>نص عربي عشوائي</option>
-    <option value="random_arabic_vocalized" {% if action == "random_arabic_vocalized" %}selected{% endif %}>نص عربي عشوائي مشكول</option>
-</select>
+        <label class="block">
+🗂️ اسحب الملف هنا أو انقر للتحميل
+           <div id="dropzone" class="border-2 border-dashed p-6 rounded text-center text-gray-500">
+            <input type="file" name="textfile" accept=".txt" class="block w-full mt-1">
+            <input type="file" class="hidden" id="fileInput" name="file" onchange="loadFile()" />
+            </div>
+            <small class="text-gray-500 dark:text-gray-400">⚠️ الحد الأقصى لحجم الملف: 1 ميغابايت</small>
 
-        <button type="submit">تحليل</button>
+        </label>
 
-    </form>
+
+
+        <details class="bg-gray-50 dark:bg-gray-800 rounded p-3">
+            <summary class="cursor-pointer font-semibold">⚙️ إعدادات متقدمة</summary>
+            <div class="space-y-3 mt-3">
+                <label class="flex items-center space-x-2">
+                    <input type="checkbox" name="allow_tag_guessing" {% if request.form.get('allow_tag_guessing') %}checked{% endif %}>
+                    <span>تخمين التصنيف</span>
+                </label>
+
+                <label class="flex items-center space-x-2">
+                    <input type="checkbox" name="allow_disambiguation" {% if request.form.get('allow_disambiguation', 'on') %}checked{% endif %}>
+                    <span>إزالة الالتباس</span>
+                </label>
+
+                <label class="block">
+                    صيغة الإخراج:
+                    <select name="format" class="block w-full mt-1 p-1 rounded dark:bg-gray-800 dark:text-white">
+                        <option value="html" {% if format == "html" %}selected{% endif %}>HTML</option>
+                        <option value="table" {% if format == "table" %}selected{% endif %}>Table</option>
+                        <option value="json" {% if format == "json" %}selected{% endif %}>JSON</option>
+                        <option value="csv" {% if format == "csv" %}selected{% endif %}>CSV</option>
+                        <option value="xml" {% if format == "xml" %}selected{% endif %}>XML</option>
+                    </select>
+                </label>
+
+                            <label for="profile" class="block">حقول الإخراج:</label>
+                            <select name="profile" id="profile" class="block w-full mt-1 p-1 rounded dark:bg-gray-800 dark:text-white">
+                                <option value="main" {% if selected_profile == "main" %}selected{% endif %}>أساسي</option>
+                                <option value="all" {% if selected_profile == "all" %}selected{% endif %}>كامل</option>
+                                <option value="roots" {% if selected_profile == "roots" %}selected{% endif %}>الجذور</option>
+                                <option value="lemmas" {% if selected_profile == "lemmas" %}selected{% endif %}>الأصول</option>
+                                <option value="inflect" {% if selected_profile == "inflect" %}selected{% endif %}>الإعراب</option>
+                            </select>
+
+
+
+                            <label for="action" class="block">الإجراء:</label>
+                            <select name="action" id="action" class="block w-full mt-1 p-1 rounded dark:bg-gray-800 dark:text-white">
+                                <option value="analyze" {% if action == "analyze" %}selected{% endif %}>تحليل صرفي</option>
+                                <option value="lemmatize" {% if action == "lemmatize" %}selected{% endif %}>تأصيل</option>
+                                <option value="stemming" {% if action == "stemming" %}selected{% endif %}>تجذيع</option>
+                                <option value="tokenize" {% if action == "tokenize" %}selected{% endif %}>تفريق</option>
+                                <option value="sort" {% if action == "sort" %}selected{% endif %}>فرز</option>
+                                <option value="strip_tashkeel" {% if action == "strip_tashkeel" %}selected{% endif %}>حذف التشكيل</option>
+                                <option value="random_arabic" {% if action == "random_arabic" %}selected{% endif %}>نص عشوائي</option>
+                                <option value="random_arabic_vocalized" {% if action == "random_arabic_vocalized" %}selected{% endif %}>نص مشكول عشوائي</option>
+                            </select>
+
+            </div>
+        </details>
+
+        <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white text-sm px-4 py-2 rounded"  id="analyzeBtn"  onclick="showSpinner()">🔍 تحليل</button>
+        <div id="spinner" class="hidden">⏳ جاري المعالجة...</div>
+      </form>
 
     {% if output %}
-       <h3>تحميل النتائج</h3>
-        <a href="{{ url_for('download', fmt='csv') }}" class="btn">⬇️ تحميل CSV</a>
-        <a href="{{ url_for('download', fmt='json') }}" class="btn">⬇️ تحميل JSON</a>
-        <a href="{{ url_for('download', fmt='xml') }}" class="btn">⬇️ تحميل XML</a>
-        {% if format == "html" %}
-            <h2>النتائج (جدول تفاعلي)</h2>
-                {{ output | safe }}
+        <div class="mt-6">
+            <h2 class="text-lg font-semibold mb-2">تحميل النتائج</h2>
+            <div class="flex space-x-2 space-x-reverse">
+                <a href="{{ url_for('download', fmt='csv') }}" class="text-sm bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded">⬇️ CSV</a>
+                <a href="{{ url_for('download', fmt='json') }}" class="text-sm bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded">⬇️ JSON</a>
+                <a href="{{ url_for('download', fmt='xml') }}" class="text-sm bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded">⬇️ XML</a>
+            </div>
 
-        {% else %}
-            <h2>النتائج ({{ format }})</h2>
-            <pre>{{ output | e }}</pre>
-        {% endif %}
+            {% if format == "html" %}
+                <div class="mt-4">{{ output | safe }}</div>
+            {% else %}
+                <pre class="mt-4 p-3 bg-gray-100 dark:bg-gray-700 rounded">{{ output | e }}</pre>
+            {% endif %}
+        </div>
     {% endif %}
-<script>
-    $(document).ready(function () {
-    $('#datatable').DataTable({
-        language: {
-            url: 'https://cdn.datatables.net/plug-ins/1.13.6/i18n/ar.json'
+
+    <script>
+        function toggleDark() {
+            document.body.classList.toggle('dark');
         }
-    });
-});
-</script>
+
+  $(document).ready(function () {
+            $('#datatable').DataTable({
+                language: {
+                    url: 'https://cdn.datatables.net/plug-ins/1.13.6/i18n/ar.json'
+                }
+            });
+        });
+
+        function showSpinner() {
+            document.getElementById('spinner').classList.remove('hidden');
+        }
+
+
+
+    </script>
 </body>
+
 </html>
