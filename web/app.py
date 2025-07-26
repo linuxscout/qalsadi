@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template, send_file, redirect, url_for
+from flask import Flask, request, render_template, send_file, redirect, url_for, render_template_string
 from werkzeug.exceptions import RequestEntityTooLarge
 from flask import copy_current_request_context
 import qalsadi.analex as qa
@@ -10,11 +10,49 @@ from tashaphyne.stemming import ArabicLightStemmer
 from qalsadi.lemmatizer import Lemmatizer
 import arrand.arrandom  # make sure you install this or mock it
 import mimetypes
+import markdown
 
 app = Flask(__name__)
 app.config['MAX_CONTENT_LENGTH'] = 1 * 1024 * 1024  # 1 MB
 # Store results in memory (in a real app, use session or DB)
 latest_formatter = None
+
+
+@app.route('/home')
+def home():
+    return render_template('home.html')
+
+@app.route("/docs")
+def docs():
+    with open("README.md", encoding="utf-8") as f:
+        md_content = f.read()
+        html_content = markdown.markdown(md_content, extensions=["fenced_code", "tables", "codehilite"])
+
+    return render_template_string(
+        """
+        {% extends "base.html" %}
+        {% block title %}📄 التوثيق{% endblock %}
+        {% block content %}
+        <article class="prose dark:prose-invert max-w-none rtl text-right">
+            {{ content|safe }}
+        </article>
+        {% endblock %}
+        """,
+        content=html_content
+    )
+
+
+@app.route('/evaluation')
+def evaluation():
+    return render_template('evaluation.html')
+
+@app.route('/settings')
+def settings():
+    return render_template('settings.html')
+
+@app.route('/about')
+def about():
+    return render_template('about.html')
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
@@ -70,7 +108,7 @@ def index():
             latest_formatter = formatter
 
 
-    return render_template('index.html', text=input_text, output=output,
+    return render_template('home.html', text=input_text, output=output,
                            format=output_format,
                            selected_profile=profile,
                            action=action)
@@ -105,6 +143,8 @@ def download(fmt):
 @app.errorhandler(RequestEntityTooLarge)
 def file_too_large(e):
     return "⚠️ الملف كبير جدًا. الحد الأقصى للحجم هو 1 ميغابايت.", 413
+
+
 
 def handle_action(action, input_text="", output_format="", options=[]):
     # Handle each action

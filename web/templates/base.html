@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <title>{% block title %}أداة التحليل الصرفي{% endblock %}</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+<!--  <script src="https://cdn.tailwindcss.com"></script>-->
+<!--  <script>-->
+<!--    function toggleTheme() {-->
+<!--      document.documentElement.classList.toggle('dark');-->
+<!--      localStorage.theme = document.documentElement.classList.contains('dark') ? 'dark' : 'light';-->
+<!--    }-->
+<!--    if (localStorage.theme === 'dark') {-->
+<!--      document.documentElement.classList.add('dark');-->
+<!--    }-->
+<!--  </script>-->
+
+
+
+
+
+
+
+
+       <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+<!-- Google Font: Cairo -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+
+    <!-- DataTables CSS -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+
+    <!-- DataTables JS -->
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    darkMode: 'class',
+    theme: {
+      extend: {
+        fontFamily: {
+          cairo: ['Cairo', 'sans-serif']
+        }
+      }
+    }
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+<body class="bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-white min-h-screen flex">
+
+  <!-- ✅ Sidebar -->
+  <aside class="w-64 bg-white dark:bg-gray-800 shadow-lg flex-shrink-0 hidden md:block">
+    <div class="p-4 border-b dark:border-gray-700 text-center font-bold text-lg">
+      📚 القلصادي
+    </div>
+    <nav class="p-4 space-y-2 text-sm">
+      <a href="{{ url_for('index') }}" class="block p-2 rounded hover:bg-green-100 dark:hover:bg-green-900">🏠 الصفحة الرئيسية</a>
+      <a href="{{ url_for('docs') }}" class="block p-2 rounded hover:bg-green-100 dark:hover:bg-green-900">📄 التوثيق</a>
+      <a href="{{ url_for('evaluation') }}" class="block p-2 rounded hover:bg-green-100 dark:hover:bg-green-900">📊 التقييم</a>
+      <a href="{{ url_for('settings') }}" class="block p-2 rounded hover:bg-green-100 dark:hover:bg-green-900">🔧 الإعدادات</a>
+      <a href="#" class="block p-2 rounded hover:bg-green-100 dark:hover:bg-green-900">📚 القاموس</a>
+      <a href="#" class="block p-2 rounded hover:bg-green-100 dark:hover:bg-green-900">🧪 أدوات إضافية</a>
+      <a href="#" class="block p-2 rounded hover:bg-green-100 dark:hover:bg-green-900">📥 تحميل</a>
+      <a href="{{ url_for('about') }}" class="block p-2 rounded hover:bg-green-100 dark:hover:bg-green-900">ℹ️ حول المشروع</a>
+    </nav>
+  </aside>
+
+  <!-- ✅ Main Content -->
+  <main class="flex-grow p-6">
+    <!-- Top bar with theme toggle -->
+    <div class="flex justify-between items-center mb-4 md:hidden">
+      <button onclick="toggleTheme()" class="text-sm bg-gray-200 dark:bg-gray-700 px-3 py-1 rounded">
+        🌓 الوضع الليلي
+      </button>
+    </div>
+    {% block content %}
+    {% endblock %}
+  </main>
+
+
+   <script>
+        function toggleDark() {
+            document.body.classList.toggle('dark');
+        }
+
+  $(document).ready(function () {
+            $('#datatable').DataTable({
+                language: {
+                    url: 'https://cdn.datatables.net/plug-ins/1.13.6/i18n/ar.json'
+                }
+            });
+        });
+
+        function showSpinner() {
+            document.getElementById('spinner').classList.remove('hidden');
+        }
+
+
+
+    </script>
+</body>
+</html>
