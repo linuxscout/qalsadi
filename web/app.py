@@ -25,6 +25,7 @@ def index():
     output="JUST A TEST"
     output_format=""
     profile = "main"  # default
+    action = ""
 
     if request.method == 'POST':
         # Handle uploaded file
@@ -108,34 +109,42 @@ def file_too_large(e):
 def handle_action(action, input_text="", output_format="", options=[]):
     # Handle each action
     output = ""
+    global latest_formatter
     if action == 'stemming':
         stemmed = light_stemmer(input_text)
         # output = "Stemming " + "\n".join([w.__repr__() for w in stemmed])
         formatter = stemmerformatter(stemmed)
+        latest_formatter = formatter
         output = formatter.as_format(output_format)
     elif action == 'tokenize':
         output = "<br>".join(araby.tokenize(input_text))
         output_format = "table"
+        latest_formatter = None
     elif action == 'sort':
         tokens = araby.tokenize(input_text)
         output = "Sorting \n" + "\n".join(sorted(tokens))
         output_format = "table"
+        latest_formatter = None
     elif action == 'strip_tashkeel':
         output = araby.strip_tashkeel(input_text)
         output_format = "table"
+        latest_formatter = None
     elif action == 'lemmatize':
         lemmatizer = Lemmatizer()
         words = araby.tokenize(input_text)
         lemmas = lemmatizer.lemmatize_text(input_text)
         output = "Lemmatization " + "<br>".join(lemmas)
+        latest_formatter = None
     elif action == 'random_arabic':
         input_text = arrand.arrandom.select()  # or 5 lines etc.
         output = "Random\n" + input_text
         output_format = "table"
+        latest_formatter = None
     elif action == 'random_arabic_vocalized':
         input_text = arrand.arrandom.select(vocalized=True)  # or 5 lines etc.
         output = "Random vocalized\n" + input_text
         output_format = "table"
+        latest_formatter = None
     return  {"output":output, "output_format":output_format}
 
 ALLOWED_EXTENSIONS = {'txt'}
