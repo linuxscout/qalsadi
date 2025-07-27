@@ -18,3 +18,7 @@
 docs/_build
 /tests/samples/Nemlar/
 /.idea/
+/tests/test_example.py
+/tests/test_resultfromatter.py
+/web/templates/index (نسخ)-bootstrap.html
+/web/templates/index (نسخ).html
