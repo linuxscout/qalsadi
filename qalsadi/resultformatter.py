@@ -225,8 +225,6 @@ class ResultFormatter(AbstractResultFormatter):
         <li>{tree['word']}
             <ul>
                 {li('Lemma: ' + tree['lemma'])}
-                {li('Root: ' + tree['root'])}
-                {li('Pattern: ' + tree['pattern'])}
                 {li('Prefixes:' + ul(prefix_items) if prefix_items else '')}
                 {li('Stem: ' + tree['stem'])}
                 {li('Suffixes:' + ul(suffix_items) if suffix_items else '')}

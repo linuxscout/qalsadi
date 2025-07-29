@@ -82,6 +82,52 @@ python -m qalsadi --mode analyze --file examples/input.txt --format table --prof
 
 ---
 
+### 🔍 `--format tree`: Morphology Breakdown in Terminal
+
+You can visualize the morphological structure of each word using the **ASCII tree format**:
+
+```bash
+python -m qalsadi --format tree --profile main --text "فاستكتبناهم"
+```
+
+📄 **Sample Output:**
+
+```
+Word: فاستكتبناهم
+ ├─ Lemma: اِسْتَكْتَبَ
+ ├─ Prefixes:
+ │   └─p ف
+ ├─ Stem: استكتب
+ └─ Suffixes:
+     └─s نا
+     └─s هم
+هم
+```
+
+------
+
+### 🌐 `--format html`: Morphology Tree in HTML
+
+You can also generate an HTML version of the tree, suitable for web apps or inspection in a browser:
+
+```bash
+python -m qalsadi --format htmltree --profile main --text "فاستكتبناهم" > output.html
+```
+
+🧾 This produces a structured nested tree, like:
+
+```html
+        <li>فاستكتبناهم
+            <ul>
+                <li>Lemma: اِسْتَكْتَبَ</li>
+                <li>Prefixes:<ul><li>ف</li></ul></li>
+                <li>Stem: استكتب</li>
+                <li>Suffixes:<ul><li>نا</li><li>هم</li></ul></li>
+            </ul>
+        </li>
+...
+```
+
 
 
 
@@ -163,4 +209,49 @@ python -m qalsadi --mode analyze --file examples/input.txt --format table --prof
 ```
 
 ------
+
+### 🔍 `--format tree`: عرض التحليل الصرفي في الطرفية
+
+يمكنك عرض بنية الكلمة الصرفية باستخدام تنسيق شجرة ASCII في الطرفية:
+
+```bash
+python -m qalsadi --format tree --profile main --text "فاستكتبناهم"
+```
+
+📄 **مثال على المخرجات:**
+
+```
+Word: فاستكتبناهم
+ ├─ Lemma: اِسْتَكْتَبَ
+ ├─ Prefixes:
+ │   └─p ف
+ ├─ Stem: استكتب
+ └─ Suffixes:
+     └─s نا
+     └─s هم
+```
+
+------
+
+### 🌐 `--format htmltree`: عرض الشجرة بصيغة HTML
+
+يمكنك أيضًا توليد نسخة HTML من الشجرة لعرضها في متصفح الويب أو دمجها في واجهة رسومية:
+
+```bash
+python -m qalsadi --format htmltree --profile main --text "فاستكتبناهم" > output.html
+```
+
+🧾 هذا الخيار ينتج شجرة صرفية بتنسيق HTML مشابه لما يلي:
+
+```html
+<li>فاستكتبناهم
+    <ul>
+        <li>Lemma: اِسْتَكْتَبَ</li>
+        <li>Prefixes:<ul><li>ف</li></ul></li>
+        <li>Stem: استكتب</li>
+        <li>Suffixes:<ul><li>نا</li><li>هم</li></ul></li>
+    </ul>
+</li>
+...
+```
 
