@@ -71,6 +71,20 @@ class TestResultFormatterWithRealData(unittest.TestCase):
         self.assertIn("word", fields)
         self.assertIn("lemma", fields)
 
+    def test_as_tree_output(self):
+        output = self.formatter.as_tree()
+        self.assertIn("Word: الحقد", output)
+        self.assertIn("├─ Lemma: أَحْقَادٌ", output)
+        self.assertIn("└─ Suffixes:", output)
+        self.assertIn("  └─s", output)
+
+    def test_as_html_tree_output(self):
+        html = self.formatter.as_html_tree()
+        self.assertIn("<li>الحقد", html)
+        self.assertIn("<li>Lemma: أَحْقَادٌ</li>", html)
+        self.assertIn("<li>Prefixes:", html)
+        self.assertIn("<li>Suffixes:", html)
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -97,6 +97,11 @@ class ResultFormatter(AbstractResultFormatter):
             output = self.as_csv()
         elif tablefmt == 'xml':
             output = self.as_xml()
+        elif tablefmt == 'tree':
+            output = self.as_tree()
+
+        elif tablefmt == 'htmltree':
+            output = self.as_html_tree()
         else:
             output = self.as_table()
         return output
@@ -170,6 +175,73 @@ class ResultFormatter(AbstractResultFormatter):
             grouped[k].append(r)
         return grouped
 
+    @staticmethod
+    def extract_affix_tree(solution):
+        # The affix is a list joined by '-',
+        # two first are prefixes, the seconds two are suffixes
+        return {
+            "word": solution.get("word", ""),
+            "prefixes": solution.get("affix", "").split("-")[:2],
+            "stem": solution.get("stem", ""),
+            "root": solution.get("root", ""),
+            "pattern": solution.get("pattern", ""),
+            "suffixes": solution.get("affix", "").split("-")[2:],
+            "lemma": solution.get("lemma", "")
+        }
+    @staticmethod
+    def render_morphology_ascii(tree):
+        """
+        Build an ASCII Tree (Text Output)
+        """
+        lines = []
+        lines.append(f"Word: {tree['word']}")
+        lines.append(f" ├─ Lemma: {tree['lemma']}")
+        if any(tree['prefixes']):
+            lines.append(" ├─ Prefixes:")
+            for p in tree['prefixes']:
+                if p.strip():
+                    lines.append(f" │   └─p {p}")
+
+        lines.append(f" ├─ Stem: {tree['stem']}")
+
+        if any(tree['suffixes']):
+            lines.append(" └─ Suffixes:")
+            for s in tree['suffixes']:
+                if s.strip():
+                    lines.append(f"     └─s {s}")
+        return "\n".join(lines)
+    @staticmethod
+    def render_tree_html(tree):
+        def li(content):
+            return f"<li>{content}</li>"
+
+        def ul(items):
+            return f"<ul>{''.join(items)}</ul>"
+
+        prefix_items = [li(p.strip()) for p in tree["prefixes"] if p.strip()]
+        suffix_items = [li(s.strip()) for s in tree["suffixes"] if s.strip()]
+
+        return f"""
+        <li>{tree['word']}
+            <ul>
+                {li('Lemma: ' + tree['lemma'])}
+                {li('Root: ' + tree['root'])}
+                {li('Pattern: ' + tree['pattern'])}
+                {li('Prefixes:' + ul(prefix_items) if prefix_items else '')}
+                {li('Stem: ' + tree['stem'])}
+                {li('Suffixes:' + ul(suffix_items) if suffix_items else '')}
+            </ul>
+        </li>
+        """
+
+    def as_html_tree(self):
+        trees_html = [self.render_tree_html(self.extract_affix_tree(r)) for r in self.flat_results]
+        return ''.join(trees_html)
+
+    def as_tree(self):
+          return "\n\n".join(
+            self.render_morphology_ascii(self.extract_affix_tree(r)) for r in self.flat_results
+        )
     # --- Raw access ---
     def as_dicts(self):
         return self.results
