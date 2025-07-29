@@ -11,7 +11,9 @@ PY := python3
         test2 testqrn teststop testone \
         test1000 test63 test73 test73c \
         test_unit dev unittest eval eval_all\
-        clean_cache changelog
+        clean_cache changelog \
+        run run-json run-csv run-lemmas run-from-file run-stdin run-html \
+        run-lemmatize run-analyze
 
 # Default target
 default: all
@@ -152,3 +154,39 @@ test_all: test2 testqrn teststop testone test1000 test63 test73 test73c
 # install active devvelopement qalsadi
 dev:
 	pip install -e .
+
+
+# Default run
+run:
+	python -m qalsadi --text "ذهب الطفل إلى المدرسة" --format table --profile main
+
+run_analyze:
+	python -m qalsadi --mode analyze --text "الولد يلعب"
+
+# Lemmas only using lemmatizer
+run-lemmatize:
+	python -m qalsadi --mode lemmatize --text "ذهب الطفل إلى المدرسة" --format json
+
+# Output as JSON
+run-json:
+	python -m qalsadi --text "ذهب الطفل إلى المدرسة" --format json --profile all
+
+# Output as CSV
+run-csv:
+	python -m qalsadi --text "أحب القراءة في المكتبة" --format csv --profile all
+
+# Lemmas only
+run-lemmas:
+	python -m qalsadi --text "ذهب الطفل إلى المدرسة" --format table --profile lemmas
+
+# From file
+run-from-file:
+	python -m qalsadi --file tests/samples/text.txt --format table --profile roots
+
+# From stdin
+run-stdin:
+	echo "الولد يلعب في الحديقة" | python -m qalsadi --stdin --format html --profile inflect
+
+# HTML display (requires browser to view output meaningfully)
+run-html:
+	python -m qalsadi --text "الكتاب مفيد" --format html --profile main

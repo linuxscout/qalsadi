@@ -11,12 +11,17 @@ The demo is available on [Mishkal](http://Tahadz.com/mishkal/ >Tools/َAnalysis
   Developpers:  Taha Zerrouki: http://tahadz.com
     taha dot zerrouki at gmail dot com
 
+
+
+![Downloads](https://img.shields.io/pypi/dm/qalsadi)
+![Coverage](https://img.shields.io/badge/coverage-100%25-brightgreen) ![](https://img.shields.io/pypi/pyversions/qalsadi)
+
 Features  |   value
 ----------|---------------------------------------------------------------------------------
 Authors   | [Authors.md](https://github.com/linuxscout/qalsadi/master/AUTHORS.md)
-Release   | {{ release }}
+Release   | ![PyPI](https://img.shields.io/pypi/v/qalsadi) 
 License   |[GPL](https://github.com/linuxscout/qalsadi/master/LICENSE)
-Tracker   |[linuxscout/qalsadi/Issues](https://github.com/linuxscout/qalsadi/issues)
+Tracker   |![GitHub issues](https://img.shields.io/github/issues/linuxscout/qalsadi)[linuxscout/qalsadi/Issues](https://github.com/linuxscout/qalsadi/issues)
 Website   |[https://pypi.python.org/pypi/qalsadi](https://pypi.python.org/pypi/qalsadi)
 Doc       |[package Documentaion](https://qalsadi.readthedocs.io/)
 Source    |[Github](http://github.com/linuxscout/qalsadi)
