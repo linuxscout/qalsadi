@@ -1,11 +1,13 @@
 # qalsadi/__main__.py
-
+import os
 import sys
 import argparse
 from .analex import Analex
 from .lemmatizer import Lemmatizer
 from .resultformatter import ResultFormatter
 import json
+
+
 
 
 def read_input(args):
@@ -16,9 +18,23 @@ def read_input(args):
             return f.read()
     elif args.text:
         return args.text
+    elif args.path:
+        return read_directory(args.path)
     else:
-        print("Error: Provide input using --text, --file, or --stdin")
+        print("❌ Error: You must provide input using --text, --file, --stdin, or --path")
         sys.exit(1)
+
+def read_directory(directory):
+    """Reads and concatenates all .txt files recursively in the directory."""
+    combined_text = ""
+    for root, _, files in os.walk(directory):
+        for file in files:
+            if file.endswith(".txt"):
+                filepath = os.path.join(root, file)
+                with open(filepath, encoding="utf-8") as f:
+                    combined_text += f.read() + "\n"
+    return combined_text
+
 
 
 def run_analyze(args, text):
@@ -58,9 +74,10 @@ def main():
     input_group.add_argument("--text", help="Input Arabic text")
     input_group.add_argument("--file", help="Path to input file")
     input_group.add_argument("--stdin", action="store_true", help="Read input from stdin")
+    input_group.add_argument("--path", help="Path to a directory of .txt files (recursively processed)")
 
     # Common output format
-    parser.add_argument("--format", choices=["json", "csv", "html", "table"], default="table", help="Output format")
+    parser.add_argument("--format", choices=["json", "csv", "html", "table", "tree", "htmltree"], default="table", help="Output format")
 
     # Analyze options
     parser.add_argument("--profile", choices=["main", "all", "lemmas", "roots", "inflect", "custom"], default="main")
@@ -69,6 +86,7 @@ def main():
     # Lemmatize options
     parser.add_argument("--return-pos", action="store_true", help="Include POS in lemma output")
     parser.add_argument("--all", action="store_true", help="Return all lemmas, not just best guess")
+
 
     args = parser.parse_args()
     text = read_input(args)

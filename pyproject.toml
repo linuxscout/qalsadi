@@ -3,11 +3,11 @@ requires = ["setuptools>=61", "wheel",]
 build-backend = "setuptools.build_meta"
 
 [project]
+requires-python = ">=3.7"
 name = "qalsadi"
 description = "Qalsadi Arabic Morphological Analyzer and lemmatizer for Python"
 readme = "README.md"
 #version = "0.5.1"
-requires-python = ">=3.6"
 license = { text = "GPL" }
 authors = [
   { name = "Taha Zerrouki", email = "taha.zerrouki@gmail.com" }
@@ -19,7 +19,14 @@ classifiers = [
   "Intended Audience :: Developers",
   "Operating System :: OS Independent",
   "Programming Language :: Python",
-  "Topic :: Text Processing :: Linguistic"
+  "Topic :: Text Processing :: Linguistic",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.7",
+  "Programming Language :: Python :: 3.8",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
 ]
 
 dependencies = [
@@ -34,11 +41,25 @@ dependencies = [
   "pyarabic>=0.6.7",
   "tashaphyne>=0.3.4.1"
 ]
+
 dynamic = ["version"]
 
 [tool.setuptools.dynamic]
 version = {attr = "qalsadi.__version__.__version__"}
 
+[project.optional-dependencies]
+dev = [
+  "pytest",
+  "pytest-cov",
+  "black",
+  "ruff",
+  "coverage",
+  "build",
+  "tox",
+]
+docs = [
+  "sphinx",
+]
 
 [tool.setuptools]
 include-package-data = true
@@ -52,3 +73,19 @@ qalsadi = ["doc/*.*", "doc/html/*", "data/*.*", "qalsadi/data"]
 
 [project.scripts]
 qalsadi-cli = "qalsadi.__main__:main"
+
+[tool.ruff]
+line-length = 88
+target-version = "py38"
+
+# قواعد مفعّلة (E: pycodestyle, F: pyflakes, I: isort)
+select = ["E", "F", "I"]
+
+# تجاهل تحذيرات (مثلاً: E501 = طول السطر)
+ignore = ["E501"]
+
+# مجلدات المصدر
+src = ["qalsadi"]
+
+# تنسيق تلقائي (يمكن دمجه مع --fix)
+fix = true

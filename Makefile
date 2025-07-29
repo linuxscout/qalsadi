@@ -139,6 +139,7 @@ test_unit: clean_cache
 	$(PY) -m pytest tests/test_unit_analex.py
 	$(PY) -m pytest tests/test_unit_qalsadi_eval.py
 	$(PY) -m pytest tests/test_unit_resultformatter.py
+	$(PY) -m pytest tests/test_unit_cli.py
 
 # Unit tests
 unittest:
@@ -153,7 +154,7 @@ test_all: test2 testqrn teststop testone test1000 test63 test73 test73c
 
 # install active devvelopement qalsadi
 dev:
-	pip install -e .
+	pip install -e .[dev]
 
 
 # Default run
@@ -190,3 +191,12 @@ run-stdin:
 # HTML display (requires browser to view output meaningfully)
 run-html:
 	python -m qalsadi --text "الكتاب مفيد" --format html --profile main
+
+run-dir:
+	python -m qalsadi --mode analyze --path examples/ --format json
+
+lint:
+	ruff qalsadi/
+
+lint-fix:
+	ruff qalsadi/ --fix
