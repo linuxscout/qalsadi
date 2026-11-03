@@ -1,0 +1,105 @@
+{% extends 'base.html' %}
+{% block title %}الصفحة الرئيسية{% endblock %}
+{% block content %}
+
+<body dir="rtl" class="bg-white text-black dark:bg-gray-900 dark:text-white font-cairo max-w-3xl mx-auto p-4">
+
+    <div class="flex justify-between items-center mb-6">
+        <h1 class="text-xl font-bold">القلصادي - التحليل الصرفي</h1>
+        <button onclick="toggleDark()" class="text-sm bg-gray-200 dark:bg-gray-700 px-3 py-1 rounded hover:bg-gray-300 dark:hover:bg-gray-600">
+            🌓 الوضع الليلي
+        </button>
+    </div>
+
+    <form method="post" enctype="multipart/form-data" class="space-y-4">
+        <label class="block">
+            نص عربي:
+            <textarea name="text" rows="5" class="mt-1 block w-full p-2 border rounded bg-white text-black dark:bg-gray-800 dark:text-white">{{ text }}</textarea>
+        </label>
+
+        <label class="block">
+🗂️ اسحب الملف هنا أو انقر للتحميل
+           <div id="dropzone" class="border-2 border-dashed p-6 rounded text-center text-gray-500">
+            <input type="file" name="textfile" accept=".txt" class="block w-full mt-1">
+            <input type="file" class="hidden" id="fileInput" name="file" onchange="loadFile()" />
+            </div>
+            <small class="text-gray-500 dark:text-gray-400">⚠️ الحد الأقصى لحجم الملف: 1 ميغابايت</small>
+
+        </label>
+
+
+
+        <details class="bg-gray-50 dark:bg-gray-800 rounded p-3">
+            <summary class="cursor-pointer font-semibold">⚙️ إعدادات متقدمة</summary>
+            <div class="space-y-3 mt-3">
+                <label class="flex items-center space-x-2">
+                    <input type="checkbox" name="allow_tag_guessing" {% if request.form.get('allow_tag_guessing') %}checked{% endif %}>
+                    <span>تخمين التصنيف</span>
+                </label>
+
+                <label class="flex items-center space-x-2">
+                    <input type="checkbox" name="allow_disambiguation" {% if request.form.get('allow_disambiguation', 'on') %}checked{% endif %}>
+                    <span>إزالة الالتباس</span>
+                </label>
+
+                <label class="block">
+                    صيغة الإخراج:
+                    <select name="format" class="block w-full mt-1 p-1 rounded dark:bg-gray-800 dark:text-white">
+                        <option value="html" {% if format == "html" %}selected{% endif %}>HTML</option>
+                        <option value="table" {% if format == "table" %}selected{% endif %}>Table</option>
+                        <option value="json" {% if format == "json" %}selected{% endif %}>JSON</option>
+                        <option value="csv" {% if format == "csv" %}selected{% endif %}>CSV</option>
+                        <option value="xml" {% if format == "xml" %}selected{% endif %}>XML</option>
+                    </select>
+                </label>
+
+                            <label for="profile" class="block">حقول الإخراج:</label>
+                            <select name="profile" id="profile" class="block w-full mt-1 p-1 rounded dark:bg-gray-800 dark:text-white">
+                                <option value="main" {% if selected_profile == "main" %}selected{% endif %}>أساسي</option>
+                                <option value="all" {% if selected_profile == "all" %}selected{% endif %}>كامل</option>
+                                <option value="roots" {% if selected_profile == "roots" %}selected{% endif %}>الجذور</option>
+                                <option value="lemmas" {% if selected_profile == "lemmas" %}selected{% endif %}>الأصول</option>
+                                <option value="inflect" {% if selected_profile == "inflect" %}selected{% endif %}>الإعراب</option>
+                            </select>
+
+
+
+                            <label for="action" class="block">الإجراء:</label>
+                            <select name="action" id="action" class="block w-full mt-1 p-1 rounded dark:bg-gray-800 dark:text-white">
+                                <option value="analyze" {% if action == "analyze" %}selected{% endif %}>تحليل صرفي</option>
+                                <option value="lemmatize" {% if action == "lemmatize" %}selected{% endif %}>تأصيل</option>
+                                <option value="stemming" {% if action == "stemming" %}selected{% endif %}>تجذيع</option>
+                                <option value="tokenize" {% if action == "tokenize" %}selected{% endif %}>تفريق</option>
+                                <option value="sort" {% if action == "sort" %}selected{% endif %}>فرز</option>
+                                <option value="strip_tashkeel" {% if action == "strip_tashkeel" %}selected{% endif %}>حذف التشكيل</option>
+                                <option value="random_arabic" {% if action == "random_arabic" %}selected{% endif %}>نص عشوائي</option>
+                                <option value="random_arabic_vocalized" {% if action == "random_arabic_vocalized" %}selected{% endif %}>نص مشكول عشوائي</option>
+                            </select>
+
+            </div>
+        </details>
+
+        <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white text-sm px-4 py-2 rounded"  id="analyzeBtn"  onclick="showSpinner()">🔍 تحليل</button>
+        <div id="spinner" class="hidden">⏳ جاري المعالجة...</div>
+      </form>
+
+    {% if output %}
+        <div class="mt-6">
+            <h2 class="text-lg font-semibold mb-2">تحميل النتائج</h2>
+            <div class="flex space-x-2 space-x-reverse">
+                <a href="{{ url_for('download', fmt='csv') }}" class="text-sm bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded">⬇️ CSV</a>
+                <a href="{{ url_for('download', fmt='json') }}" class="text-sm bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded">⬇️ JSON</a>
+                <a href="{{ url_for('download', fmt='xml') }}" class="text-sm bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded">⬇️ XML</a>
+            </div>
+
+            {% if format == "html" %}
+                <div class="mt-4">{{ output | safe }}</div>
+            {% else %}
+                <pre class="mt-4 p-3 bg-gray-100 dark:bg-gray-700 rounded">{{ output | e }}</pre>
+            {% endif %}
+        </div>
+    {% endif %}
+
+</body>
+
+{% endblock %}

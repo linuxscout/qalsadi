@@ -1,0 +1,27 @@
+*.pyc
+/build/*
+/archive/*
+/dist/*
+/doc/html/*
+/support/*
+/tests/~/*
+/tests/output/*
+/.ipynb_checkpoints/Untitled-checkpoint.ipynb
+/Untitled.ipynb
+/doc/html.tar.bz2
+/doc/html.zip
+/pylintrc
+/qalsadi.egg-info/*
+/tests/cache/*
+/tests/samples/stopwords2.txt
+/mypythonenv/*
+docs/_build
+/tests/samples/Nemlar/
+/.idea/
+/tests/test_example.py
+/tests/test_resultfromatter.py
+/web/templates/index (نسخ)-bootstrap.html
+/web/templates/index (نسخ).html
+/myenv/
+/.tox/
+/.coverage
