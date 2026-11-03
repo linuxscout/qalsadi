@@ -1,0 +1,14 @@
+﻿#INSTALL
+Requirements
+----------------
+	- libQutrub: Qutrub verb conjugation library: http://pypi.pyton/LibQutrub
+	- PyArabic: Arabic language tools library   : http://pypi.pyton/pyarabic
+	- Tashaphyne;Arabic Light Stemmer library	: http://pypi.python.org/pypi/Tashaphyne/
+	- Naftawayh : Arabic words tagger: 	: http://pypi.python.org/pypi/Naftawayh/
+
+Usage : in README file
+--------------
+
+This program is licensed under the GPL License
+Description of Input file format : is detailled in  README  file
+This program is licensed under the GPL License
